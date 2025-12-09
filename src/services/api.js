@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '',  // Empty string means same origin
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://register.kdsgroup.co.in/',  // Empty string means same origin
   headers: {
     'Content-Type': 'application/json'
   },
