@@ -11,6 +11,7 @@ import BlockReportView from '../../../components/hq/BlockReportView';
 import ProjectMonitoringView from '../../../components/pm/ProjectMonitoringView';
 import OperatorMonitoringView from '../../../components/pm/OperatorMonitoringView';
 import DataMonitoringView from '../../../components/pm/DataMonitoringView';
+import SachivValidationView from '../../../components/pm/SachivValidationView';
 import '../../../assets/styles/pages/pm.css';
 
 const PMDashboard = () => {
@@ -160,6 +161,7 @@ const PMDashboard = () => {
           <span className="title">Project Monitoring</span>
         </div>
 
+        {/* Dashboards Dropdown */}
         <div className="dropdown">
           <button 
             className="dropbtn" 
@@ -190,6 +192,7 @@ const PMDashboard = () => {
           </div>
         </div>
 
+        {/* HQ Dashboard */}
         <div className="dropdown">
           <button 
             className={`dropbtn ${activeView === 'hq-dashboard' ? 'active' : ''}`}
@@ -199,6 +202,17 @@ const PMDashboard = () => {
           </button>
         </div>
 
+        {/* Sachiv Validation - NEW ADDITION */}
+        <div className="dropdown">
+          <button 
+            className={`dropbtn ${activeView === 'sachiv-validation' ? 'active' : ''}`}
+            onClick={() => setActiveView('sachiv-validation')}
+          >
+            Sachiv Validation
+          </button>
+        </div>
+
+        {/* Approval Status */}
         <div className="dropdown">
           <button 
             className={`dropbtn ${activeView === 'approval-status' ? 'active' : ''}`}
@@ -208,6 +222,7 @@ const PMDashboard = () => {
           </button>
         </div>
 
+        {/* Live Data Entries */}
         <div className="dropdown">
           <button 
             className={`dropbtn ${activeView === 'live-entries' ? 'active' : ''}`}
@@ -217,6 +232,7 @@ const PMDashboard = () => {
           </button>
         </div>
 
+        {/* Raw Data */}
         <div className="dropdown">
           <button 
             className={`dropbtn ${activeView === 'raw-data' ? 'active' : ''}`}
@@ -226,6 +242,7 @@ const PMDashboard = () => {
           </button>
         </div>
 
+        {/* Logout */}
         <div className="logout" style={{ borderRadius: '2em' }}>
           <a href="/logout/" onClick={handleLogout}>
             <i className="icon"><i className="fas fa-sign-out-alt"></i></i>
@@ -261,6 +278,7 @@ const PMDashboard = () => {
         </div>
 
         <div className="main-content">
+          {/* Project Monitoring */}
           {activeView === 'project-monitoring' && (
             <>
               <h1 className="page-title">Project Monitoring Dashboard</h1>
@@ -268,6 +286,7 @@ const PMDashboard = () => {
             </>
           )}
           
+          {/* Operator Monitoring */}
           {activeView === 'operator-monitoring' && (
             <>
               <h1 className="page-title">Operator Monitoring</h1>
@@ -275,13 +294,23 @@ const PMDashboard = () => {
             </>
           )}
           
+          {/* Data Monitoring */}
           {activeView === 'data-monitoring' && (
             <>
               <h1 className="page-title">Data Monitoring & Management</h1>
               <DataMonitoringView zilaList={zilaList} />
             </>
           )}
+
+          {/* Sachiv Validation - NEW SECTION */}
+          {activeView === 'sachiv-validation' && (
+            <>
+              <h1 className="page-title">Sachiv Validation</h1>
+              <SachivValidationView />
+            </>
+          )}
           
+          {/* HQ Dashboard */}
           {activeView === 'hq-dashboard' && (
             <>
               <h1 className="page-title">Parivar Register Digitization System</h1>
@@ -324,19 +353,17 @@ const PMDashboard = () => {
             </>
           )}
           
-          {/* Placeholder for other views */}
+          {/* Approval Status */}
           {activeView === 'approval-status' && (
             <div className="page-title">Approval Status - Coming Soon</div>
           )}
           
-          {activeView === 'handover-takeover' && (
-            <div className="page-title">Takeover/Handover Overview - Coming Soon</div>
-          )}
-          
+          {/* Live Entries */}
           {activeView === 'live-entries' && (
             <div className="page-title">Live Data Entries - Coming Soon</div>
           )}
           
+          {/* Raw Data */}
           {activeView === 'raw-data' && (
             <div className="page-title">Raw Data - Coming Soon</div>
           )}

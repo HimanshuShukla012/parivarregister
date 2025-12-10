@@ -1,8 +1,7 @@
 // src/components/sachiv/VerificationTable.jsx
 import React from 'react';
 
-const VerificationTable = ({ data, onApprove, onReject, onViewPDF, villageIndex }) => {
-  const handleNullDate = (value) => {
+const VerificationTable = ({ data, onApprove, onReject, onViewPDF, onEdit, villageIndex }) => {  const handleNullDate = (value) => {
     if (!value) return '';
     return value.split("-").reverse().join("-");
   };
@@ -66,27 +65,63 @@ const VerificationTable = ({ data, onApprove, onReject, onViewPDF, villageIndex 
                 <td>{row.qualification || ''}</td>
                 <td>{handleNullDate(row.leavingDate)}</td>
                 <td>{row.description || ''}</td>
-                <td>
-                  {row.serialNo === '1' && (
+               <td>
+                  {String(row.serialNo) === '1' && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <button
-                        style={{ backgroundColor: '#10DA00' }}
-                        onClick={() => onApprove(row.id, row.gaonCode, villageIndex)}
-                      >
-                        <i className="fas fa-check-circle"></i>&nbsp; Approve
-                      </button>
-                      <button
-                        style={{ backgroundColor: '#ff250e' }}
-                        onClick={() => onReject(row.id, row.gaonCode)}
-                      >
-                        <i className="fas fa-times-circle"></i>&nbsp; Reject
-                      </button>
+                      {!row.status ? (
+                        // Unapproved family - show Approve/Reject buttons
+                        <>
+                          <button
+                            style={{ backgroundColor: '#10DA00', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                            onClick={() => onApprove(row.id, row.gaonCode, villageIndex)}
+                          >
+                            <i className="fas fa-check-circle"></i>&nbsp; Approve
+                          </button>
+                          <button
+                            style={{ backgroundColor: '#ff250e', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                            onClick={() => onReject(row.id, row.gaonCode)}
+                          >
+                            <i className="fas fa-times-circle"></i>&nbsp; Reject
+                          </button>
+                        </>
+                      ) : (
+                        // Approved family - show Edit button
+                        <button
+                          style={{ backgroundColor: '#667eea', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                          onClick={() => {
+                            // Find all family members for this family
+                            const familyData = data.filter(d => 
+                              d.houseNumberNum === row.houseNumberNum && 
+                              d.familyHeadName === row.familyHeadName
+                            );
+                            // You need to pass onEdit prop from parent
+                            if (window.onEditFamily) {
+                              window.onEditFamily(familyData);
+                            }
+                          }}
+                        >
+                          <i className="fas fa-edit"></i>&nbsp; Edit
+                        </button>
+                      )}
                       <button
                         className="editBtn"
+                        style={{ backgroundColor: '#f59e0b', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
                         onClick={() => onViewPDF(row.pdfNo, row.fromPage, row.toPage, row.gaonCode)}
                       >
                         <i className="fas fa-eye"></i>&nbsp; View PDF
                       </button>
+                      <button
+  style={{ backgroundColor: '#667eea', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+  onClick={() => {
+    const familyData = data.filter(d => 
+      d.houseNumberNum === row.houseNumberNum && 
+      d.familyHeadName === row.familyHeadName
+    );
+    onEdit(familyData);
+  }}
+>
+  <i className="fas fa-edit"></i>&nbsp; Edit
+</button>
                     </div>
                   )}
                 </td>

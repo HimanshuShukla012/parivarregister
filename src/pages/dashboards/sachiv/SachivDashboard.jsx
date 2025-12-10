@@ -26,19 +26,26 @@ const SachivDashboard = () => {
   const [villages, setVillages] = useState([]);
   const [selectedVillage, setSelectedVillage] = useState(null);
   const [gaonData, setGaonData] = useState([]);
-  const [viewMode, setViewMode] = useState('pending'); // 'pending', 'verification', 'completed'
+  const [viewMode, setViewMode] = useState('pending');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [editFamilyData, setEditFamilyData] = useState(null);
   const [rejectData, setRejectData] = useState({ id: null, gaonCode: null });
   const [selectedGaonForVerification, setSelectedGaonForVerification] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch user data and villages on mount
+
+  // Calculate statistics
+  const [stats, setStats] = useState({
+    totalFamilies: 0,
+    totalMembers: 0,
+    approvedFamilies: 0,
+    approvedMembers: 0
+  });
   useEffect(() => {
     initDashboard();
     
-    // Ajax logout on window unload
     const handleUnload = () => {
       sachivService.ajaxLogout();
     };
@@ -47,50 +54,69 @@ const SachivDashboard = () => {
     return () => window.removeEventListener('unload', handleUnload);
   }, []);
 
-  const initDashboard = async () => {
-  setLoading(true);
-  try {
-    const loginID = localStorage.getItem('loginID');
-    
-    if (!loginID) {
-      navigate('/');
-      return;
-    }
-    
-    // Fetch villages - backend will use session to determine sabha
-    const villageData = await sachivService.getGaonBySabha();
-    
-    if (villageData && villageData.length > 0) {
-      // Extract user info from the first village record
-      const firstVillage = villageData[0];
-      const userInfo = {
-        loginID: loginID,
-        zila: firstVillage.zila,
-        tehsil: firstVillage.tehsil,
-        block: firstVillage.block,
-        sabha: firstVillage.sabha
-      };
+  // Update stats when gaonData changes
+  useEffect(() => {
+    if (gaonData && gaonData.length > 0) {
+      // Total families and members (including both approved and pending)
+      const totalFamilies = gaonData.filter(row => String(row.serialNo) === '1').length;
+      const totalMembers = gaonData.length;
       
-      setUser(userInfo);
-      setVillages(villageData);
+      // Approved families and members only
+      const approvedFamilies = gaonData.filter(row => String(row.serialNo) === '1' && row.status === 'Approved').length;
+      const approvedMembers = gaonData.filter(row => row.status === 'Approved').length;
       
-      // Auto-select first pending verification village
-      const firstPendingVerification = villageData.find(
-        v => v.approvedBySachiv === 'N' && !v.aDORemark
-      );
-      if (firstPendingVerification) {
-        handleVillageClick(firstPendingVerification, 'verification');
-      }
+      setStats({
+        totalFamilies,
+        totalMembers,
+        approvedFamilies,
+        approvedMembers
+      });
     } else {
-      alert('No villages found for your Sabha. Please contact administrator.');
+      setStats({ totalFamilies: 0, totalMembers: 0, approvedFamilies: 0, approvedMembers: 0 });
     }
-  } catch (error) {
-    console.error('Error initializing dashboard:', error);
-    alert('Failed to load dashboard data. Please check your login.');
-  } finally {
-    setLoading(false);
-  }
-};
+  }, [gaonData]);
+
+  const initDashboard = async () => {
+    setLoading(true);
+    try {
+      const loginID = localStorage.getItem('loginID');
+      
+      if (!loginID) {
+        navigate('/');
+        return;
+      }
+      
+      const villageData = await sachivService.getGaonBySabha();
+      
+      if (villageData && villageData.length > 0) {
+        const firstVillage = villageData[0];
+        const userInfo = {
+          loginID: loginID,
+          zila: firstVillage.zila,
+          tehsil: firstVillage.tehsil,
+          block: firstVillage.block,
+          sabha: firstVillage.sabha
+        };
+        
+        setUser(userInfo);
+        setVillages(villageData);
+        
+        const firstPendingVerification = villageData.find(
+          v => v.approvedBySachiv === 'N' && !v.aDORemark
+        );
+        if (firstPendingVerification) {
+          handleVillageClick(firstPendingVerification, 'verification');
+        }
+      } else {
+        alert('No villages found for your Sabha. Please contact administrator.');
+      }
+    } catch (error) {
+      console.error('Error initializing dashboard:', error);
+      alert('Failed to load dashboard data. Please check your login.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleVillageClick = async (village, mode = 'pending') => {
     setLoading(true);
@@ -125,7 +151,7 @@ const SachivDashboard = () => {
         const result = await sachivService.sachivApprove(`g${selectedVillage.gaonCode}`);
         if (result.status === 'success') {
           alert('सत्यापित हो गया!');
-          initDashboard(); // Refresh data
+          initDashboard();
         }
       } catch (error) {
         console.error('Error approving register:', error);
@@ -145,7 +171,6 @@ const SachivDashboard = () => {
         const result = await sachivService.approveFamilySachiv(id, gaonCode);
         if (result.success) {
           alert('Family approved successfully!');
-          // Refresh the verification table
           if (selectedGaonForVerification) {
             handleVillageClick(selectedGaonForVerification, 'verification');
           }
@@ -172,15 +197,15 @@ const SachivDashboard = () => {
 
   if (loading && !gaonData.length) {
     return (
-      <div className="loading-screen">
-        <div className="spinner"></div>
+      <div className="sachiv-loading-screen">
+        <div className="sachiv-spinner"></div>
         <h2>&nbsp;&nbsp;&nbsp;Loading, please wait...</h2>
       </div>
     );
   }
 
   return (
-    <div className="sachiv-dashboard">
+    <div className="sachiv-dashboard-wrapper">
       <RegisterSidebar
         user={user}
         villages={villages}
@@ -190,61 +215,173 @@ const SachivDashboard = () => {
         onLogout={handleLogout}
       />
 
-      <div className="content" id="content">
-        <div className="main-content">
-          <div className="header">
-            <span className="title" id="registerTitle">
+      <div className="sachiv-content" id="content">
+        <div className="sachiv-main-content">
+          <div className="sachiv-header">
+            <span className="sachiv-title" id="registerTitle">
               {selectedVillage ? `${selectedVillage.gaon} रजिस्टर` : 'No Pending Register'}
             </span>
           </div>
 
-          {viewMode !== 'verification' && (
-            <div className="button">
-              <button className="download-btn" onClick={handleDownloadRegister}>
-                <i className="fas fa-download" style={{ marginRight: '10px' }}></i>
-                डाउनलोड रजिस्टर
+          {/* Show tabs only in verification mode */}
+          {selectedVillage?.approvedBySachiv === 'N' && !selectedVillage?.aDORemark && (
+            <div style={{ 
+              display: 'flex', 
+              gap: '10px', 
+              marginTop: '15px',
+              borderBottom: '2px solid #e5e7eb',
+              paddingBottom: '10px'
+            }}>
+              <button
+                onClick={() => setViewMode('verification')}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: viewMode === 'verification' ? '#667eea' : 'transparent',
+                  color: viewMode === 'verification' ? 'white' : '#4b5563',
+                  border: 'none',
+                  borderRadius: '6px 6px 0 0',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s'
+                }}
+              >
+                <i className="fas fa-clock" style={{ marginRight: '8px' }}></i>
+                लंबित परिवार
               </button>
-              <button className="verified-btn" id="verified-btn" onClick={handleApproveRegister}>
-                <i className="fas fa-check" style={{ marginRight: '10px' }}></i>
-                सत्यापित करें
+              <button
+                onClick={() => setViewMode('approved')}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: viewMode === 'approved' ? '#667eea' : 'transparent',
+                  color: viewMode === 'approved' ? 'white' : '#4b5563',
+                  border: 'none',
+                  borderRadius: '6px 6px 0 0',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s'
+                }}
+              >
+                <i className="fas fa-check-circle" style={{ marginRight: '8px' }}></i>
+                स्वीकृत परिवार
               </button>
             </div>
           )}
+
+          {(viewMode === 'verification' || viewMode === 'approved') && (
+  <div className="sachiv-button-group">
+    <button className="sachiv-download-btn" onClick={handleDownloadRegister}>
+      <i className="fas fa-download" style={{ marginRight: '10px' }}></i>
+      डाउनलोड रजिस्टर
+    </button>
+    {viewMode === 'approved' && (
+      <button 
+        className="sachiv-verified-btn" 
+        id="verified-btn" 
+        onClick={handleApproveRegister}
+        disabled={gaonData.filter(row => !row.status).length > 0}
+        style={{
+          opacity: gaonData.filter(row => !row.status).length > 0 ? 0.5 : 1,
+          cursor: gaonData.filter(row => !row.status).length > 0 ? 'not-allowed' : 'pointer'
+        }}
+      >
+        <i className="fas fa-check" style={{ marginRight: '10px' }}></i>
+        सत्यापित करें
+      </button>
+    )}
+  </div>
+)}
         </div>
 
         {selectedVillage?.aDORemark && viewMode !== 'verification' && (
-          <div className="remark main-content">
+          <div className="sachiv-remark sachiv-main-content">
             <h4>ADO's Remark: </h4>
             <span>{selectedVillage.aDORemark}</span>
           </div>
         )}
 
-        {viewMode !== 'verification' && (
-          <KeyLegend onScrollToError={() => {
-            const errorCell = document.querySelector("td[style*='background-color: red']");
-            if (errorCell) {
-              errorCell.scrollIntoView({ behavior: "smooth", block: "center" });
-              errorCell.style.border = "4px solid black";
-            } else {
-              alert("No errors found!");
-            }
-          }} />
+        {/* Statistics Cards */}
+        {selectedVillage && (
+          <div className="sachiv-stats-container">
+            <div className="sachiv-stat-card">
+              <div className="sachiv-stat-icon">
+                <i className="fas fa-home"></i>
+              </div>
+              <div className="sachiv-stat-content">
+                <div className="sachiv-stat-label">कुल परिवार</div>
+                <div className="sachiv-stat-value">{stats.totalFamilies}</div>
+              </div>
+            </div>
+            <div className="sachiv-stat-card">
+              <div className="sachiv-stat-icon sachiv-stat-icon-members">
+                <i className="fas fa-users"></i>
+              </div>
+              <div className="sachiv-stat-content">
+                <div className="sachiv-stat-label">कुल सदस्य</div>
+                <div className="sachiv-stat-value">{stats.totalMembers}</div>
+              </div>
+            </div>
+            <div className="sachiv-stat-card">
+              <div className="sachiv-stat-icon" style={{ backgroundColor: '#10b981' }}>
+                <i className="fas fa-check-circle"></i>
+              </div>
+              <div className="sachiv-stat-content">
+                <div className="sachiv-stat-label">सत्यापित परिवार</div>
+                <div className="sachiv-stat-value">{stats.approvedFamilies}</div>
+              </div>
+            </div>
+            <div className="sachiv-stat-card">
+              <div className="sachiv-stat-icon sachiv-stat-icon-members" style={{ backgroundColor: '#10b981' }}>
+                <i className="fas fa-user-check"></i>
+              </div>
+              <div className="sachiv-stat-content">
+                <div className="sachiv-stat-label">सत्यापित सदस्य</div>
+                <div className="sachiv-stat-value">{stats.approvedMembers}</div>
+              </div>
+            </div>
+          </div>
         )}
 
-        <div className="container">
+        {(viewMode === 'approved' || (viewMode !== 'verification' && viewMode !== 'completed')) && (
+          <KeyLegend 
+            onScrollToError={() => {
+              const errorCell = document.querySelector("td[style*='background-color: red']");
+              if (errorCell) {
+                errorCell.scrollIntoView({ behavior: "smooth", block: "center" });
+                errorCell.style.border = "4px solid black";
+              } else {
+                alert("No errors found!");
+              }
+            }}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+          />
+        )}
+
+        <div className="sachiv-container">
           {viewMode === 'verification' ? (
             <VerificationTable
               data={gaonData}
               onApprove={handleApproveFamily}
               onReject={handleRejectFamily}
               onViewPDF={sachivService.viewPDFPage}
+              onEdit={handleEditFamily}
               villageIndex={villages.findIndex(v => v.gaonCode === selectedVillage?.gaonCode)}
+            />
+          ) : viewMode === 'approved' ? (
+            <RegisterTable
+              data={gaonData}
+              status="approved"
+              onEdit={handleEditFamily}
+              searchTerm={searchTerm}
             />
           ) : (
             <RegisterTable
               data={gaonData}
               status={viewMode}
               onEdit={handleEditFamily}
+              searchTerm={searchTerm}
             />
           )}
         </div>

@@ -4,131 +4,198 @@ import React, { useState } from 'react';
 const RegisterSidebar = ({ user, villages, selectedVillage, onVillageClick, onChangePassword, onLogout }) => {
   const [collapsed, setCollapsed] = useState(false);
 
-  const pendingVerificationRegisters = villages.filter(v => v.approvedBySachiv === 'N' && !v.status);
-  const pendingValidationRegisters = villages.filter(v => v.approvedBySachiv === 'N' && v.status);
+  const pendingVerificationRegisters = villages.filter(v => v.approvedBySachiv === 'N' && !v.aDORemark);
+  const rejectedRegisters = villages.filter(v => v.aDORemark);
   const completedRegisters = villages.filter(v => v.approvedBySachiv === 'Y');
 
   return (
     <>
-      <div className={`sidebar ${collapsed ? 'hidden' : ''}`}>
-        <div style={{ textAlign: 'end', paddingRight: '5px', paddingTop: '5px' }}>
-          <button className="toggleBtn" id="collapseMenu" onClick={() => setCollapsed(true)}>
-            <i className="fa fa-arrow-left"></i>
-          </button>
+      <div className={`sachiv-sidebar ${collapsed ? 'sachiv-hidden' : ''}`}>
+        <div className="sachiv-sidebar-header">
+          <i className="fas fa-user-shield"></i>
+          <div className="sachiv-title">सचिव पैनल</div>
         </div>
 
-        <div className="sidebar-header">
-          <i className="fas fa-user-circle"></i>
-          <span className="title">Sachiv</span>
-        </div>
-
-        <table className="data-table">
+        <table className="sachiv-data-table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
-              <td>गाँव सभा</td>
-              <td>{user.sabha}</td>
+              <td>Login ID</td>
+              <td>{user.loginID}</td>
             </tr>
             <tr>
-              <td>ब्लाक</td>
-              <td>{user.block}</td>
+              <td>जिला</td>
+              <td>{user.zila}</td>
             </tr>
             <tr>
               <td>तहसील</td>
               <td>{user.tehsil}</td>
             </tr>
             <tr>
-              <td>जनपद</td>
-              <td>{user.zila}</td>
+              <td>ब्लॉक</td>
+              <td>{user.block}</td>
+            </tr>
+            <tr>
+              <td>सभा</td>
+              <td>{user.sabha}</td>
             </tr>
           </tbody>
         </table>
 
-        {/* Register Verification Dropdown */}
-        <div className="dropdown">
-          <button className="dropbtn">Register Verification &#x25BC;</button>
-          <div className="dropdown-content" id="pendingVerificationRegisters">
+        {/* Pending Verification Villages */}
+        <div className="sachiv-dropdown">
+          <button className="sachiv-dropbtn">
+            <span>
+              <i className="fas fa-hourglass-half" style={{marginRight: '8px'}}></i>
+              लंबित सत्यापन
+            </span>
+            <span style={{
+              background: 'rgba(59, 130, 246, 0.2)',
+              color: '#93c5fd',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '12px',
+              fontSize: '0.75rem',
+              fontWeight: '600'
+            }}>
+              {pendingVerificationRegisters.length}
+            </span>
+          </button>
+          <div className="sachiv-dropdown-content">
             {pendingVerificationRegisters.length > 0 ? (
               pendingVerificationRegisters.map((village, index) => (
                 <a
                   key={index}
                   onClick={() => onVillageClick(village, 'verification')}
-                  className={`gaonListItem ${selectedVillage?.gaonCode === village.gaonCode ? 'active' : ''}`}
+                  className={selectedVillage?.gaonCode === village.gaonCode ? 'sachiv-active' : ''}
                 >
                   {village.gaon}
                 </a>
               ))
             ) : (
-              <a>No Register Available</a>
+              <a style={{color: '#9ca3af', fontStyle: 'italic', cursor: 'default'}}>
+                कोई लंबित गाँव नहीं
+              </a>
             )}
           </div>
         </div>
 
-        {/* Register Validation Dropdown */}
-        <div className="dropdown">
-          <button className="dropbtn">Register Validation &#x25BC;</button>
-          <div className="dropdown-content" id="pendingRegisters">
-            {pendingValidationRegisters.length > 0 ? (
-              pendingValidationRegisters.map((village, index) => (
+        {/* Rejected Villages */}
+        <div className="sachiv-dropdown">
+          <button className="sachiv-dropbtn">
+            <span>
+              <i className="fas fa-times-circle" style={{marginRight: '8px'}}></i>
+              ADO द्वारा अस्वीकृत
+            </span>
+            <span style={{
+              background: 'rgba(239, 68, 68, 0.2)',
+              color: '#fca5a5',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '12px',
+              fontSize: '0.75rem',
+              fontWeight: '600'
+            }}>
+              {rejectedRegisters.length}
+            </span>
+          </button>
+          <div className="sachiv-dropdown-content">
+            {rejectedRegisters.length > 0 ? (
+              rejectedRegisters.map((village, index) => (
                 <a
                   key={index}
                   onClick={() => onVillageClick(village, 'pending')}
-                  className={`gaonListItem ${selectedVillage?.gaonCode === village.gaonCode ? 'active' : ''}`}
+                  className={selectedVillage?.gaonCode === village.gaonCode ? 'sachiv-active' : ''}
                 >
                   {village.gaon}
                 </a>
               ))
             ) : (
-              <a>No Register Available</a>
+              <a style={{color: '#9ca3af', fontStyle: 'italic', cursor: 'default'}}>
+                कोई अस्वीकृत गाँव नहीं
+              </a>
             )}
           </div>
         </div>
 
-        {/* Completed Registers Dropdown */}
-        <div className="dropdown">
-          <button className="dropbtn">Completed Register(s) &#x25BC;</button>
-          <div className="dropdown-content" id="completedRegisters">
+        {/* Completed Registers */}
+        <div className="sachiv-dropdown">
+          <button className="sachiv-dropbtn">
+            <span>
+              <i className="fas fa-check-circle" style={{marginRight: '8px'}}></i>
+              पूर्ण रजिस्टर
+            </span>
+            <span style={{
+              background: 'rgba(34, 197, 94, 0.2)',
+              color: '#86efac',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '12px',
+              fontSize: '0.75rem',
+              fontWeight: '600'
+            }}>
+              {completedRegisters.length}
+            </span>
+          </button>
+          <div className="sachiv-dropdown-content">
             {completedRegisters.length > 0 ? (
               completedRegisters.map((village, index) => (
                 <a
                   key={index}
                   onClick={() => onVillageClick(village, 'completed')}
-                  className={`gaonListItem ${selectedVillage?.gaonCode === village.gaonCode ? 'active' : ''}`}
+                  className={selectedVillage?.gaonCode === village.gaonCode ? 'sachiv-active' : ''}
                 >
                   {village.gaon}
                 </a>
               ))
             ) : (
-              <a>No Register Available</a>
+              <a style={{color: '#9ca3af', fontStyle: 'italic', cursor: 'default'}}>
+                कोई पूर्ण गाँव नहीं
+              </a>
             )}
           </div>
         </div>
 
-        <div id="changePass" className="logout" onClick={onChangePassword}>
-          <i className="fas fa-user-edit"></i> &nbsp;
-          Change Password
+        {/* Change Password */}
+        <div className="sachiv-dropdown">
+          <button 
+            className="sachiv-dropbtn" 
+            onClick={onChangePassword}
+            style={{borderBottom: 'none'}}
+          >
+            <span>
+              <i className="fas fa-key" style={{marginRight: '8px'}}></i>
+              पासवर्ड बदलें
+            </span>
+          </button>
         </div>
 
-        <a href="#" className="logout" style={{ marginTop: '1em' }} onClick={onLogout}>
-          <i className="icon">
-            <i className="fas fa-sign-out-alt"></i>
-          </i>
-          <span>लॉग आउट</span>
-        </a>
+        {/* Logout Button */}
+        <div className="sachiv-logout">
+          <a onClick={onLogout}>
+            <i className="fas fa-sign-out-alt sachiv-icon"></i>
+            <span>लॉग आउट</span>
+          </a>
+        </div>
       </div>
 
       {collapsed && (
         <button
           id="openMenu"
-          className="toggleBtn"
+          className="sachiv-toggleBtn"
           onClick={() => setCollapsed(false)}
           style={{
             position: 'fixed',
             left: '10px',
             top: '10px',
-            zIndex: 1000
+            zIndex: 1000,
+            background: 'linear-gradient(135deg, #1e293b, #334155)',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
           }}
         >
-          <i className="fa fa-arrow-right"></i>
+          <i className="fa fa-bars"></i>
         </button>
       )}
     </>
