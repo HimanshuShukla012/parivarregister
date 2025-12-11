@@ -89,16 +89,17 @@ const DistrictDetailsView = ({ district, onBack }) => {
     
     console.log('Download clicked for metric:', metric);
     console.log('District object:', district);
-    console.log('Available keys:', Object.keys(district));
     
-    // Try zilaCode first (from our added property), then district name
-    const districtParam = district.zilaCode || district.district;
+    // ALWAYS use zilaCode (numeric) for reliability
+    const districtParam = district.zilaCode;
     
     if (!districtParam) {
-      console.error('District identifier is missing:', district);
-      alert('Cannot download: District information is not available. Please refresh and try again.');
+      console.error('❌ zilaCode missing from district object');
+      alert('Cannot download: District code is missing. Please refresh the page.');
       return;
     }
+    
+    console.log('✅ Using district code:', districtParam);
     
     try {
       // Build URL with the district parameter
@@ -113,11 +114,19 @@ const DistrictDetailsView = ({ district, onBack }) => {
       });
       
       await downloadFile(url, filename);
-      console.log('Download completed successfully');
+      console.log('✅ Download completed successfully');
       
     } catch (error) {
-      console.error('Download error:', error);
-      alert(`Download failed: ${error.message}`);
+      console.error('❌ Download error:', error);
+      
+      // Better error messages
+      if (error.message.includes('Session expired')) {
+        alert('Your session has expired. Please refresh the page and log in again.');
+      } else if (error.message.includes('not reaching Django')) {
+        alert('Backend connection error. Please ensure Django server is running on port 8000.');
+      } else {
+        alert(`Download failed: ${error.message}`);
+      }
     }
   };
 

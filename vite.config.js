@@ -1,6 +1,6 @@
 // vite.config.js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,80 +9,84 @@ export default defineConfig({
     port: 3000,
     proxy: {
       // District details endpoint - IMPORTANT: This must come BEFORE /district_*
-      '/district/': {
-        target: 'http://localhost:8000',
+      "/district/": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log('🔄 Proxying:', req.url, '→ Django');
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying:", req.url, "→ Django");
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // ========== MISSING ENDPOINTS - ADDED BELOW ==========
-      
+
       // Gaon (Village) endpoint - CRITICAL for FamilyEntryForm
-      '/gaon': {
-        target: 'http://localhost:8000',
+      "/gaon": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log('🔄 Proxying gaon:', req.url);
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying gaon:", req.url);
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
-          proxy.on('proxyRes', (proxyRes) => {
-            console.log('✅ Gaon response:', proxyRes.statusCode, proxyRes.headers['content-type']);
+          proxy.on("proxyRes", (proxyRes) => {
+            console.log(
+              "✅ Gaon response:",
+              proxyRes.statusCode,
+              proxyRes.headers["content-type"]
+            );
           });
         },
       },
 
       // Operator Daily Entry Count
-      '/opDailyEntryCount': {
-        target: 'http://localhost:8000',
+      "/opDailyEntryCount": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log('🔄 Proxying opDailyEntryCount:', req.url);
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying opDailyEntryCount:", req.url);
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // Insert Family Member
-      '/insertFamilyMember': {
-        target: 'http://localhost:8000',
+      "/insertFamilyMember": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log('🔄 Proxying insertFamilyMember:', req.url);
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying insertFamilyMember:", req.url);
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // Get Register PDF
-      '/getRegisterPDF': {
-        target: 'http://localhost:8000',
+      "/getRegisterPDF": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log('🔄 Proxying getRegisterPDF:', req.url);
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying getRegisterPDF:", req.url);
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
@@ -90,346 +94,354 @@ export default defineConfig({
 
       // ========== EXISTING ENDPOINTS ==========
 
-      '/getBlockByZila': {
-        target: 'http://localhost:8000',
+      "/getBlockByZila": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log('🔄 Proxying getBlockByZila:', req.url);
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying getBlockByZila:", req.url);
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
-          proxy.on('proxyRes', (proxyRes) => {
-            console.log('✅ Proxy response:', proxyRes.statusCode, proxyRes.headers['content-type']);
+          proxy.on("proxyRes", (proxyRes) => {
+            console.log(
+              "✅ Proxy response:",
+              proxyRes.statusCode,
+              proxyRes.headers["content-type"]
+            );
           });
         },
       },
-      
-      '/getApprovedGaonListWithCodeByBlock': {
-        target: 'http://localhost:8000',
+
+      "/getApprovedGaonListWithCodeByBlock": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log('🔄 Proxying getApprovedGaonList:', req.url);
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying getApprovedGaonList:", req.url);
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // Sachiv-specific endpoints
-      '/getGaonBySabha': {
-        target: 'http://localhost:8000',
+      "/getGaonBySabha": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/getGaonData': {
-        target: 'http://localhost:8000',
+      "/getGaonData": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/sachivApprove': {
-        target: 'http://localhost:8000',
+      "/sachivApprove": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/update-and-insert': {
-        target: 'http://localhost:8000',
+      "/update-and-insert": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/approveFamilySachiv': {
-        target: 'http://localhost:8000',
+      "/approveFamilySachiv": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/rejectFamilySachiv': {
-        target: 'http://localhost:8000',
+      "/rejectFamilySachiv": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/getPDFPage': {
-        target: 'http://localhost:8000',
+      "/getPDFPage": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/downloadGaonSachiv': {
-        target: 'http://localhost:8000',
+      "/downloadGaonSachiv": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/resetPassword': {
-        target: 'http://localhost:8000',
+      "/resetPassword": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/ajax_logout': {
-        target: 'http://localhost:8000',
+      "/ajax_logout": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // HQ Dashboard endpoints
-      '/district_download_api': {
-        target: 'http://localhost:8000',
+      "/district_download_api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
-          proxy.on('proxyRes', (proxyRes) => {
-            const setCookie = proxyRes.headers['set-cookie'];
+          proxy.on("proxyRes", (proxyRes) => {
+            const setCookie = proxyRes.headers["set-cookie"];
             if (setCookie) {
-              proxyRes.headers['set-cookie'] = setCookie;
+              proxyRes.headers["set-cookie"] = setCookie;
             }
           });
         },
       },
-      '/district_overview_api': {
-        target: 'http://localhost:8000',
+      "/district_overview_api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/district_target_report_api': {
-        target: 'http://localhost:8000',
+      "/district_target_report_api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/district_report_api': {
-        target: 'http://localhost:8000',
+      "/district_report_api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/download_district_report_api': {
-        target: 'http://localhost:8000',
+      "/download_district_report_api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            console.log('🔄 Proxying download:', req.url);
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying download:", req.url);
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
-          proxy.on('proxyRes', (proxyRes, req) => {
-            console.log('✅ Download response:', proxyRes.statusCode, proxyRes.headers['content-type']);
+          proxy.on("proxyRes", (proxyRes, req) => {
+            console.log(
+              "✅ Download response:",
+              proxyRes.statusCode,
+              proxyRes.headers["content-type"]
+            );
           });
         },
       },
-      '/download_block_target_report_api': {
-        target: 'http://localhost:8000',
+      "/download_block_target_report_api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
-            }
-          });
-        },
-      },
-      '/block_target_report_api': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-        secure: false,
-        configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/block_target_report_download': {
-        target: 'http://localhost:8000',
+      "/block_target_report_api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/verification_status_api': {
-        target: 'http://localhost:8000',
+      "/block_target_report_download": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/getZila': {
-        target: 'http://localhost:8000',
+      "/verification_status_api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/csrf': {
-        target: 'http://localhost:8000',
+      "/getZila": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
-          proxy.on('proxyRes', (proxyRes) => {
-            const setCookie = proxyRes.headers['set-cookie'];
+        },
+      },
+      "/csrf": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+          proxy.on("proxyRes", (proxyRes) => {
+            const setCookie = proxyRes.headers["set-cookie"];
             if (setCookie) {
-              proxyRes.headers['set-cookie'] = setCookie;
+              proxyRes.headers["set-cookie"] = setCookie;
             }
           });
         },
       },
-      '/logout': {
-        target: 'http://localhost:8000',
+      "/logout": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/force_logout': {
-        target: 'http://localhost:8000',
+      "/force_logout": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/api': {
-        target: 'http://localhost:8000',
+      "/api": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
-          proxy.on('proxyRes', (proxyRes) => {
-            const setCookie = proxyRes.headers['set-cookie'];
+          proxy.on("proxyRes", (proxyRes) => {
+            const setCookie = proxyRes.headers["set-cookie"];
             if (setCookie) {
-              proxyRes.headers['set-cookie'] = setCookie;
+              proxyRes.headers["set-cookie"] = setCookie;
             }
           });
         },
@@ -438,415 +450,413 @@ export default defineConfig({
       // ========== PROJECT MONITORING ENDPOINTS ==========
 
       // Digitisation Status Tables
-      '/digitisationStatusTbl': {
-        target: 'http://localhost:8000',
+      "/digitisationStatusTbl": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/digitisationStatusTblByZila': {
-        target: 'http://localhost:8000',
+      "/digitisationStatusTblByZila": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      
+
       // Date Range Entry Report
-      '/downloadEntryDoneInRange': {
-        target: 'http://localhost:8000',
+      "/downloadEntryDoneInRange": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // Takeover/Handover Summary
-      '/downloadTakeoverHandoverSummary': {
-        target: 'http://localhost:8000',
+      "/downloadTakeoverHandoverSummary": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // Master Digitisation Report
-      '/download_master_digitisation_report': {
-        target: 'http://localhost:8000',
+      "/download_master_digitisation_report": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
-
-      
-      '/adminProjectMonitoringCards': {
-        target: 'http://localhost:8000',
+      "/adminProjectMonitoringCards": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/adminProjectMonitoringTbls': {
-        target: 'http://localhost:8000',
+      "/adminProjectMonitoringTbls": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/downloadDistrictReport': {
-        target: 'http://localhost:8000',
+      "/downloadDistrictReport": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/downloadBlockReport': {
-        target: 'http://localhost:8000',
+      "/downloadBlockReport": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // ========== OPERATOR MONITORING ENDPOINTS ==========
-      '/adminOpMonitoringCards': {
-        target: 'http://localhost:8000',
+      "/adminOpMonitoringCards": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/get_operator_family_counts_monthly': {
-        target: 'http://localhost:8000',
+      "/get_operator_family_counts_monthly": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/get_operator_family_counts_today': {
-        target: 'http://localhost:8000',
+      "/get_operator_family_counts_today": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/getOperatorsByZila': {
-        target: 'http://localhost:8000',
+      "/getOperatorsByZila": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/get_operator_monthly_entries_summary': {
-        target: 'http://localhost:8000',
+      "/get_operator_monthly_entries_summary": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/download_operator_family_counts_monthly': {
-        target: 'http://localhost:8000',
+      "/download_operator_family_counts_monthly": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/download_operator_family_counts_today': {
-        target: 'http://localhost:8000',
+      "/download_operator_family_counts_today": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/download_operator_monthly_entries_summary': {
-        target: 'http://localhost:8000',
+      "/download_operator_monthly_entries_summary": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
 
       // ========== DATA MONITORING ENDPOINTS ==========
-      '/adminDataMonitoringCards': {
-        target: 'http://localhost:8000',
+      "/adminDataMonitoringCards": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/pDFOverviewTbl': {
-        target: 'http://localhost:8000',
+      "/pDFOverviewTbl": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/blockFamilyCount': {
-        target: 'http://localhost:8000',
+      "/blockFamilyCount": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/vilFamilyCount': {
-        target: 'http://localhost:8000',
+      "/vilFamilyCount": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/downloadPDFZipNew': {
-        target: 'http://localhost:8000',
+      "/downloadPDFZipNew": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/get_supervisor_family_counts_today': {
-        target: 'http://localhost:8000',
+      "/get_supervisor_family_counts_today": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/getSupsByZila': {
-        target: 'http://localhost:8000',
+      "/getSupsByZila": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/get_supervisor_monthly_entries_summary': {
-        target: 'http://localhost:8000',
+      "/get_supervisor_monthly_entries_summary": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/downloadDistFamilyCount': {
-        target: 'http://localhost:8000',
+      "/downloadDistFamilyCount": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/downloadBlockFamilyCount': {
-        target: 'http://localhost:8000',
+      "/downloadBlockFamilyCount": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/downloadVilFamilyCount': {
-        target: 'http://localhost:8000',
+      "/downloadVilFamilyCount": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/download_supervisor_family_counts_today': {
-        target: 'http://localhost:8000',
+      "/download_supervisor_family_counts_today": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/download_supervisor_monthly_entries_summary': {
-        target: 'http://localhost:8000',
+      "/download_supervisor_monthly_entries_summary": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/download_supervisor_excel_report': {
-        target: 'http://localhost:8000',
+      "/download_supervisor_excel_report": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/downloadDigitisationStatusTblByZila': {
-        target: 'http://localhost:8000',
+      "/downloadDigitisationStatusTblByZila": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
-      '/get_gaon_family_counts': {
-        target: 'http://localhost:8000',
+      "/get_gaon_family_counts": {
+        target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
             if (req.headers.cookie) {
-              proxyReq.setHeader('Cookie', req.headers.cookie);
+              proxyReq.setHeader("Cookie", req.headers.cookie);
             }
           });
         },
       },
     },
   },
-})
+});

@@ -127,7 +127,7 @@ const PMDashboard = () => {
   const handleLogout = (e) => {
     e.preventDefault();
     if (window.confirm('Are you sure you want to logout?')) {
-      window.location.href = '/logout/';
+      window.location.href = '/login/';
     }
   };
 
@@ -244,7 +244,7 @@ const PMDashboard = () => {
 
         {/* Logout */}
         <div className="logout" style={{ borderRadius: '2em' }}>
-          <a href="/logout/" onClick={handleLogout}>
+          <a href="/login/" onClick={handleLogout}>
             <i className="icon"><i className="fas fa-sign-out-alt"></i></i>
             <span>Logout</span>
           </a>

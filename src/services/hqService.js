@@ -91,8 +91,20 @@ const hqService = {
     }
   },
 
-  // Get District Details by Code - cache for 3 minutes
-  getDistrictDetails: async (districtCode) => {
+  // Get District Details - accepts name or code - cache for 3 minutes
+  getDistrictDetails: async (districtIdentifier) => {
+    // If it's a district name, get the code first
+    let districtCode = districtIdentifier;
+    
+    if (isNaN(districtIdentifier)) {
+      const zilaList = await hqService.getZilaList();
+      const district = zilaList.find(d => d.zila === districtIdentifier);
+      if (!district) {
+        throw new Error(`District not found: ${districtIdentifier}`);
+      }
+      districtCode = district.zilaCode;
+    }
+    
     const cacheKey = `districtDetails_${districtCode}`;
     const cached = cache.get(cacheKey, 180000); // 3 minutes
     if (cached) {

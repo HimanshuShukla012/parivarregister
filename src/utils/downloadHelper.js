@@ -4,10 +4,14 @@
 export const downloadFile = async (url, filename, options = {}) => {
   try {
     console.log('🔽 Starting download:', { url, filename });
+    console.log('🍪 Current cookies:', document.cookie); // Debug: Check if cookies exist
 
     const response = await fetch(url, {
       method: 'GET',
-      credentials: 'include',
+      credentials: 'include', // ✅ Send cookies with request
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+      },
       ...options
     });
 
@@ -21,6 +25,12 @@ export const downloadFile = async (url, filename, options = {}) => {
       // If error response is JSON
       if (contentType && contentType.includes('application/json')) {
         const errorData = await response.json();
+        
+        // Special handling for auth errors
+        if (response.status === 401) {
+          throw new Error('Session expired. Please refresh the page and log in again.');
+        }
+        
         throw new Error(errorData.error || 'Download failed');
       }
       
@@ -33,12 +43,11 @@ export const downloadFile = async (url, filename, options = {}) => {
     const contentType = response.headers.get('Content-Type');
     console.log('📦 Content-Type:', contentType);
 
-    // Check if we got HTML instead of a file (proxy not configured)
+    // Check if we got HTML instead of a file
     if (contentType && contentType.includes('text/html')) {
       const text = await response.text();
       console.error('⚠️ Received HTML instead of file. First 500 chars:', text.substring(0, 500));
       
-      // Check if it's the Vite dev server HTML
       if (text.includes('/@vite/client') || text.includes('type="module"')) {
         throw new Error(
           'API request not reaching Django backend. Please check:\n' +
@@ -78,7 +87,6 @@ export const downloadFile = async (url, filename, options = {}) => {
       const expectedType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
       if (blob.type && !blob.type.includes(expectedType) && !blob.type.includes('application/octet-stream')) {
         console.warn('⚠️ Unexpected blob type:', blob.type);
-        // Continue anyway - some servers send generic types
       }
     }
 

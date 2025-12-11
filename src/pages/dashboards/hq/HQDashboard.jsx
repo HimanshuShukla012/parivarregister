@@ -60,23 +60,35 @@ const HQDashboard = () => {
     }
   };
 
-  const handleDistrictClick = async (districtCode) => {
+  const handleDistrictClick = async (districtIdentifier) => {
     try {
-      console.log('🔍 Fetching details for district code:', districtCode);
+      console.log('🔍 Fetching details for district:', districtIdentifier);
       
-      const details = await hqService.getDistrictDetails(districtCode);
+      // Get district details from API
+      const details = await hqService.getDistrictDetails(districtIdentifier);
       
       console.log('✅ Received district details:', details);
       
+      // Ensure zilaCode is present - fallback to overview data if needed
       if (!details.zilaCode) {
-        details.zilaCode = districtCode;
+        const overviewDistrict = districtOverview.find(
+          d => d.district === districtIdentifier || d.zilaCode === districtIdentifier
+        );
+        
+        if (overviewDistrict && overviewDistrict.zilaCode) {
+          details.zilaCode = overviewDistrict.zilaCode;
+          console.log('✅ Added zilaCode from overview:', details.zilaCode);
+        } else {
+          details.zilaCode = districtIdentifier;
+          console.warn('⚠️ Using identifier as zilaCode:', districtIdentifier);
+        }
       }
       
       setDistrictDetails(details);
-      setSelectedDistrict(districtCode);
+      setSelectedDistrict(districtIdentifier);
     } catch (error) {
       console.error('❌ Error loading district details:', error);
-      alert('Failed to load district details');
+      alert('Failed to load district details. Please try again.');
     }
   };
 
@@ -111,7 +123,7 @@ const HQDashboard = () => {
   const handleLogout = (e) => {
     e.preventDefault();
     if (window.confirm('Are you sure you want to logout?')) {
-      window.location.href = '/logout/';
+      window.location.href = '/login/';
     }
   };
 
@@ -147,7 +159,7 @@ const HQDashboard = () => {
           <div className="right-section">
             <img src="/assets/images/Kds_logo.png" alt="KDS Logo" className="kds-logo" />
             <div className="user-info">
-              <a href="/logout/" className="logout" onClick={handleLogout}>
+              <a href="/login/" className="logout" onClick={handleLogout}>
                 <i className="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
               </a>
