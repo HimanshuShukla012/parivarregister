@@ -3,10 +3,10 @@ import api from './api';
 
 const sachivService = {
   // Get villages by sabha (uses session authentication)
-getGaonBySabha: async () => {
-  const response = await api.get('/getGaonBySabha/');
-  return response.data;
-},
+  getGaonBySabha: async () => {
+    const response = await api.get('/getGaonBySabha/');
+    return response.data;
+  },
 
   // Get village data by gaon code
   getGaonData: async (gaonCode) => {
@@ -40,11 +40,21 @@ getGaonBySabha: async () => {
     return response.data;
   },
 
-  // View PDF page
+  // View PDF page - FIXED to use absolute URL
   viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
-    let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+    // Use absolute URL to PDF server instead of relative path
+    const baseUrl = 'https://parivarregister.kdsgroup.co.in';
+    let url = `${baseUrl}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
     if (fromPage) url += `&fromPage=${fromPage}`;
     if (toPage) url += `&toPage=${toPage}`;
+    
+    console.log('🔍 Opening PDF URL:', url);
+    
+    // Note: This opens in a new tab. The PDF server needs to accept 
+    // requests from your Netlify domain. If you get CORS errors,
+    // you'll need to either:
+    // 1. Add your domain to PDF server's CORS whitelist
+    // 2. Or proxy through your API
     window.open(url, '_blank');
   },
 
