@@ -1,22 +1,22 @@
 // src/pages/dashboards/pm/PMDashboard.jsx
-import { useState, useEffect } from 'react';
-import hqService from '../../../services/hqService';
-import DistrictOverviewCards from '../../../components/hq/DistrictOverviewCards';
-import DistrictDetailsView from '../../../components/hq/DistrictDetailsView';
-import DistrictReportTable from '../../../components/hq/DistrictReportTable';
-import VerificationStatusCards from '../../../components/hq/VerificationStatusCards';
-import VerifyDataEntryForm from '../../../components/hq/VerifyDataEntryForm';
-import GaonDataTable from '../../../components/hq/GaonDataTable';
-import BlockReportView from '../../../components/hq/BlockReportView';
-import ProjectMonitoringView from '../../../components/pm/ProjectMonitoringView';
-import OperatorMonitoringView from '../../../components/pm/OperatorMonitoringView';
-import DataMonitoringView from '../../../components/pm/DataMonitoringView';
-import PMApprovalRollback from '../../../components/pm/ApprovalRollback';
-import '../../../assets/styles/pages/pm.css';
+import { useState, useEffect } from "react";
+import hqService from "../../../services/hqService";
+import DistrictOverviewCards from "../../../components/hq/DistrictOverviewCards";
+import DistrictDetailsView from "../../../components/hq/DistrictDetailsView";
+import DistrictReportTable from "../../../components/hq/DistrictReportTable";
+import VerificationStatusCards from "../../../components/hq/VerificationStatusCards";
+import VerifyDataEntryForm from "../../../components/hq/VerifyDataEntryForm";
+import GaonDataTable from "../../../components/hq/GaonDataTable";
+import BlockReportView from "../../../components/hq/BlockReportView";
+import ProjectMonitoringView from "../../../components/pm/ProjectMonitoringView";
+import OperatorMonitoringView from "../../../components/pm/OperatorMonitoringView";
+import DataMonitoringView from "../../../components/pm/DataMonitoringView";
+import PMApprovalRollback from "../../../components/pm/ApprovalRollback";
+import "../../../assets/styles/pages/pm.css";
 
 const PMDashboard = () => {
   const [loading, setLoading] = useState(true);
-  const [activeView, setActiveView] = useState('project-monitoring');
+  const [activeView, setActiveView] = useState("project-monitoring");
   const [zilaList, setZilaList] = useState([]);
   const [districtOverview, setDistrictOverview] = useState([]);
   const [districtReport, setDistrictReport] = useState([]);
@@ -25,7 +25,8 @@ const PMDashboard = () => {
   const [districtDetails, setDistrictDetails] = useState(null);
   const [gaonData, setGaonData] = useState([]);
   const [showGaonData, setShowGaonData] = useState(false);
-  const [selectedDistrictForBlocks, setSelectedDistrictForBlocks] = useState(null);
+  const [selectedDistrictForBlocks, setSelectedDistrictForBlocks] =
+    useState(null);
   const [blockData, setBlockData] = useState([]);
   const [showBlockReport, setShowBlockReport] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -59,24 +60,25 @@ const PMDashboard = () => {
         hqService.getZilaList(),
         hqService.getDistrictOverview(),
         hqService.getDistrictReport(),
-        hqService.getVerificationStatus()
+        hqService.getVerificationStatus(),
       ]);
 
       setZilaList(zilas);
-      
-      const reportMap = new Map(report.map(r => [r.district, r]));
-      const mergedOverview = overview.map(district => ({
+
+      const reportMap = new Map(report.map((r) => [r.district, r]));
+      const mergedOverview = overview.map((district) => ({
         ...district,
-        data_entry_done: reportMap.get(district.district)?.families_data_entry_done || 0,
-        sachiv_verified: reportMap.get(district.district)?.sachiv_verified || 0
+        data_entry_done:
+          reportMap.get(district.district)?.families_data_entry_done || 0,
+        sachiv_verified: reportMap.get(district.district)?.sachiv_verified || 0,
       }));
-      
+
       setDistrictOverview(mergedOverview);
       setDistrictReport(report);
       setVerificationStatus(verification);
     } catch (error) {
-      console.error('Error initializing dashboard:', error);
-      alert('Failed to load dashboard data');
+      console.error("Error initializing dashboard:", error);
+      alert("Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -91,8 +93,8 @@ const PMDashboard = () => {
       setDistrictDetails(details);
       setSelectedDistrict(districtCode);
     } catch (error) {
-      console.error('Error loading district details:', error);
-      alert('Failed to load district details');
+      console.error("Error loading district details:", error);
+      alert("Failed to load district details");
     }
   };
 
@@ -113,8 +115,8 @@ const PMDashboard = () => {
       setSelectedDistrictForBlocks(districtName);
       setShowBlockReport(true);
     } catch (error) {
-      console.error('Error loading block data:', error);
-      alert('Failed to load block data');
+      console.error("Error loading block data:", error);
+      alert("Failed to load block data");
     }
   };
 
@@ -126,8 +128,8 @@ const PMDashboard = () => {
 
   const handleLogout = (e) => {
     e.preventDefault();
-    if (window.confirm('Are you sure you want to logout?')) {
-      window.location.href = '/login/';
+    if (window.confirm("Are you sure you want to logout?")) {
+      window.location.href = "/";
     }
   };
 
@@ -137,9 +139,14 @@ const PMDashboard = () => {
         <div className="text-center">
           <div className="relative w-20 h-20 mx-auto mb-6">
             <div className="absolute inset-0 border-4 border-transparent border-t-blue-500 border-r-blue-500 rounded-full animate-spin"></div>
-            <div className="absolute inset-2 border-4 border-transparent border-b-cyan-400 border-l-cyan-400 rounded-full animate-spin" style={{ animationDirection: 'reverse' }}></div>
+            <div
+              className="absolute inset-2 border-4 border-transparent border-b-cyan-400 border-l-cyan-400 rounded-full animate-spin"
+              style={{ animationDirection: "reverse" }}
+            ></div>
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2">Loading Dashboard</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">
+            Loading Dashboard
+          </h2>
           <p className="text-slate-400 text-sm">Preparing your data...</p>
         </div>
       </div>
@@ -149,13 +156,19 @@ const PMDashboard = () => {
   return (
     <div className="pm-dashboard-wrapper">
       {/* Sidebar */}
-      <div className={`pm-sidebar ${sidebarCollapsed ? 'hidden' : ''}`}>
-        <div style={{ textAlign: 'end', paddingRight: '5px', paddingTop: '5px' }}>
-          <button className="toggleBtn" id="collapseMenu" onClick={collapseMenu}>
+      <div className={`pm-sidebar ${sidebarCollapsed ? "hidden" : ""}`}>
+        <div
+          style={{ textAlign: "end", paddingRight: "5px", paddingTop: "5px" }}
+        >
+          <button
+            className="toggleBtn"
+            id="collapseMenu"
+            onClick={collapseMenu}
+          >
             <i className="fa fa-arrow-left"></i>
           </button>
         </div>
-        
+
         <div className="sidebar-header">
           <i className="fas fa-user-circle"></i>
           <span className="title">Project Monitoring</span>
@@ -163,29 +176,49 @@ const PMDashboard = () => {
 
         {/* Dashboards Dropdown */}
         <div className="dropdown">
-          <button 
-            className="dropbtn" 
-            id="dashboardBtn" 
+          <button
+            className="dropbtn"
+            id="dashboardBtn"
             onClick={toggleDashboardDropdown}
           >
             Dashboards ▼
           </button>
-          <div className={`dropdown-content ${dashboardDropdownOpen ? 'show' : ''}`} id="dashboardDropdown">
-            <button 
-              className={`dropbtn1 ${activeView === 'project-monitoring' ? 'active' : ''}`}
-              onClick={() => { setActiveView('project-monitoring'); setActive('project-monitoring'); }}
+          <div
+            className={`dropdown-content ${
+              dashboardDropdownOpen ? "show" : ""
+            }`}
+            id="dashboardDropdown"
+          >
+            <button
+              className={`dropbtn1 ${
+                activeView === "project-monitoring" ? "active" : ""
+              }`}
+              onClick={() => {
+                setActiveView("project-monitoring");
+                setActive("project-monitoring");
+              }}
             >
               Project Monitoring
             </button>
-            <button 
-              className={`dropbtn1 ${activeView === 'operator-monitoring' ? 'active' : ''}`}
-              onClick={() => { setActiveView('operator-monitoring'); setActive('operator-monitoring'); }}
+            <button
+              className={`dropbtn1 ${
+                activeView === "operator-monitoring" ? "active" : ""
+              }`}
+              onClick={() => {
+                setActiveView("operator-monitoring");
+                setActive("operator-monitoring");
+              }}
             >
               Operator Monitoring
             </button>
-            <button 
-              className={`dropbtn1 ${activeView === 'data-monitoring' ? 'active' : ''}`}
-              onClick={() => { setActiveView('data-monitoring'); setActive('data-monitoring'); }}
+            <button
+              className={`dropbtn1 ${
+                activeView === "data-monitoring" ? "active" : ""
+              }`}
+              onClick={() => {
+                setActiveView("data-monitoring");
+                setActive("data-monitoring");
+              }}
             >
               Data Monitoring & Management
             </button>
@@ -194,9 +227,11 @@ const PMDashboard = () => {
 
         {/* HQ Dashboard */}
         <div className="dropdown">
-          <button 
-            className={`dropbtn ${activeView === 'hq-dashboard' ? 'active' : ''}`}
-            onClick={() => setActiveView('hq-dashboard')}
+          <button
+            className={`dropbtn ${
+              activeView === "hq-dashboard" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("hq-dashboard")}
           >
             HQ Dashboard
           </button>
@@ -204,9 +239,11 @@ const PMDashboard = () => {
 
         {/* Sachiv Validation - NEW ADDITION */}
         <div className="dropdown">
-          <button 
-            className={`dropbtn ${activeView === 'sachiv-validation' ? 'active' : ''}`}
-            onClick={() => setActiveView('sachiv-validation')}
+          <button
+            className={`dropbtn ${
+              activeView === "sachiv-validation" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("sachiv-validation")}
           >
             Sachiv Validation
           </button>
@@ -214,9 +251,11 @@ const PMDashboard = () => {
 
         {/* Approval Status */}
         <div className="dropdown">
-          <button 
-            className={`dropbtn ${activeView === 'approval-status' ? 'active' : ''}`}
-            onClick={() => setActiveView('approval-status')}
+          <button
+            className={`dropbtn ${
+              activeView === "approval-status" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("approval-status")}
           >
             Approval Status
           </button>
@@ -224,9 +263,11 @@ const PMDashboard = () => {
 
         {/* Live Data Entries */}
         <div className="dropdown">
-          <button 
-            className={`dropbtn ${activeView === 'live-entries' ? 'active' : ''}`}
-            onClick={() => setActiveView('live-entries')}
+          <button
+            className={`dropbtn ${
+              activeView === "live-entries" ? "active" : ""
+            }`}
+            onClick={() => setActiveView("live-entries")}
           >
             Live Data Entries
           </button>
@@ -234,68 +275,81 @@ const PMDashboard = () => {
 
         {/* Raw Data */}
         <div className="dropdown">
-          <button 
-            className={`dropbtn ${activeView === 'raw-data' ? 'active' : ''}`}
-            onClick={() => setActiveView('raw-data')}
+          <button
+            className={`dropbtn ${activeView === "raw-data" ? "active" : ""}`}
+            onClick={() => setActiveView("raw-data")}
           >
             Raw Data
           </button>
         </div>
 
         {/* Logout */}
-        <div className="logout" style={{ borderRadius: '2em' }}>
-          <a href="/login/" onClick={handleLogout}>
-            <i className="icon"><i className="fas fa-sign-out-alt"></i></i>
+        <div className="logout" style={{ borderRadius: "2em" }}>
+          <a href="/" onClick={handleLogout}>
+            <i className="icon">
+              <i className="fas fa-sign-out-alt"></i>
+            </i>
             <span>Logout</span>
           </a>
         </div>
       </div>
 
       {/* Toggle button for collapsed sidebar */}
-      <button 
-        id="openMenu" 
-        className={`toggleBtn ${sidebarCollapsed ? '' : 'hidden'}`} 
+      <button
+        id="openMenu"
+        className={`toggleBtn ${sidebarCollapsed ? "" : "hidden"}`}
         onClick={openMenu}
       >
         <i className="fa fa-arrow-right"></i>
       </button>
 
       {/* Main Content */}
-      <div className={`pm-content ${sidebarCollapsed ? 'full-width' : ''}`} id="content">
+      <div
+        className={`pm-content ${sidebarCollapsed ? "full-width" : ""}`}
+        id="content"
+      >
         <div className="pm-header-top">
           <div className="header-content">
             <div className="logo-section">
-              <img src="/assets/images/Department_Logo.png" alt="Panchayati Raj Logo" className="logo-img" />
+              <img
+                src="/assets/images/Department_Logo.png"
+                alt="Panchayati Raj Logo"
+                className="logo-img"
+              />
               <div className="title-section">
                 <h1>पंचायती राज मंत्रालय</h1>
                 <h2>Ministry of Panchayati Raj</h2>
               </div>
             </div>
             <div className="right-section">
-              <img src="/assets/images/Kds_logo.png" alt="KDS Logo" className="kds-logo" />
+              <img
+                src="/assets/images/Kds_logo.png"
+                alt="KDS Logo"
+                className="kds-logo"
+              />
             </div>
           </div>
         </div>
 
         <div className="main-content">
           {/* Project Monitoring */}
-          {activeView === 'project-monitoring' && (
+          {activeView === "project-monitoring" && (
             <>
               <h1 className="page-title">Project Monitoring Dashboard</h1>
               <ProjectMonitoringView />
             </>
           )}
-          
+
           {/* Operator Monitoring */}
-          {activeView === 'operator-monitoring' && (
+          {activeView === "operator-monitoring" && (
             <>
               <h1 className="page-title">Operator Monitoring</h1>
               <OperatorMonitoringView zilaList={zilaList} />
             </>
           )}
-          
+
           {/* Data Monitoring */}
-          {activeView === 'data-monitoring' && (
+          {activeView === "data-monitoring" && (
             <>
               <h1 className="page-title">Data Monitoring & Management</h1>
               <DataMonitoringView zilaList={zilaList} />
@@ -303,20 +357,22 @@ const PMDashboard = () => {
           )}
 
           {/* Sachiv Validation - NEW SECTION */}
-          {activeView === 'sachiv-validation' && (
+          {activeView === "sachiv-validation" && (
             <>
               <h1 className="page-title">Data Approvals & Rollback</h1>
               <PMApprovalRollback />
             </>
           )}
-          
+
           {/* HQ Dashboard */}
-          {activeView === 'hq-dashboard' && (
+          {activeView === "hq-dashboard" && (
             <>
-              <h1 className="page-title">Parivar Register Digitization System</h1>
-              
+              <h1 className="page-title">
+                Parivar Register Digitization System
+              </h1>
+
               {showBlockReport ? (
-                <BlockReportView 
+                <BlockReportView
                   districtName={selectedDistrictForBlocks}
                   blockData={blockData}
                   onClose={handleCloseBlockView}
@@ -324,26 +380,26 @@ const PMDashboard = () => {
               ) : (
                 <>
                   {!selectedDistrict ? (
-                    <DistrictOverviewCards 
-                      districts={districtOverview} 
+                    <DistrictOverviewCards
+                      districts={districtOverview}
                       onDistrictClick={handleDistrictClick}
                     />
                   ) : (
-                    <DistrictDetailsView 
+                    <DistrictDetailsView
                       district={districtDetails}
                       onBack={handleBackToOverview}
                     />
                   )}
 
-                  <DistrictReportTable 
-                    data={districtReport} 
+                  <DistrictReportTable
+                    data={districtReport}
                     onDistrictClick={handleDistrictClickForBlocks}
                   />
 
                   <VerificationStatusCards status={verificationStatus} />
 
-                  <VerifyDataEntryForm 
-                    zilaList={zilaList} 
+                  <VerifyDataEntryForm
+                    zilaList={zilaList}
                     onGaonDataLoad={handleGaonDataLoad}
                   />
 
@@ -352,19 +408,19 @@ const PMDashboard = () => {
               )}
             </>
           )}
-          
+
           {/* Approval Status */}
-          {activeView === 'approval-status' && (
+          {activeView === "approval-status" && (
             <div className="page-title">Approval Status - Coming Soon</div>
           )}
-          
+
           {/* Live Entries */}
-          {activeView === 'live-entries' && (
+          {activeView === "live-entries" && (
             <div className="page-title">Live Data Entries - Coming Soon</div>
           )}
-          
+
           {/* Raw Data */}
-          {activeView === 'raw-data' && (
+          {activeView === "raw-data" && (
             <div className="page-title">Raw Data - Coming Soon</div>
           )}
         </div>
