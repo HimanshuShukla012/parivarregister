@@ -79,7 +79,7 @@ export default defineConfig({
 
       // Get Register PDF
       "/getRegisterPDF": {
-        target: "https://register.kdsgroup.co.in",
+        target: "https://parivarregister.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -203,7 +203,7 @@ export default defineConfig({
         },
       },
       "/getPDFPage": {
-        target: "https://register.kdsgroup.co.in",
+        target: "https://parivarregister.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -714,7 +714,7 @@ export default defineConfig({
         },
       },
       "/downloadPDFZipNew": {
-        target: "https://register.kdsgroup.co.in",
+        target: "https://parivarregister.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -851,6 +851,192 @@ export default defineConfig({
         secure: false,
         configure: (proxy) => {
           proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      // Add these proxy configurations to your existing vite.config.js
+
+      // Inside the server.proxy object, add these new endpoints:
+
+      // ========== PM APPROVAL/ROLLBACK ENDPOINTS - ADD THESE ==========
+      "/getRejectedGaonList_": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying getRejectedGaonList_:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+          proxy.on("proxyRes", (proxyRes, req, res) => {
+            console.log(
+              "✅ Response:",
+              proxyRes.statusCode,
+              proxyRes.headers["content-type"]
+            );
+
+            // Log error responses for debugging
+            if (proxyRes.statusCode >= 400) {
+              let body = "";
+              proxyRes.on("data", (chunk) => {
+                body += chunk;
+              });
+              proxyRes.on("end", () => {
+                console.error("❌ Error Response Body:", body);
+              });
+            }
+          });
+          proxy.on("error", (err, req, res) => {
+            console.error("❌ Proxy Error:", err);
+          });
+        },
+      },
+
+      "/getRejectedByGaonCode": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying getRejectedByGaonCode:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/get_supervisors_desu": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying get_supervisors_desu:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/assignSupervisorToRejectedFamilies": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log(
+              "🔄 Proxying assignSupervisorToRejectedFamilies:",
+              req.url
+            );
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/getAssignedRejectedDataBySupervisor": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log(
+              "🔄 Proxying getAssignedRejectedDataBySupervisor:",
+              req.url
+            );
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/get_updated_rejected_families": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying get_updated_rejected_families:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/get_updated_rejected_gaon": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying get_updated_rejected_gaon:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/bulk-approve-rejected-families": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying bulk-approve-rejected-families:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/approve-rejected-family": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying approve-rejected-family:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/get_approved_gaon_codes": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying get_approved_gaon_codes:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+      "/get_all_approved_by_pm_data": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying get_all_approved_by_pm_data:", req.url);
             if (req.headers.cookie) {
               proxyReq.setHeader("Cookie", req.headers.cookie);
             }

@@ -17,7 +17,7 @@ const HQDashboard = () => {
   const [districtOverview, setDistrictOverview] = useState([]);
   const [districtReport, setDistrictReport] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null); 
   const [districtDetails, setDistrictDetails] = useState(null);
   const [gaonData, setGaonData] = useState([]);
   const [showGaonData, setShowGaonData] = useState(false);
@@ -28,6 +28,16 @@ const HQDashboard = () => {
   useEffect(() => {
     initDashboard();
   }, []);
+
+  useEffect(() => {
+  // Add class to body for HQ-specific styles
+  document.body.classList.add('hq-page');
+  
+  // Cleanup on unmount
+  return () => {
+    document.body.classList.remove('hq-page');
+  };
+}, []);
 
   const initDashboard = async () => {
     setLoading(true);
@@ -128,23 +138,25 @@ const HQDashboard = () => {
   };
 
   if (loading) {
-    return (
-      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center z-50">
-        <div className="text-center">
-          <div className="relative w-20 h-20 mx-auto mb-6">
-            <div className="absolute inset-0 border-4 border-transparent border-t-blue-500 border-r-blue-500 rounded-full animate-spin"></div>
-            <div className="absolute inset-2 border-4 border-transparent border-b-cyan-400 border-l-cyan-400 rounded-full animate-spin" style={{ animationDirection: 'reverse' }}></div>
-          </div>
-          
-          <h2 className="text-xl font-semibold text-white mb-2">Loading Dashboard</h2>
-          <p className="text-slate-400 text-sm">Preparing your data...</p>
+  return (
+      <div className="hq-dashboard hq-page">
+      <div className="hq-loading-screen">      
+      <div className="text-center">
+        <div className="relative w-20 h-20 mx-auto mb-6">
+          <div className="absolute inset-0 border-4 border-transparent border-t-blue-500 border-r-blue-500 rounded-full animate-spin"></div>
+          <div className="absolute inset-2 border-4 border-transparent border-b-cyan-400 border-l-cyan-400 rounded-full animate-spin" style={{ animationDirection: 'reverse' }}></div>
         </div>
+        
+        <h2 className="text-xl font-semibold text-white mb-2">Loading Dashboard</h2>
+        <p className="text-slate-400 text-sm">Preparing your data...</p>
       </div>
-    );
-  }
+    </div>
+    </div>
+  );
+}
 
   return (
-    <div>
+  <div className="hq-dashboard hq-page">
       {/* Header */}
       <div className="header">
         <div className="header-content">

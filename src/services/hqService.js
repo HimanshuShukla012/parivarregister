@@ -179,7 +179,7 @@ const hqService = {
     }
   },
 
-  // Get Blocks by Zila - cache for 5 minutes per zila
+ // Get Blocks by Zila - cache for 5 minutes per zila
   getBlocksByZila: async (zila) => {
     const cacheKey = `blocks_${zila}`;
     const cached = cache.get(cacheKey, 300000); // 5 minutes
@@ -197,14 +197,18 @@ const hqService = {
         dataType: typeof response.data,
         isArray: Array.isArray(response.data),
         length: response.data?.length,
+        firstBlock: response.data?.[0],
         data: response.data
       });
       
-      // FIX: Ensure we always return an array
+      // FIX: Ensure we always return an array with proper structure
       let blocks = [];
       
       if (Array.isArray(response.data)) {
-        blocks = response.data;
+        blocks = response.data.map(block => ({
+          block: block.block || block.blockCode || 'Unknown Block',
+          blockCode: block.blockCode || block.block || null
+        }));
       } else if (response.data && typeof response.data === 'object') {
         // Check if data is wrapped in a property
         if (Array.isArray(response.data.blocks)) {
@@ -216,7 +220,9 @@ const hqService = {
         }
       }
       
-      console.log(`✅ Processed blocks for ${zila}:`, blocks.length, 'blocks');
+      console.log(`✅ Processed blocks for ${zila}:`, blocks);
+      console.log(`📊 Total blocks found: ${blocks.length}`);
+      
       cache.set(cacheKey, blocks);
       return blocks;
     } catch (error) {
@@ -315,6 +321,97 @@ const hqService = {
         return [];
       }
       throw error;
+    }
+  },
+
+  // Get only villages where data entry has been done
+  getVillagesWithDataEntry: async (block) => {
+    const cacheKey = `villages_with_entry_${block}`;
+    const cached = cache.get(cacheKey, 180000); // 3 minutes
+    if (cached) {
+      console.log(`✅ Using cached villages with entry for ${block}`);
+      return cached;
+    }
+    
+    try {
+      console.log(`🔍 Fetching villages with data entry for block: ${block}`);
+      
+      // Get all approved gaons for this block
+      const allGaons = await hqService.getApprovedGaonListByBlock(block);
+      
+      // Filter to only include gaons that have data (non-zero entries)
+      const gaonsWithData = [];
+      
+      for (const gaon of allGaons) {
+        try {
+          // Try to fetch data for this gaon to check if table exists and has data
+          const response = await api.get(`/getGaonData/?gaon_code=${gaon.gaonCode}`);
+          
+          // If we get data back (not empty array), include this gaon
+          if (Array.isArray(response.data) && response.data.length > 0) {
+            gaonsWithData.push(gaon);
+          }
+        } catch (error) {
+          // If error (table doesn't exist or no data), skip this gaon
+          console.log(`Skipping gaon ${gaon.gaonCode} - no data found`);
+        }
+      }
+      
+      console.log(`✅ Found ${gaonsWithData.length} villages with data entry`);
+      cache.set(cacheKey, gaonsWithData);
+      return gaonsWithData;
+    } catch (error) {
+      console.error(`❌ Error fetching villages with data entry for ${block}:`, error);
+      // Fallback to all approved gaons if this fails
+      return await hqService.getApprovedGaonListByBlock(block);
+    }
+  },
+
+  // Get Villages with Data Entry Done (only villages that have entries)
+  getVillagesWithEntryByBlock: async (block) => {
+    const cacheKey = `gaonListEntry_${block}`;
+    const cached = cache.get(cacheKey, 300000); // 5 minutes
+    if (cached) {
+      console.log(`✅ Using cached gaon list with entries for ${block}`);
+      return cached;
+    }
+    
+    try {
+      console.log(`🔍 Fetching villages with entries from API for block: ${block}`);
+      // Using the filtered endpoint that only returns villages with data entry done
+      const response = await api.get(`/getApprovedGaonListWithCodeByBlock/?block=${encodeURIComponent(block)}&has_entry=true`);
+      
+      console.log('🏘️ Raw API response:', {
+        status: response.status,
+        dataType: typeof response.data,
+        isArray: Array.isArray(response.data),
+        length: response.data?.length,
+        sample: response.data?.slice(0, 2)
+      });
+      
+      // Ensure we always return an array
+      let gaons = [];
+      
+      if (Array.isArray(response.data)) {
+        gaons = response.data;
+      } else if (response.data && typeof response.data === 'object') {
+        if (Array.isArray(response.data.gaons)) {
+          gaons = response.data.gaons;
+        } else if (Array.isArray(response.data.data)) {
+          gaons = response.data.data;
+        } else if (Array.isArray(response.data.results)) {
+          gaons = response.data.results;
+        }
+      }
+      
+      console.log(`✅ Processed gaons with entries for ${block}:`, gaons.length, 'villages');
+      cache.set(cacheKey, gaons);
+      return gaons;
+    } catch (error) {
+      console.error(`❌ Error fetching gaons with entries for ${block}:`, error);
+      // Fallback to regular endpoint if has_entry filter not supported
+      console.warn('⚠️ Falling back to regular gaon list endpoint');
+      return await hqService.getApprovedGaonListByBlock(block);
     }
   },
 

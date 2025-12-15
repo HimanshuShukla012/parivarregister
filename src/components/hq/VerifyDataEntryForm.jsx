@@ -57,16 +57,17 @@ const VerifyDataEntryForm = ({ zilaList, onGaonDataLoad }) => {
   };
 
   const handleBlockChange = async (e) => {
-    const block = e.target.value;
-    setSelectedBlock(block);
-    setSelectedGaon('');
-    setGaons([]);
-    setError('');
+  const block = e.target.value;
+  setSelectedBlock(block);
+  setSelectedGaon('');
+  setGaons([]);
+  setError('');
 
-    if (block) {
-      setLoading(prev => ({ ...prev, gaons: true }));
-      try {
-        const gaonData = await hqService.getApprovedGaonListByBlock(block);
+  if (block) {
+    setLoading(prev => ({ ...prev, gaons: true }));
+    try {
+      // Use the new method that only fetches villages with data entry
+      const gaonData = await hqService.getVillagesWithDataEntry(block);
         
         // Add safety checks for gaon data
         console.log('Gaon data received:', gaonData);
@@ -203,10 +204,10 @@ const VerifyDataEntryForm = ({ zilaList, onGaonDataLoad }) => {
                   {loading.blocks ? 'Loading...' : 'Select Block'}
                 </option>
                 {Array.isArray(blocks) && blocks.map((block) => (
-                  <option key={block.block} value={block.block}>
-                    {block.block}
-                  </option>
-                ))}
+  <option key={block.blockCode || block.block} value={block.block}>
+    {block.blockCode ? `${block.blockCode} - ${block.block}` : block.block}
+  </option>
+))}
               </select>
               {loading.gaons && (
                 <small style={{ color: '#6b7280', fontSize: '12px' }}>

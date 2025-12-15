@@ -11,7 +11,7 @@ import BlockReportView from '../../../components/hq/BlockReportView';
 import ProjectMonitoringView from '../../../components/pm/ProjectMonitoringView';
 import OperatorMonitoringView from '../../../components/pm/OperatorMonitoringView';
 import DataMonitoringView from '../../../components/pm/DataMonitoringView';
-import SachivValidationView from '../../../components/pm/SachivValidationView';
+import PMApprovalRollback from '../../../components/pm/ApprovalRollback';
 import '../../../assets/styles/pages/pm.css';
 
 const PMDashboard = () => {
@@ -305,8 +305,8 @@ const PMDashboard = () => {
           {/* Sachiv Validation - NEW SECTION */}
           {activeView === 'sachiv-validation' && (
             <>
-              <h1 className="page-title">Sachiv Validation</h1>
-              <SachivValidationView />
+              <h1 className="page-title">Data Approvals & Rollback</h1>
+              <PMApprovalRollback />
             </>
           )}
           

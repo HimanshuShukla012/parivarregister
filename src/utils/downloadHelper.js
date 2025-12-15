@@ -1,51 +1,35 @@
 // src/utils/downloadHelper.js
 // Universal download utility for all Excel/file downloads
 
+import api from '../services/api';
+
 export const downloadFile = async (url, filename, options = {}) => {
   try {
     console.log('🔽 Starting download:', { url, filename });
-    console.log('🍪 Current cookies:', document.cookie); // Debug: Check if cookies exist
 
-    const response = await fetch(url, {
-      method: 'GET',
-      credentials: 'include', // ✅ Send cookies with request
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-      },
+    // ✅ USE AXIOS INSTANCE - This ensures auth headers are included
+    const response = await api.get(url, {
+      responseType: 'blob',
       ...options
     });
 
     console.log('📡 Response status:', response.status);
-    console.log('📄 Content-Type:', response.headers.get('Content-Type'));
+    console.log('📦 Content-Type:', response.headers['content-type']);
 
-    // Check if response is OK
-    if (!response.ok) {
-      const contentType = response.headers.get('Content-Type');
-      
-      // If error response is JSON
-      if (contentType && contentType.includes('application/json')) {
-        const errorData = await response.json();
-        
-        // Special handling for auth errors
-        if (response.status === 401) {
-          throw new Error('Session expired. Please refresh the page and log in again.');
-        }
-        
-        throw new Error(errorData.error || 'Download failed');
-      }
-      
-      // If error response is text
-      const errorText = await response.text();
-      throw new Error(errorText || `HTTP error! status: ${response.status}`);
+    // Get the blob
+    const blob = response.data;
+    console.log('📦 Blob size:', blob.size, 'bytes');
+    console.log('📦 Blob type:', blob.type);
+
+    // Validate blob
+    if (blob.size === 0) {
+      throw new Error('Downloaded file is empty');
     }
 
-    // Check content type
-    const contentType = response.headers.get('Content-Type');
-    console.log('📦 Content-Type:', contentType);
-
     // Check if we got HTML instead of a file
+    const contentType = response.headers['content-type'] || blob.type;
     if (contentType && contentType.includes('text/html')) {
-      const text = await response.text();
+      const text = await blob.text();
       console.error('⚠️ Received HTML instead of file. First 500 chars:', text.substring(0, 500));
       
       if (text.includes('/@vite/client') || text.includes('type="module"')) {
@@ -58,28 +42,6 @@ export const downloadFile = async (url, filename, options = {}) => {
       }
       
       throw new Error('Server returned an error page. Please check if the district data exists and try again.');
-    }
-
-    // If response is JSON (error case)
-    if (contentType && contentType.includes('application/json')) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Server returned an error');
-    }
-
-    // Get the blob
-    const blob = await response.blob();
-    console.log('📦 Blob size:', blob.size, 'bytes');
-    console.log('📦 Blob type:', blob.type);
-
-    // Validate blob
-    if (blob.size === 0) {
-      throw new Error('Downloaded file is empty');
-    }
-
-    // Additional check for HTML in blob type
-    if (blob.type && blob.type.includes('text/html')) {
-      console.error('⚠️ Blob type is HTML:', blob.type);
-      throw new Error('Server returned an HTML page instead of the expected file');
     }
 
     // For Excel files, verify it's the correct type
@@ -114,6 +76,22 @@ export const downloadFile = async (url, filename, options = {}) => {
 
   } catch (error) {
     console.error('💥 Download error:', error);
+    
+    // Better error messages
+    if (error.response) {
+      const status = error.response.status;
+      
+      if (status === 401) {
+        throw new Error('Session expired. Please refresh the page and log in again.');
+      } else if (status === 403) {
+        throw new Error('You do not have permission to download this file.');
+      } else if (status === 404) {
+        throw new Error('File not found. Please check if the data exists.');
+      } else if (status === 500) {
+        throw new Error('Server error. Please try again later.');
+      }
+    }
+    
     throw error;
   }
 };
@@ -125,5 +103,7 @@ export const createSafeFilename = (name, extension = '.xlsx') => {
     .replace(/\s+/g, '_')
     .replace(/_+/g, '_');
   
-  return `${safeName}${extension}`;
+  // Ensure extension starts with a dot
+  const ext = extension.startsWith('.') ? extension : `.${extension}`;
+  return `${safeName}${ext}`;
 };
