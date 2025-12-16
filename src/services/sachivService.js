@@ -33,26 +33,9 @@ const sachivService = {
   },
 
   // Reject family with remark
-  rejectFamilySachiv: async (id, gaonCode, remark) => {
-    const response = await api.get(
-      `/rejectFamilySachiv?id=${id}&gaonCode=${gaonCode}&remark=${encodeURIComponent(remark)}`
-    );
-    return response.data;
-  },
-
-  // View PDF page - Use proxy in development, direct URL in production
-viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
-  // In development, use the proxy. In production, use direct URL
-  const isDev = import.meta.env.DEV;
-  
-  let url;
-  if (isDev) {
-    // Development: Use Vite proxy
-    url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
-  } else {
-    // Production: Use direct URL
-    url = `https://parivarregister.kdsgroup.co.in/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
-  }
+  viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
+  // Use proxy in both dev and production
+  let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
   
   if (fromPage) url += `&fromPage=${fromPage}`;
   if (toPage) url += `&toPage=${toPage}`;
@@ -60,7 +43,6 @@ viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
   console.log('🔍 Opening PDF URL:', url);
   window.open(url, '_blank');
 },
-
   // Download gaon register
   downloadGaonSachiv: async (gaonCode) => {
     const response = await api.get(`/downloadGaonSachiv/?gaonCode=${gaonCode}`, {
