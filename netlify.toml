@@ -1,0 +1,479 @@
+# Netlify Configuration File
+
+# Build settings
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Redirect rules - Order matters! More specific rules should come first
+
+# ========== PDF SERVER ENDPOINTS ==========
+[[redirects]]
+  from = "/getPDFPage"
+  to = "https://parivarregister.kdsgroup.co.in/getPDFPage"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getRegisterPDF"
+  to = "https://parivarregister.kdsgroup.co.in/getRegisterPDF"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadPDFZipNew"
+  to = "https://parivarregister.kdsgroup.co.in/downloadPDFZipNew"
+  status = 200
+  force = true
+
+# ========== MAIN API ENDPOINTS ==========
+
+# District endpoint (must come before /district_*)
+[[redirects]]
+  from = "/district/*"
+  to = "https://register.kdsgroup.co.in/district/:splat"
+  status = 200
+  force = true
+
+# Gaon endpoints
+[[redirects]]
+  from = "/gaon"
+  to = "https://register.kdsgroup.co.in/gaon"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getGaonBySabha/*"
+  to = "https://register.kdsgroup.co.in/getGaonBySabha/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getGaonData/*"
+  to = "https://register.kdsgroup.co.in/getGaonData/:splat"
+  status = 200
+  force = true
+
+# Block and Village endpoints
+[[redirects]]
+  from = "/getBlockByZila"
+  to = "https://register.kdsgroup.co.in/getBlockByZila"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getApprovedGaonListWithCodeByBlock"
+  to = "https://register.kdsgroup.co.in/getApprovedGaonListWithCodeByBlock"
+  status = 200
+  force = true
+
+# Sachiv endpoints
+[[redirects]]
+  from = "/sachivApprove/*"
+  to = "https://register.kdsgroup.co.in/sachivApprove/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/update-and-insert/*"
+  to = "https://register.kdsgroup.co.in/update-and-insert/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/approveFamilySachiv"
+  to = "https://register.kdsgroup.co.in/approveFamilySachiv"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/rejectFamilySachiv"
+  to = "https://register.kdsgroup.co.in/rejectFamilySachiv"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadGaonSachiv/*"
+  to = "https://register.kdsgroup.co.in/downloadGaonSachiv/:splat"
+  status = 200
+  force = true
+
+# Operator endpoints
+[[redirects]]
+  from = "/opDailyEntryCount"
+  to = "https://register.kdsgroup.co.in/opDailyEntryCount"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/insertFamilyMember"
+  to = "https://register.kdsgroup.co.in/insertFamilyMember"
+  status = 200
+  force = true
+
+# Auth endpoints
+[[redirects]]
+  from = "/resetPassword/*"
+  to = "https://register.kdsgroup.co.in/resetPassword/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/ajax_logout/*"
+  to = "https://register.kdsgroup.co.in/ajax_logout/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/logout"
+  to = "https://register.kdsgroup.co.in/logout"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/force_logout"
+  to = "https://register.kdsgroup.co.in/force_logout"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/csrf"
+  to = "https://register.kdsgroup.co.in/csrf"
+  status = 200
+  force = true
+
+# HQ Dashboard endpoints
+[[redirects]]
+  from = "/district_download_api"
+  to = "https://register.kdsgroup.co.in/district_download_api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/district_overview_api"
+  to = "https://register.kdsgroup.co.in/district_overview_api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/district_target_report_api"
+  to = "https://register.kdsgroup.co.in/district_target_report_api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/district_report_api"
+  to = "https://register.kdsgroup.co.in/district_report_api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_district_report_api"
+  to = "https://register.kdsgroup.co.in/download_district_report_api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_block_target_report_api"
+  to = "https://register.kdsgroup.co.in/download_block_target_report_api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/block_target_report_api"
+  to = "https://register.kdsgroup.co.in/block_target_report_api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/block_target_report_download"
+  to = "https://register.kdsgroup.co.in/block_target_report_download"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/verification_status_api"
+  to = "https://register.kdsgroup.co.in/verification_status_api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getZila"
+  to = "https://register.kdsgroup.co.in/getZila"
+  status = 200
+  force = true
+
+# Project Monitoring endpoints
+[[redirects]]
+  from = "/digitisationStatusTbl"
+  to = "https://register.kdsgroup.co.in/digitisationStatusTbl"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/digitisationStatusTblByZila"
+  to = "https://register.kdsgroup.co.in/digitisationStatusTblByZila"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadEntryDoneInRange"
+  to = "https://register.kdsgroup.co.in/downloadEntryDoneInRange"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadTakeoverHandoverSummary"
+  to = "https://register.kdsgroup.co.in/downloadTakeoverHandoverSummary"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_master_digitisation_report"
+  to = "https://register.kdsgroup.co.in/download_master_digitisation_report"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/adminProjectMonitoringCards"
+  to = "https://register.kdsgroup.co.in/adminProjectMonitoringCards"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/adminProjectMonitoringTbls"
+  to = "https://register.kdsgroup.co.in/adminProjectMonitoringTbls"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadDistrictReport"
+  to = "https://register.kdsgroup.co.in/downloadDistrictReport"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadBlockReport"
+  to = "https://register.kdsgroup.co.in/downloadBlockReport"
+  status = 200
+  force = true
+
+# Operator Monitoring endpoints
+[[redirects]]
+  from = "/adminOpMonitoringCards"
+  to = "https://register.kdsgroup.co.in/adminOpMonitoringCards"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_operator_family_counts_monthly"
+  to = "https://register.kdsgroup.co.in/get_operator_family_counts_monthly"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_operator_family_counts_today"
+  to = "https://register.kdsgroup.co.in/get_operator_family_counts_today"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getOperatorsByZila"
+  to = "https://register.kdsgroup.co.in/getOperatorsByZila"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_operator_monthly_entries_summary"
+  to = "https://register.kdsgroup.co.in/get_operator_monthly_entries_summary"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_operator_family_counts_monthly"
+  to = "https://register.kdsgroup.co.in/download_operator_family_counts_monthly"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_operator_family_counts_today"
+  to = "https://register.kdsgroup.co.in/download_operator_family_counts_today"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_operator_monthly_entries_summary"
+  to = "https://register.kdsgroup.co.in/download_operator_monthly_entries_summary"
+  status = 200
+  force = true
+
+# Data Monitoring endpoints
+[[redirects]]
+  from = "/adminDataMonitoringCards"
+  to = "https://register.kdsgroup.co.in/adminDataMonitoringCards"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/pDFOverviewTbl"
+  to = "https://register.kdsgroup.co.in/pDFOverviewTbl"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/blockFamilyCount"
+  to = "https://register.kdsgroup.co.in/blockFamilyCount"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/vilFamilyCount"
+  to = "https://register.kdsgroup.co.in/vilFamilyCount"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_supervisor_family_counts_today"
+  to = "https://register.kdsgroup.co.in/get_supervisor_family_counts_today"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getSupsByZila"
+  to = "https://register.kdsgroup.co.in/getSupsByZila"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_supervisor_monthly_entries_summary"
+  to = "https://register.kdsgroup.co.in/get_supervisor_monthly_entries_summary"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadDistFamilyCount"
+  to = "https://register.kdsgroup.co.in/downloadDistFamilyCount"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadBlockFamilyCount"
+  to = "https://register.kdsgroup.co.in/downloadBlockFamilyCount"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadVilFamilyCount"
+  to = "https://register.kdsgroup.co.in/downloadVilFamilyCount"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_supervisor_family_counts_today"
+  to = "https://register.kdsgroup.co.in/download_supervisor_family_counts_today"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_supervisor_monthly_entries_summary"
+  to = "https://register.kdsgroup.co.in/download_supervisor_monthly_entries_summary"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_supervisor_excel_report"
+  to = "https://register.kdsgroup.co.in/download_supervisor_excel_report"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadDigitisationStatusTblByZila"
+  to = "https://register.kdsgroup.co.in/downloadDigitisationStatusTblByZila"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_gaon_family_counts"
+  to = "https://register.kdsgroup.co.in/get_gaon_family_counts"
+  status = 200
+  force = true
+
+# PM Approval/Rollback endpoints
+[[redirects]]
+  from = "/getRejectedGaonList_"
+  to = "https://register.kdsgroup.co.in/getRejectedGaonList_"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getRejectedByGaonCode"
+  to = "https://register.kdsgroup.co.in/getRejectedByGaonCode"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_supervisors_desu"
+  to = "https://register.kdsgroup.co.in/get_supervisors_desu"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/assignSupervisorToRejectedFamilies"
+  to = "https://register.kdsgroup.co.in/assignSupervisorToRejectedFamilies"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getAssignedRejectedDataBySupervisor"
+  to = "https://register.kdsgroup.co.in/getAssignedRejectedDataBySupervisor"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_updated_rejected_families"
+  to = "https://register.kdsgroup.co.in/get_updated_rejected_families"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_updated_rejected_gaon"
+  to = "https://register.kdsgroup.co.in/get_updated_rejected_gaon"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/bulk-approve-rejected-families"
+  to = "https://register.kdsgroup.co.in/bulk-approve-rejected-families"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/approve-rejected-family"
+  to = "https://register.kdsgroup.co.in/approve-rejected-family"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_approved_gaon_codes"
+  to = "https://register.kdsgroup.co.in/get_approved_gaon_codes"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_all_approved_by_pm_data"
+  to = "https://register.kdsgroup.co.in/get_all_approved_by_pm_data"
+  status = 200
+  force = true
+
+# General API catch-all (must be last)
+[[redirects]]
+  from = "/api/*"
+  to = "https://register.kdsgroup.co.in/api/:splat"
+  status = 200
+  force = true
+
+# SPA fallback - must be the very last redirect
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
