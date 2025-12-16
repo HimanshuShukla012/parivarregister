@@ -194,7 +194,7 @@ const SachivDashboard = () => {
 
   const handleViewPDF = (pdfNo, fromPage, toPage, gaonCode, familyData) => {
   // ALWAYS use relative URL - Netlify proxy will handle it
-  let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+  let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;  // No trailing slash!
   
   if (fromPage) url += `&fromPage=${fromPage}`;
   if (toPage) url += `&toPage=${toPage}`;
