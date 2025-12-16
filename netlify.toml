@@ -10,9 +10,10 @@
 # ========== PDF SERVER ENDPOINTS ==========
 [[redirects]]
   from = "/getPDFPage"
-  to = "https://parivarregister.kdsgroup.co.in/getPDFPage"
+  to = "https://parivarregister.kdsgroup.co.in/getPDFPage:splat"
   status = 200
   force = true
+  query = {pdfNo = ":pdfNo", gaonCode = ":gaonCode", fromPage = ":fromPage", toPage = ":toPage"}
 
 [[redirects]]
   from = "/getRegisterPDF"
