@@ -103,13 +103,19 @@ const VerificationTable = ({ data, onApprove, onReject, onViewPDF, onEdit, villa
                           <i className="fas fa-edit"></i>&nbsp; Edit
                         </button>
                       )}
-                      <button
-                        className="editBtn"
-                        style={{ backgroundColor: '#f59e0b', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                        onClick={() => onViewPDF(row.pdfNo, row.fromPage, row.toPage, row.gaonCode)}
-                      >
-                        <i className="fas fa-eye"></i>&nbsp; View PDF
-                      </button>
+<button
+  className="editBtn"
+  style={{ backgroundColor: '#f59e0b', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+  onClick={() => {
+    const familyData = data.filter(d => 
+      d.houseNumberNum === row.houseNumberNum && 
+      d.familyHeadName === row.familyHeadName
+    );
+    onViewPDF(row.pdfNo, row.fromPage, row.toPage, row.gaonCode, familyData);
+  }}
+>
+  <i className="fas fa-eye"></i>&nbsp; View PDF
+</button>
                       <button
   style={{ backgroundColor: '#667eea', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
   onClick={() => {

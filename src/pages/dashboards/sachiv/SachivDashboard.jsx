@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../services/api';
+
 import sachivService from '../../../services/sachivService';
 import RegisterSidebar from '../../../components/sachiv/RegisterSidebar';
 import RegisterTable from '../../../components/sachiv/RegisterTable';
@@ -10,6 +11,7 @@ import EditFamilyModal from '../../../components/sachiv/EditFamilyModal';
 import RejectRemarkModal from '../../../components/sachiv/RejectRemarkModal';
 import ChangePasswordModal from '../../../components/sachiv/ChangePasswordModal';
 import KeyLegend from '../../../components/sachiv/KeyLegend';
+import PDFFamilyViewer from '../../../components/sachiv/PDFFamilyViewer';
 import '../../../assets/styles/pages/sachiv.css';
 
 const SachivDashboard = () => {
@@ -34,6 +36,8 @@ const SachivDashboard = () => {
   const [rejectData, setRejectData] = useState({ id: null, gaonCode: null });
   const [selectedGaonForVerification, setSelectedGaonForVerification] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showPDFViewer, setShowPDFViewer] = useState(false);
+  const [pdfViewerData, setPdfViewerData] = useState({ url: null, familyData: null });
 
 
   // Calculate statistics
@@ -186,6 +190,30 @@ const SachivDashboard = () => {
     setRejectData({ id, gaonCode });
     setShowRejectModal(true);
   };
+
+
+  const handleViewPDF = (pdfNo, fromPage, toPage, gaonCode, familyData) => {
+  // In development, use the proxy. In production, use direct URL
+  const isDev = import.meta.env.DEV;
+  
+  let url;
+  if (isDev) {
+    // Development: Use Vite proxy
+    url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+  } else {
+    // Production: Use direct URL
+    url = `https://parivarregister.kdsgroup.co.in/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+  }
+  
+  if (fromPage) url += `&fromPage=${fromPage}`;
+  if (toPage) url += `&toPage=${toPage}`;
+  
+  console.log('🔍 PDF URL:', url);
+  
+  setPdfViewerData({ url, familyData });
+  setShowPDFViewer(true);
+};
+
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -365,7 +393,7 @@ const SachivDashboard = () => {
               data={gaonData}
               onApprove={handleApproveFamily}
               onReject={handleRejectFamily}
-              onViewPDF={sachivService.viewPDFPage}
+    onViewPDF={handleViewPDF}  // CHANGED: Use new handler instead
               onEdit={handleEditFamily}
               villageIndex={villages.findIndex(v => v.gaonCode === selectedVillage?.gaonCode)}
             />
@@ -420,6 +448,47 @@ const SachivDashboard = () => {
           onClose={() => setShowPasswordModal(false)}
         />
       )}
+
+      {/* ADD THIS NEW MODAL HERE */}
+{showPDFViewer && (
+  <PDFFamilyViewer
+    isOpen={showPDFViewer}
+    onClose={() => setShowPDFViewer(false)}
+    pdfUrl={pdfViewerData.url}
+    familyData={pdfViewerData.familyData}
+    onApprove={handleApproveFamily}
+    onReject={(id, gaonCode, remark) => {
+      sachivService.rejectFamilySachiv(id, gaonCode, remark).then(() => {
+        alert('परिवार अस्वीकृत कर दिया गया!');
+        setShowPDFViewer(false);
+        if (selectedGaonForVerification) {
+          handleVillageClick(selectedGaonForVerification, 'verification');
+        }
+      });
+    }}
+    onEdit={(editedFamilyData) => {
+      // Convert the edited data to FormData format expected by your API
+      const formData = new FormData();
+      editedFamilyData.forEach((member, index) => {
+        Object.keys(member).forEach(key => {
+          formData.append(`${key}_${index}`, member[key]);
+        });
+      });
+      
+      sachivService.updateAndInsert(formData).then(() => {
+        alert('परिवार सफलतापूर्वक अपडेट हो गया!');
+        setShowPDFViewer(false);
+        if (selectedGaonForVerification) {
+          handleVillageClick(selectedGaonForVerification, 'verification');
+        }
+      }).catch(error => {
+        console.error('Error updating family:', error);
+        alert('अपडेट करने में त्रुटि हुई');
+      });
+    }}
+    isApproved={pdfViewerData.familyData?.[0]?.status === 'Approved'}
+  />
+)}
     </div>
   );
 };

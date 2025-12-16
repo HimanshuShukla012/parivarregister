@@ -40,23 +40,26 @@ const sachivService = {
     return response.data;
   },
 
-  // View PDF page - FIXED to use absolute URL
-  viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
-    // Use absolute URL to PDF server instead of relative path
-    const baseUrl = 'https://parivarregister.kdsgroup.co.in';
-    let url = `${baseUrl}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
-    if (fromPage) url += `&fromPage=${fromPage}`;
-    if (toPage) url += `&toPage=${toPage}`;
-    
-    console.log('🔍 Opening PDF URL:', url);
-    
-    // Note: This opens in a new tab. The PDF server needs to accept 
-    // requests from your Netlify domain. If you get CORS errors,
-    // you'll need to either:
-    // 1. Add your domain to PDF server's CORS whitelist
-    // 2. Or proxy through your API
-    window.open(url, '_blank');
-  },
+  // View PDF page - Use proxy in development, direct URL in production
+viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
+  // In development, use the proxy. In production, use direct URL
+  const isDev = import.meta.env.DEV;
+  
+  let url;
+  if (isDev) {
+    // Development: Use Vite proxy
+    url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+  } else {
+    // Production: Use direct URL
+    url = `https://parivarregister.kdsgroup.co.in/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+  }
+  
+  if (fromPage) url += `&fromPage=${fromPage}`;
+  if (toPage) url += `&toPage=${toPage}`;
+  
+  console.log('🔍 Opening PDF URL:', url);
+  window.open(url, '_blank');
+},
 
   // Download gaon register
   downloadGaonSachiv: async (gaonCode) => {

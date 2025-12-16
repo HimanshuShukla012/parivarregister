@@ -203,17 +203,21 @@ export default defineConfig({
         },
       },
       "/getPDFPage": {
-        target: "https://parivarregister.kdsgroup.co.in",
-        changeOrigin: true,
-        secure: false,
-        configure: (proxy) => {
-          proxy.on("proxyReq", (proxyReq, req) => {
-            if (req.headers.cookie) {
-              proxyReq.setHeader("Cookie", req.headers.cookie);
-            }
-          });
-        },
-      },
+  target: "https://parivarregister.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying getPDFPage:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+    proxy.on("proxyRes", (proxyRes) => {
+      console.log("✅ PDF Response:", proxyRes.statusCode);
+    });
+  },
+},
       "/downloadGaonSachiv": {
         target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
