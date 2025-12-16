@@ -193,17 +193,8 @@ const SachivDashboard = () => {
 
 
   const handleViewPDF = (pdfNo, fromPage, toPage, gaonCode, familyData) => {
-  // In development, use the proxy. In production, use direct URL
-  const isDev = import.meta.env.DEV;
-  
-  let url;
-  if (isDev) {
-    // Development: Use Vite proxy
-    url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
-  } else {
-    // Production: Use direct URL
-    url = `https://parivarregister.kdsgroup.co.in/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
-  }
+  // ALWAYS use relative URL - Netlify proxy will handle it
+  let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
   
   if (fromPage) url += `&fromPage=${fromPage}`;
   if (toPage) url += `&toPage=${toPage}`;
