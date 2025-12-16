@@ -469,9 +469,9 @@ const hqService = {
     return response.data;
   },
 
-  // View PDF Page - no cache
+  // View PDF Page - CRITICAL FIX: No trailing slash before query params!
   viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
-  let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;  // No trailing slash!
+    let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
     if (fromPage) url += `&fromPage=${fromPage}`;
     if (toPage) url += `&toPage=${toPage}`;
     window.open(url, '_blank');

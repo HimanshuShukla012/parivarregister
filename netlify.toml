@@ -8,8 +8,16 @@
 # Redirect rules - Order matters! More specific rules should come first
 
 # ========== PDF SERVER ENDPOINTS ==========
+# CRITICAL: Handle both with and without trailing slash
+
 [[redirects]]
-  from = "/getPDFPage*"
+  from = "/getPDFPage/*"
+  to = "https://parivarregister.kdsgroup.co.in/getPDFPage/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getPDFPage"
   to = "https://parivarregister.kdsgroup.co.in/getPDFPage:splat"
   status = 200
   force = true

@@ -33,16 +33,23 @@ const sachivService = {
   },
 
   // Reject family with remark
+  rejectFamilySachiv: async (id, gaonCode, remark) => {
+    const response = await api.get(`/rejectFamilySachiv?id=${id}&gaonCode=${gaonCode}&remark=${encodeURIComponent(remark)}`);
+    return response.data;
+  },
+
+  // View PDF Page - CRITICAL FIX: No trailing slash before query params!
   viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
-  // Use proxy in both dev and production
-  let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
-  
-  if (fromPage) url += `&fromPage=${fromPage}`;
-  if (toPage) url += `&toPage=${toPage}`;
-  
-  console.log('🔍 Opening PDF URL:', url);
-  window.open(url, '_blank');
-},
+    // Use proxy in both dev and production - NO TRAILING SLASH
+    let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+    
+    if (fromPage) url += `&fromPage=${fromPage}`;
+    if (toPage) url += `&toPage=${toPage}`;
+    
+    console.log('🔍 Opening PDF URL:', url);
+    window.open(url, '_blank');
+  },
+
   // Download gaon register
   downloadGaonSachiv: async (gaonCode) => {
     const response = await api.get(`/downloadGaonSachiv/?gaonCode=${gaonCode}`, {
