@@ -2,8 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_BASE_URL || "https://register.kdsgroup.co.in", // Empty string means same origin
+  baseURL: "", // Use empty string to make relative URLs work correctly in both dev and prod
   headers: {
     "Content-Type": "application/json",
   },

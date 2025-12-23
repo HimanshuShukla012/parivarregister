@@ -34,6 +34,12 @@
   status = 200
   force = true
 
+[[redirects]]
+  from = "/download_master_digitisation_report"
+  to = "https://register.kdsgroup.co.in/download_master_digitisation_report"
+  status = 200
+  force = true
+
 # ========== MAIN API ENDPOINTS ==========
 
 # District endpoint (must come before /district_*)
@@ -233,6 +239,12 @@
 [[redirects]]
   from = "/downloadTakeoverHandoverSummary"
   to = "https://register.kdsgroup.co.in/downloadTakeoverHandoverSummary"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_master_digitisation_report/*"
+  to = "https://register.kdsgroup.co.in/download_master_digitisation_report/:splat"
   status = 200
   force = true
 

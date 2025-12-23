@@ -344,11 +344,11 @@ const ProjectMonitoringView = () => {
           <div style={{background: 'white', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', border: '1px solid #e5e7eb'}}>
             <h4 style={{fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#374151', borderBottom: '2px solid #ef4444', paddingBottom: '8px'}}>Family Register Digitisation Master Report</h4>
             <button 
-              onClick={() => handleDownloadReport('/download_master_digitisation_report')} 
-              style={{width: '100%', background: '#3b82f6', color: 'white', padding: '10px 16px', borderRadius: '6px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '500'}}
-            >
-              <FaDownload /> Download
-            </button>
+  onClick={() => handleDownloadReport('/download_master_digitisation_report')} 
+  style={{width: '100%', background: '#3b82f6', color: 'white', padding: '10px 16px', borderRadius: '6px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '14px', fontWeight: '500'}}
+>
+  <FaDownload /> Download
+</button>
           </div>
 
         </div>

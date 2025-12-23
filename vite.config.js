@@ -509,14 +509,14 @@ export default defineConfig({
 
       // Master Digitisation Report
       "/download_master_digitisation_report": {
-        target: "https://register.kdsgroup.co.in",
-        changeOrigin: true,
-        secure: false,
-        configure: (proxy) => {
-          proxy.on("proxyReq", (proxyReq, req) => {
-            if (req.headers.cookie) {
-              proxyReq.setHeader("Cookie", req.headers.cookie);
-            }
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
           });
         },
       },
