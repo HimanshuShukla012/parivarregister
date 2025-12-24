@@ -28,13 +28,13 @@ const sachivService = {
 
   // Approve family (verification table)
   approveFamilySachiv: async (id, gaonCode) => {
-    const response = await api.get(`/approveFamilySachiv?id=${id}&gaonCode=${gaonCode}`);
+const response = await api.get(`/approveFamilySachiv/?id=${id}&gaonCode=${gaonCode}`);
     return response.data;
   },
 
   // Reject family with remark
   rejectFamilySachiv: async (id, gaonCode, remark) => {
-    const response = await api.get(`/rejectFamilySachiv?id=${id}&gaonCode=${gaonCode}&remark=${encodeURIComponent(remark)}`);
+const response = await api.get(`/rejectFamilySachiv/?id=${id}&gaonCode=${gaonCode}&remark=${encodeURIComponent(remark)}`);
     return response.data;
   },
 

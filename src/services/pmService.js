@@ -5,7 +5,7 @@ const pmService = {
   // Project Monitoring Cards
   getProjectMonitoringCards: async () => {
     try {
-      const response = await api.get('/adminProjectMonitoringCards');
+      const response = await api.get('/adminProjectMonitoringCards/');
       return response.data;
     } catch (error) {
       console.error('Error fetching PM cards:', error);
@@ -16,7 +16,7 @@ const pmService = {
   // Project Monitoring Tables
   getProjectMonitoringTables: async () => {
     try {
-      const response = await api.get('/adminProjectMonitoringTbls');
+      const response = await api.get('/adminProjectMonitoringTbls/');
       return response.data;
     } catch (error) {
       console.error('Error fetching PM tables:', error);
@@ -27,7 +27,7 @@ const pmService = {
   // Operator Monitoring Cards
   getOperatorMonitoringCards: async () => {
     try {
-      const response = await api.get('/adminOpMonitoringCards');
+      const response = await api.get('/adminOpMonitoringCards/');
       return response.data;
     } catch (error) {
       console.error('Error fetching operator cards:', error);
@@ -89,7 +89,7 @@ const pmService = {
   // Data Monitoring Cards
   getDataMonitoringCards: async () => {
     try {
-      const response = await api.get('/adminDataMonitoringCards');
+      const response = await api.get('/adminDataMonitoringCards/');
       return response.data;
     } catch (error) {
       console.error('Error fetching data monitoring cards:', error);
@@ -111,7 +111,7 @@ const pmService = {
   // PDF Overview Table
   getPDFOverviewTable: async (zila, block = '') => {
     try {
-      const response = await api.get(`/pDFOverviewTbl?zila=${zila}&block=${block}`);
+      const response = await api.get(`/pDFOverviewTbl/?zila=${zila}&block=${block}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching PDF overview:', error);
@@ -122,7 +122,7 @@ const pmService = {
   // Block Family Count
   getBlockFamilyCount: async (zila) => {
     try {
-      const response = await api.get(`/blockFamilyCount?zila=${zila}`);
+      const response = await api.get(`/blockFamilyCount/?zila=${zila}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching block family count:', error);
@@ -133,7 +133,7 @@ const pmService = {
   // Village Family Count
   getVillageFamilyCount: async (zila, block) => {
     try {
-      const response = await api.get(`/vilFamilyCount?zila=${zila}&block=${block}`);
+const response = await api.get(`/vilFamilyCount/?zila=${zila}&block=${block}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching village family count:', error);
@@ -144,7 +144,7 @@ const pmService = {
   // Supervisor Family Counts
   getSupervisorFamilyCounts: async () => {
     try {
-      const response = await api.get('/get_supervisor_family_counts_today');
+      const response = await api.get('/get_supervisor_family_counts_today/');
       return response.data;
     } catch (error) {
       console.error('Error fetching supervisor counts:', error);

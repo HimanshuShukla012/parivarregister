@@ -52,7 +52,7 @@ const ProjectMonitoringView = () => {
 
   const fetchZilaList = async () => {
     try {
-      const response = await api.get('/getZila');
+      const response = await api.get('/getZila/');
       setZilaList(response.data);
     } catch (error) {
       console.error('Error fetching zila list:', error);
@@ -72,8 +72,8 @@ const ProjectMonitoringView = () => {
     setLoading(true);
     try {
       const [cardsRes, tablesRes] = await Promise.all([
-        api.get('/adminProjectMonitoringCards'),
-        api.get('/adminProjectMonitoringTbls')
+        api.get('/adminProjectMonitoringCards/'),
+        api.get('/adminProjectMonitoringTbls/')
       ]);
       
       setCards(cardsRes.data);

@@ -22,7 +22,7 @@ const PDFMappingPanel = ( onSuccess, onError, setLoading ) => {
     setLoading(true);
     try {
       // Fetch village registers
-      const villageResponse = await api.get(`/gaon?gaonCode=${gaonCode}&underSupervisor=`);
+const villageResponse = await api.get(`/gaon/?gaonCode=${gaonCode}&underSupervisor=`);
       const data = villageResponse.data;
 
       const options = [];

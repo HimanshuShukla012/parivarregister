@@ -133,7 +133,7 @@ const hqService = {
     }
     
     try {
-      const response = await api.get('/district_target_report_api');
+      const response = await api.get('/district_target_report_api/');
       const data = Array.isArray(response.data) ? response.data : [];
       cache.set(cacheKey, data);
       return data;
@@ -153,7 +153,7 @@ const hqService = {
     }
     
     try {
-      const response = await api.get('/verification_status_api');
+      const response = await api.get('/verification_status_api/');
       cache.set(cacheKey, response.data);
       return response.data;
     } catch (error) {
@@ -171,7 +171,7 @@ const hqService = {
     if (params.village) queryParams.append('village', params.village);
     
     try {
-      const response = await api.get(`/filterRecords?${queryParams.toString()}`);
+const response = await api.get(`/filterRecords/?${queryParams.toString()}`);
       return response.data;
     } catch (error) {
       console.error('Error filtering records:', error);
@@ -433,7 +433,7 @@ const hqService = {
 
   // Download District Report - no cache
   downloadDistrictReport: async () => {
-    const response = await api.get('/download_district_report_api', {
+const response = await api.get('/download_district_report_api/', {
       responseType: 'blob'
     });
     return response.data;
@@ -447,7 +447,7 @@ const hqService = {
     if (params.gp) queryParams.append('gp', params.gp);
     if (params.village) queryParams.append('village', params.village);
     
-    const response = await api.get(`/downloadFilteredRecords?${queryParams.toString()}`, {
+const response = await api.get(`/downloadFilteredRecords/?${queryParams.toString()}`, {
       responseType: 'blob'
     });
     return response.data;
@@ -455,7 +455,7 @@ const hqService = {
 
   // Download District Details - no cache
   downloadDistrictDetails: async (district) => {
-    const response = await api.get(`/downloadDistrictDetails?district=${encodeURIComponent(district)}`, {
+const response = await api.get(`/downloadDistrictDetails/?district=${encodeURIComponent(district)}`, {
       responseType: 'blob'
     });
     return response.data;

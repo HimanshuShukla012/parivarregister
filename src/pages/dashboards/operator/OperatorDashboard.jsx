@@ -34,7 +34,7 @@ const OperatorDashboard = () => {
 
   const fetchEntriesToday = async () => {
     try {
-      const response = await api.get('/opDailyEntryCount');
+const response = await api.get('/opDailyEntryCount/');
       setEntriesToday(response.data.entriesToday);
     } catch (error) {
       console.error('Error fetching daily entries:', error);
