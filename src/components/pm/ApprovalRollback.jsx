@@ -47,7 +47,7 @@ const PMApprovalRollback = () => {
   const fetchRejectedGaons = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/getRejectedGaonList', {
+      const response = await fetch('/getRejectedGaonList_', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
