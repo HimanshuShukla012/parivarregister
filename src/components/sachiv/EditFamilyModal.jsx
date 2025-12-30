@@ -54,7 +54,7 @@ const EditFamilyModal = ({ familyData, onClose, onSave }) => {
       }));
 
       const payload = {
-        familyData: updatedFamilyData,
+        familyData: [{},...updatedFamilyData],
         gaonCode: updatedFamilyData[0].gaonCode,
         houseNumberNum: formData.common.houseNumberNum,
         houseNumberText: formData.common.houseNumberText,
