@@ -23,7 +23,7 @@
     Expires = "0"
 
 
-    
+
 # ========== CRITICAL ENDPOINTS - Each needs BOTH versions (with and without/*) ==========
 
 # getZila - Critical endpoint
@@ -491,6 +491,18 @@
 [[redirects]]
   from = "/get_all_approved_by_pm_data/*"
   to = "https://register.kdsgroup.co.in/get_all_approved_by_pm_data/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/login/"
+  to = "https://register.kdsgroup.co.in/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/login"
+  to = "https://register.kdsgroup.co.in/"
   status = 200
   force = true
 
