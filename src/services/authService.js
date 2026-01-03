@@ -2,14 +2,8 @@
 import api from "./api";
 
 export const authService = {
-  login: async (credentials) => {
+    login: async (credentials) => {
     console.log("🔐 Attempting login for:", credentials.username);
-
-    // ✅ CRITICAL FIX: Clear ALL storage BEFORE login attempt
-    console.log("🧹 Clearing all storage before login...");
-    localStorage.clear();
-    sessionStorage.clear();
-    console.log("✅ Storage cleared");
 
     // Capture old sessionid BEFORE login
     const oldSessionId = document.cookie
@@ -20,17 +14,18 @@ export const authService = {
     console.log("🍪 OLD Session ID:", oldSessionId || "None");
 
     try {
+      // First, get CSRF token
       // First, get CSRF token - USE PROXY
-      const csrfResponse = await fetch("/csrf/", {
-        method: "GET",
-        credentials: "include",
-      });
-      
-      if (!csrfResponse.ok) {
-        throw new Error("Failed to get CSRF token");
-      }
-      
-      const csrfData = await csrfResponse.json();
+    const csrfResponse = await fetch("/csrf/", {
+      method: "GET",
+      credentials: "include",
+    });
+    
+    if (!csrfResponse.ok) {
+      throw new Error("Failed to get CSRF token");
+    }
+    
+    const csrfData = await csrfResponse.json();
       const csrfToken = csrfData.csrfToken;
 
       console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
@@ -100,18 +95,11 @@ export const authService = {
           console.error("❌ WARNING: No sessionid cookie found after login!");
           console.error("❌ Django backend is not creating sessions properly");
         }
-
-        // ✅ CRITICAL: Save ONLY the NEW user's loginID
-        localStorage.setItem("loginID", data.user.loginID);
-        console.log("💾 Saved NEW loginID to localStorage:", data.user.loginID);
       }
 
       return data;
     } catch (error) {
       console.error("❌ Login error:", error);
-      // ✅ On error, ensure storage is cleared
-      localStorage.clear();
-      sessionStorage.clear();
       throw error;
     }
   },
@@ -119,21 +107,16 @@ export const authService = {
   forceLogout: async (loginID) => {
     console.log("🔄 Force logout for:", loginID);
 
-    // ✅ CRITICAL: Clear storage immediately during force logout
-    console.log("🧹 Clearing storage during force logout...");
-    localStorage.clear();
-    sessionStorage.clear();
-    console.log("✅ Storage cleared");
+    // Get CSRF token from cookie
+    const csrfToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("csrftoken="))
+      ?.split("=")[1];
 
-    try {
-      // Get CSRF token from cookie
-      const csrfToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("csrftoken="))
-        ?.split("=")[1];
-
-      // Call the force logout endpoint
-      const response = await fetch("/force_logout/", {
+    // Call the correct endpoint (note: it's '/force_logout/' not '/forceLogout/')
+    const response = await fetch(
+      "/force_logout/",
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,26 +124,20 @@ export const authService = {
         },
         credentials: "include",
         body: JSON.stringify({ loginID }),
-      });
+      }
+    );
 
-      const data = await response.json();
-      console.log("✅ Force logout response:", data);
-      return data;
-    } catch (error) {
-      console.error("❌ Force logout error:", error);
-      return { success: false, error: error.message };
-    }
+    const data = await response.json();
+    console.log("✅ Force logout response:", data);
+    return data;
   },
 
   logout: async () => {
-    console.log("🚪 Logging out...");
-    
     try {
       // Clear all browser caches before logout
       if ('caches' in window) {
         const cacheNames = await caches.keys();
         await Promise.all(cacheNames.map(name => caches.delete(name)));
-        console.log("🧹 Cleared browser caches");
       }
       
       await fetch("/logout/", {
@@ -170,20 +147,18 @@ export const authService = {
         },
         credentials: "include",
       });
-      console.log("✅ Logout API call successful");
+      console.log("✅ Logout successful");
     } catch (error) {
-      console.error("❌ Logout error:", error);
+      console.error("Logout error:", error);
     } finally {
-      // ✅ CRITICAL: Always clear ALL localStorage and sessionStorage
+      // Clear ALL localStorage and sessionStorage
       localStorage.clear();
       sessionStorage.clear();
-      console.log("🧹 Cleared all local/session storage");
     }
   },
 
   getCurrentUser: () => {
     const loginID = localStorage.getItem("loginID");
-    console.log("👤 getCurrentUser - loginID from storage:", loginID || "None");
     return loginID ? { loginID } : null;
   },
 

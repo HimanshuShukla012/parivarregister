@@ -8,14 +8,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('🔍 AuthProvider mounted - checking current user');
-    
-    // ✅ Clear stale cache on mount
-    sessionStorage.clear();
-    
     const currentUser = authService.getCurrentUser();
-    console.log('👤 Current user from storage:', currentUser);
-    
+    console.log('🔍 AuthProvider mounted - current user:', currentUser);
     setUser(currentUser);
     setLoading(false);
   }, []);
@@ -24,19 +18,17 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🔐 AuthContext: Starting login for', credentials.username);
       
-      // ✅ CRITICAL: Clear state and storage BEFORE API call
+      // ✅ CRITICAL: Clear user state FIRST
       setUser(null);
-      localStorage.clear();
-      sessionStorage.clear();
-      console.log('🧹 AuthContext: Cleared all state and storage');
+      console.log('🧹 AuthContext: Cleared user state');
       
-      // ✅ Now call authService.login (which also clears storage internally)
+      // ✅ authService.login will handle localStorage clearing
       const data = await authService.login(credentials);
       
       if (data.success) {
         console.log('✅ AuthContext: Login successful for', data.user.loginID);
         
-        // ✅ Set fresh user data
+        // ✅ Set ONLY the NEW user data
         const newUser = { loginID: data.user.loginID };
         setUser(newUser);
         console.log('💾 AuthContext: Set new user state:', newUser);
@@ -56,12 +48,8 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('❌ AuthContext: Login error:', error);
-      
-      // ✅ On error, ensure everything is cleared
+      // ✅ On error, ensure user is null
       setUser(null);
-      localStorage.clear();
-      sessionStorage.clear();
-      
       return {
         success: false,
         error: error.message || 'Login failed. Please try again.'
@@ -73,11 +61,11 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🔄 AuthContext: Starting force logout for', loginID);
       
-      // ✅ CRITICAL: Clear state immediately
+      // ✅ CRITICAL: Clear user state immediately
       setUser(null);
       console.log('🧹 AuthContext: Cleared user state');
       
-      // ✅ Call authService (which will clear storage)
+      // ✅ authService.forceLogout will handle storage clearing
       const result = await authService.forceLogout(loginID);
       
       console.log('✅ AuthContext: Force logout completed:', result);
@@ -92,19 +80,14 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🚪 AuthContext: Starting logout');
       
-      // ✅ Clear storage first
-      localStorage.clear();
-      sessionStorage.clear();
-      console.log('🧹 AuthContext: Cleared all storage');
-      
-      // ✅ Call authService (which will also clear storage)
+      // ✅ authService.logout will handle storage clearing
       await authService.logout();
       
       console.log('✅ AuthContext: Logout completed');
     } catch (error) {
       console.error('❌ AuthContext: Logout error:', error);
     } finally {
-      // ✅ CRITICAL: Always clear state, even if API fails
+      // ✅ CRITICAL: Always clear user state, even if API fails
       setUser(null);
       console.log('🧹 AuthContext: User state cleared');
     }
@@ -118,7 +101,7 @@ export const AuthProvider = ({ children }) => {
     loading
   };
 
-  console.log('🔍 AuthContext render - state:', { user, loading });
+  console.log('🔍 AuthContext current state:', { user, loading });
 
   return (
     <AuthContext.Provider value={value}>
