@@ -4,6 +4,11 @@ import api from "./api";
 export const authService = {
     login: async (credentials) => {
     console.log("🔐 Attempting login for:", credentials.username);
+    
+    // CRITICAL: Clear ALL storage BEFORE login attempt
+    localStorage.clear();
+    sessionStorage.clear();
+    console.log("🧹 Cleared all storage before login");
 
     // Capture old sessionid BEFORE login
     const oldSessionId = document.cookie
@@ -60,7 +65,9 @@ export const authService = {
       if (oldSessionId && newSessionId && oldSessionId === newSessionId) {
         console.error("❌ CRITICAL: Session ID did NOT change! Django backend issue!");
         console.error("❌ This means Django is NOT creating new sessions on login");
-        console.error("❌ Backend must call: request.session.flush() and request.session.cycle_key()");
+        console.error("❌ User will be stuck in redirect loop");
+        // CRITICAL: Throw error to prevent login with old session
+        throw new Error("Session creation failed - please try again");
       } else if (newSessionId && oldSessionId !== newSessionId) {
         console.log("✅ Session ID changed successfully - new session created");
       } else if (!oldSessionId && newSessionId) {
@@ -86,6 +93,10 @@ export const authService = {
 
       if (data.success) {
         console.log("✅ Login successful - session cookie set by backend");
+        
+        // CRITICAL: Store loginID in localStorage ONLY after successful login
+        localStorage.setItem("loginID", data.user.loginID);
+        console.log("💾 Stored loginID in localStorage:", data.user.loginID);
         
         // Verify that sessionid cookie was set
         const hasSessionId = document.cookie.includes('sessionid');

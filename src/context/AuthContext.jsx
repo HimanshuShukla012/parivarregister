@@ -20,9 +20,10 @@ export const AuthProvider = ({ children }) => {
       
       // ✅ CRITICAL: Clear user state FIRST
       setUser(null);
-      console.log('🧹 AuthContext: Cleared user state');
+      localStorage.removeItem('loginID');
+      console.log('🧹 AuthContext: Cleared user state and localStorage');
       
-      // ✅ authService.login will handle localStorage clearing
+      // ✅ authService.login will handle localStorage setting on success
       const data = await authService.login(credentials);
       
       if (data.success) {
