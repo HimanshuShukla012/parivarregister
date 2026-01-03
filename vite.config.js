@@ -31,6 +31,30 @@ export default defineConfig({
         },
       },
 
+      // Login endpoint - CRITICAL
+      "/api/login": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api\/login/, '/'),
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying login:", req.url, "→ Django /");
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+          proxy.on("proxyRes", (proxyRes) => {
+            console.log("✅ Login response:", proxyRes.statusCode);
+            const setCookie = proxyRes.headers["set-cookie"];
+            if (setCookie) {
+              console.log("🍪 Set-Cookie from Django:", setCookie);
+              proxyRes.headers["set-cookie"] = setCookie;
+            }
+          });
+        },
+      },
+
       // ========== MISSING ENDPOINTS - ADDED BELOW ==========
 
       // Gaon (Village) endpoint - CRITICAL for FamilyEntryForm

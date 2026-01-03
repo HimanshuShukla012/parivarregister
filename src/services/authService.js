@@ -15,22 +15,23 @@ export const authService = {
 
     try {
       // First, get CSRF token
-      const csrfResponse = await fetch("https://register.kdsgroup.co.in/csrf/", {
-        method: "GET",
-        credentials: "include",
-      });
-      
-      if (!csrfResponse.ok) {
-        throw new Error("Failed to get CSRF token");
-      }
-      
-      const csrfData = await csrfResponse.json();
+      // First, get CSRF token - USE PROXY
+    const csrfResponse = await fetch("/csrf/", {
+      method: "GET",
+      credentials: "include",
+    });
+    
+    if (!csrfResponse.ok) {
+      throw new Error("Failed to get CSRF token");
+    }
+    
+    const csrfData = await csrfResponse.json();
       const csrfToken = csrfData.csrfToken;
 
       console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
 
-      // Now login with CSRF token
-      const response = await fetch("https://register.kdsgroup.co.in/", {
+      // Now login with CSRF token - USE PROXY
+      const response = await fetch("/api/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +115,7 @@ export const authService = {
 
     // Call the correct endpoint (note: it's '/force_logout/' not '/forceLogout/')
     const response = await fetch(
-      "https://register.kdsgroup.co.in/force_logout/",
+      "/force_logout/",
       {
         method: "POST",
         headers: {
@@ -139,7 +140,7 @@ export const authService = {
         await Promise.all(cacheNames.map(name => caches.delete(name)));
       }
       
-      await fetch("https://register.kdsgroup.co.in/logout/", {
+      await fetch("/logout/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
