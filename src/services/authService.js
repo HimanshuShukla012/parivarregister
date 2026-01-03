@@ -2,58 +2,105 @@
 import api from "./api";
 
 export const authService = {
-  login: async (credentials) => {
+    login: async (credentials) => {
     console.log("🔐 Attempting login for:", credentials.username);
 
-    // First, get CSRF token
-    const csrfResponse = await fetch("https://register.kdsgroup.co.in", {
-      credentials: "include",
-    });
-    const csrfData = await csrfResponse.json();
-    const csrfToken = csrfData.csrfToken;
+    // Capture old sessionid BEFORE login
+    const oldSessionId = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('sessionid='))
+      ?.split('=')[1];
+    
+    console.log("🍪 OLD Session ID:", oldSessionId || "None");
 
-    console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
-
-    // Now login with CSRF token
-    const response = await fetch("https://register.kdsgroup.co.in", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken,
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        loginID: credentials.username,
-        password: credentials.password,
-      }),
-    });
-
-    const data = await response.json();
-
-    console.log("📡 Login response:", data);
-
-    // Handle both success and specific error cases
-    if (!response.ok) {
-      // If max sessions reached, return special response for force logout
-      if (data.showForceLogout) {
-        console.log("⚠️ Max sessions reached - showing force logout option");
-        return {
-          success: false,
-          error: data.error,
-          showForceLogout: true,
-          loginID: data.loginID,
-        };
+    try {
+      // First, get CSRF token
+      const csrfResponse = await fetch("https://register.kdsgroup.co.in/csrf/", {
+        method: "GET",
+        credentials: "include",
+      });
+      
+      if (!csrfResponse.ok) {
+        throw new Error("Failed to get CSRF token");
       }
-      throw new Error(data.error || "Login failed");
+      
+      const csrfData = await csrfResponse.json();
+      const csrfToken = csrfData.csrfToken;
+
+      console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
+
+      // Now login with CSRF token
+      const response = await fetch("https://register.kdsgroup.co.in/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          loginID: credentials.username,
+          password: credentials.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      console.log("📡 Login response:", data);
+
+      // Capture new sessionid AFTER login
+      const newSessionId = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('sessionid='))
+        ?.split('=')[1];
+      
+      console.log("🍪 NEW Session ID:", newSessionId || "None");
+      
+      // ⚠️ WARNING: Check if sessionid changed
+      if (oldSessionId && newSessionId && oldSessionId === newSessionId) {
+        console.error("❌ CRITICAL: Session ID did NOT change! Django backend issue!");
+        console.error("❌ This means Django is NOT creating new sessions on login");
+        console.error("❌ Backend must call: request.session.flush() and request.session.cycle_key()");
+      } else if (newSessionId && oldSessionId !== newSessionId) {
+        console.log("✅ Session ID changed successfully - new session created");
+      } else if (!oldSessionId && newSessionId) {
+        console.log("✅ New session created (first login)");
+      }
+
+      console.log("🍪 All cookies after login:", document.cookie);
+
+      // Handle both success and specific error cases
+      if (!response.ok) {
+        // If max sessions reached, return special response for force logout
+        if (data.showForceLogout) {
+          console.log("⚠️ Max sessions reached - showing force logout option");
+          return {
+            success: false,
+            error: data.error,
+            showForceLogout: true,
+            loginID: data.loginID,
+          };
+        }
+        throw new Error(data.error || "Login failed");
+      }
+
+      if (data.success) {
+        console.log("✅ Login successful - session cookie set by backend");
+        
+        // Verify that sessionid cookie was set
+        const hasSessionId = document.cookie.includes('sessionid');
+        console.log("🔍 SessionID cookie present:", hasSessionId);
+        
+        if (!hasSessionId) {
+          console.error("❌ WARNING: No sessionid cookie found after login!");
+          console.error("❌ Django backend is not creating sessions properly");
+        }
+      }
+
+      return data;
+    } catch (error) {
+      console.error("❌ Login error:", error);
+      throw error;
     }
-
-    console.log("🍪 Cookies after login (visible only):", document.cookie);
-
-    if (data.success) {
-      console.log("✅ Login successful - session cookie set by backend");
-    }
-
-    return data;
   },
 
   forceLogout: async (loginID) => {
