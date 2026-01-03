@@ -495,16 +495,12 @@
   force = true
 
 [[redirects]]
-  from = "/api/login/"
+  from = "/login/"
   to = "https://register.kdsgroup.co.in/"
   status = 200
   force = true
 
-[[redirects]]
-  from = "/api/login"
-  to = "https://register.kdsgroup.co.in/"
-  status = 200
-  force = true
+
 
 # General API catch-all (must be last)
 [[redirects]]

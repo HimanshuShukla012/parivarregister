@@ -32,7 +32,7 @@ export default defineConfig({
       },
 
       // Login endpoint - CRITICAL
-      "/api/login": {
+      "/login": {
         target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
