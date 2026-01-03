@@ -29,14 +29,19 @@ const Login = () => {
     setError('');
 
     try {
+      console.log('📝 Login form submitted for:', formData.username);
       const result = await login(formData);
       
-      console.log('Login result:', result); // Debug log
+      console.log('📡 Login result:', result);
       
       if (result.success) {
-        console.log('Redirecting to:', result.redirectTo);
-        navigate(result.redirectTo);
+        console.log('✅ Login successful, redirecting to:', result.redirectTo);
+        
+        // ✅ CRITICAL: Use window.location.href for HARD redirect
+        // This ensures complete page reload with fresh state
+        window.location.href = result.redirectTo;
       } else {
+        console.log('❌ Login failed:', result.error);
         setError(result.error);
         if (result.showForceLogout) {
           setShowForceLogout(true);
@@ -44,7 +49,7 @@ const Login = () => {
         }
       }
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('❌ Login error:', err);
       setError(err.response?.data?.error || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
@@ -56,32 +61,36 @@ const Login = () => {
     setError('');
     
     try {
-      console.log('Starting force logout for:', currentLoginID);
+      console.log('🔄 Starting force logout for:', currentLoginID);
       
-      // Call force logout
+      // Clear UI state
+      setShowForceLogout(false);
+      
+      // Call force logout (will clear storage internally)
       const logoutResult = await forceLogout(currentLoginID);
-      console.log('Force logout result:', logoutResult);
+      console.log('✅ Force logout result:', logoutResult);
       
       if (!logoutResult.success) {
         throw new Error(logoutResult.error || 'Force logout failed');
       }
       
-      // Wait for sessions to clear
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Clear force logout state
-      setShowForceLogout(false);
+      // Wait for backend sessions to clear
+      console.log('⏳ Waiting for sessions to clear (2s)...');
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Auto-retry login
-      console.log('Retrying login after force logout...');
+      console.log('🔄 Retrying login after force logout...');
       const result = await login(formData);
       
-      console.log('Retry login result:', result);
+      console.log('📡 Retry login result:', result);
       
       if (result.success) {
-        console.log('Login successful, navigating to:', result.redirectTo);
-        navigate(result.redirectTo);
+        console.log('✅ Login successful after force logout, redirecting...');
+        
+        // ✅ CRITICAL: Hard redirect for completely fresh state
+        window.location.href = result.redirectTo;
       } else {
+        console.log('❌ Login failed after force logout:', result.error);
         setError(result.error || 'Login failed after force logout');
         if (result.showForceLogout) {
           setShowForceLogout(true);
@@ -89,9 +98,9 @@ const Login = () => {
         }
       }
     } catch (err) {
-      console.error('Force logout error:', err);
+      console.error('❌ Force logout error:', err);
       setError(err.message || 'Force logout failed. Please try again.');
-      setShowForceLogout(true); // Keep showing force logout button
+      setShowForceLogout(true);
     } finally {
       setLoading(false);
     }

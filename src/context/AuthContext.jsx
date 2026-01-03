@@ -8,50 +8,120 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Clear any stale cache on mount
+    console.log('🔍 AuthProvider mounted - checking current user');
+    
+    // ✅ Clear stale cache on mount
     sessionStorage.clear();
+    
     const currentUser = authService.getCurrentUser();
+    console.log('👤 Current user from storage:', currentUser);
+    
     setUser(currentUser);
     setLoading(false);
   }, []);
 
   const login = async (credentials) => {
-    const data = await authService.login(credentials);
-    
-    if (data.success) {
-      // Clear all caches before setting new login
+    try {
+      console.log('🔐 AuthContext: Starting login for', credentials.username);
+      
+      // ✅ CRITICAL: Clear state and storage BEFORE API call
+      setUser(null);
       localStorage.clear();
       sessionStorage.clear();
-      localStorage.setItem('loginID', credentials.username);
-      setUser({ loginID: credentials.username });
-      return {
-        success: true,
-        redirectTo: authService.getDashboardRoute(credentials.username)
-      };
-    } else {
+      console.log('🧹 AuthContext: Cleared all state and storage');
+      
+      // ✅ Now call authService.login (which also clears storage internally)
+      const data = await authService.login(credentials);
+      
+      if (data.success) {
+        console.log('✅ AuthContext: Login successful for', data.user.loginID);
+        
+        // ✅ Set fresh user data
+        const newUser = { loginID: data.user.loginID };
+        setUser(newUser);
+        console.log('💾 AuthContext: Set new user state:', newUser);
+        
+        return {
+          success: true,
+          redirectTo: authService.getDashboardRoute(data.user.loginID)
+        };
+      } else {
+        console.log('❌ AuthContext: Login failed -', data.error);
+        return {
+          success: false,
+          error: data.error,
+          showForceLogout: data.showForceLogout,
+          loginID: data.loginID || credentials.username
+        };
+      }
+    } catch (error) {
+      console.error('❌ AuthContext: Login error:', error);
+      
+      // ✅ On error, ensure everything is cleared
+      setUser(null);
+      localStorage.clear();
+      sessionStorage.clear();
+      
       return {
         success: false,
-        error: data.error,
-        showForceLogout: data.showForceLogout,
-        loginID: credentials.username
+        error: error.message || 'Login failed. Please try again.'
       };
     }
   };
 
   const forceLogout = async (loginID) => {
-    await authService.forceLogout(loginID);
+    try {
+      console.log('🔄 AuthContext: Starting force logout for', loginID);
+      
+      // ✅ CRITICAL: Clear state immediately
+      setUser(null);
+      console.log('🧹 AuthContext: Cleared user state');
+      
+      // ✅ Call authService (which will clear storage)
+      const result = await authService.forceLogout(loginID);
+      
+      console.log('✅ AuthContext: Force logout completed:', result);
+      return result;
+    } catch (error) {
+      console.error('❌ AuthContext: Force logout error:', error);
+      return { success: false, error: error.message };
+    }
   };
 
   const logout = async () => {
-    // Clear all browser storage
-    localStorage.clear();
-    sessionStorage.clear();
-    await authService.logout();
-    setUser(null);
+    try {
+      console.log('🚪 AuthContext: Starting logout');
+      
+      // ✅ Clear storage first
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log('🧹 AuthContext: Cleared all storage');
+      
+      // ✅ Call authService (which will also clear storage)
+      await authService.logout();
+      
+      console.log('✅ AuthContext: Logout completed');
+    } catch (error) {
+      console.error('❌ AuthContext: Logout error:', error);
+    } finally {
+      // ✅ CRITICAL: Always clear state, even if API fails
+      setUser(null);
+      console.log('🧹 AuthContext: User state cleared');
+    }
   };
 
+  const value = {
+    user,
+    login,
+    logout,
+    forceLogout,
+    loading
+  };
+
+  console.log('🔍 AuthContext render - state:', { user, loading });
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, forceLogout, loading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
