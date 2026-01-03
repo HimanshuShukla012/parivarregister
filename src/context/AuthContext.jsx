@@ -8,6 +8,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Clear any stale cache on mount
+    sessionStorage.clear();
     const currentUser = authService.getCurrentUser();
     setUser(currentUser);
     setLoading(false);
@@ -17,6 +19,9 @@ export const AuthProvider = ({ children }) => {
     const data = await authService.login(credentials);
     
     if (data.success) {
+      // Clear all caches before setting new login
+      localStorage.clear();
+      sessionStorage.clear();
       localStorage.setItem('loginID', credentials.username);
       setUser({ loginID: credentials.username });
       return {
@@ -38,6 +43,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    // Clear all browser storage
+    localStorage.clear();
+    sessionStorage.clear();
     await authService.logout();
     setUser(null);
   };

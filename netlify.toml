@@ -5,6 +5,25 @@
   command = "npm run build"
   publish = "dist"
 
+
+# Disable caching headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+# Disable caching for API responses specifically
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+
+    
 # ========== CRITICAL ENDPOINTS - Each needs BOTH versions (with and without/*) ==========
 
 # getZila - Critical endpoint

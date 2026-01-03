@@ -86,6 +86,12 @@ export const authService = {
 
   logout: async () => {
     try {
+      // Clear all browser caches before logout
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+      }
+      
       await fetch("https://register.kdsgroup.co.in/logout/", {
         method: "POST",
         headers: {
@@ -97,10 +103,9 @@ export const authService = {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("loginID");
-      console.log("🧹 Local storage cleared");
+      // Clear ALL localStorage and sessionStorage
+      localStorage.clear();
+      sessionStorage.clear();
     }
   },
 
