@@ -36,7 +36,6 @@ export default defineConfig({
         target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api\/login/, '/'),
         configure: (proxy) => {
           proxy.on("proxyReq", (proxyReq, req) => {
             console.log("🔄 Proxying login:", req.url, "→ Django /");
