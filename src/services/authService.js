@@ -31,7 +31,7 @@ export const authService = {
       console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
 
       // Now login with CSRF token - USE PROXY
-      const response = await fetch("/api/login/", {
+      const response = await fetch("/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
