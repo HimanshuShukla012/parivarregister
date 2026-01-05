@@ -5,14 +5,6 @@ import react from "@vitejs/plugin-react";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  build: {
-    // Disable build-time caching
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      },
-    },
-  },
   server: {
     port: 3000,
     proxy: {
@@ -26,29 +18,6 @@ export default defineConfig({
             console.log("🔄 Proxying:", req.url, "→ Django");
             if (req.headers.cookie) {
               proxyReq.setHeader("Cookie", req.headers.cookie);
-            }
-          });
-        },
-      },
-
-      // Login endpoint - CRITICAL
-      "/login": {
-        target: "https://register.kdsgroup.co.in",
-        changeOrigin: true,
-        secure: false,
-        configure: (proxy) => {
-          proxy.on("proxyReq", (proxyReq, req) => {
-            console.log("🔄 Proxying login:", req.url, "→ Django /");
-            if (req.headers.cookie) {
-              proxyReq.setHeader("Cookie", req.headers.cookie);
-            }
-          });
-          proxy.on("proxyRes", (proxyRes) => {
-            console.log("✅ Login response:", proxyRes.statusCode);
-            const setCookie = proxyRes.headers["set-cookie"];
-            if (setCookie) {
-              console.log("🍪 Set-Cookie from Django:", setCookie);
-              proxyRes.headers["set-cookie"] = setCookie;
             }
           });
         },

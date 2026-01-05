@@ -2,11 +2,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "",
+  baseURL: "", // Use empty string to make relative URLs work correctly in both dev and prod
   headers: {
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Pragma': 'no-cache',
-    'Expires': '0',
     "Content-Type": "application/json",
   },
   withCredentials: true, // CRITICAL: Send cookies with every request
@@ -45,7 +42,6 @@ function ensureTrailingSlash(url) {
   return query ? `${pathWithSlash}?${query}` : pathWithSlash;
 }
 
-// Request interceptor for CSRF token and trailing slash
 // Request interceptor for CSRF token and trailing slash
 api.interceptors.request.use(
   async (config) => {
@@ -121,10 +117,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// Disable all axios caching - MUST BE AFTER INTERCEPTORS
-api.defaults.headers.common['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-api.defaults.headers.common['Pragma'] = 'no-cache';
-api.defaults.headers.common['Expires'] = '0';
 
 export default api;

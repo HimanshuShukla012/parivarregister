@@ -34,9 +34,8 @@ const Login = () => {
       console.log('Login result:', result); // Debug log
       
       if (result.success) {
-        console.log('Login successful, redirecting to:', result.redirectTo);
-        // CRITICAL: Use window.location for full page reload to clear cache
-        window.location.href = result.redirectTo;
+        console.log('Redirecting to:', result.redirectTo);
+        navigate(result.redirectTo);
       } else {
         setError(result.error);
         if (result.showForceLogout) {
