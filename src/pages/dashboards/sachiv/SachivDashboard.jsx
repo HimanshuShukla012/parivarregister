@@ -187,9 +187,13 @@ const SachivDashboard = () => {
   };
 
   const handleRejectFamily = (id, gaonCode) => {
-    setRejectData({ id, gaonCode });
-    setShowRejectModal(true);
-  };
+  console.log('🔴 handleRejectFamily called!');
+  console.log('ID:', id);
+  console.log('Gaon Code:', gaonCode);
+  setRejectData({ id, gaonCode });
+  setShowRejectModal(true);
+  console.log('🔴 Modal should be shown now, showRejectModal:', true);
+};
 
 
   const handleViewPDF = (pdfNo, fromPage, toPage, gaonCode, familyData) => {

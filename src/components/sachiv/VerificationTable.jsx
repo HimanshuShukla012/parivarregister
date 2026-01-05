@@ -78,11 +78,17 @@ const VerificationTable = ({ data, onApprove, onReject, onViewPDF, onEdit, villa
                             <i className="fas fa-check-circle"></i>&nbsp; Approve
                           </button>
                           <button
-                            style={{ backgroundColor: '#ff250e', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                            onClick={() => onReject(row.id, row.gaonCode)}
-                          >
-                            <i className="fas fa-times-circle"></i>&nbsp; Reject
-                          </button>
+  style={{ backgroundColor: '#ff250e', color: 'white', padding: '8px 12px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+  onClick={() => {
+    console.log('🔴 Reject button clicked!');
+    console.log('Row ID:', row.id);
+    console.log('Gaon Code:', row.gaonCode);
+    console.log('onReject function:', onReject);
+    onReject(row.id, row.gaonCode);
+  }}
+>
+  <i className="fas fa-times-circle"></i>&nbsp; Reject
+</button>
                         </>
                       ) : (
                         // Approved family - show Edit button
