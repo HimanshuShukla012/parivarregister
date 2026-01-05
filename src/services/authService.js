@@ -3,58 +3,63 @@ import api from "./api";
 
 export const authService = {
   login: async (credentials) => {
-    console.log("🔐 Attempting login for:", credentials.username);
+  console.log("🔐 Attempting login for:", credentials.username);
 
-    // First, get CSRF token
-    const csrfResponse = await fetch("https://register.kdsgroup.co.in", {
-      credentials: "include",
-    });
-    const csrfData = await csrfResponse.json();
-    const csrfToken = csrfData.csrfToken;
+  // First, get CSRF token
+  const csrfResponse = await fetch("https://register.kdsgroup.co.in/csrf/", {
+    method: "GET",
+    credentials: "include",
+  });
+  const csrfData = await csrfResponse.json();
+  const csrfToken = csrfData.csrfToken;
 
-    console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
+  console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
 
-    // Now login with CSRF token
-    const response = await fetch("https://register.kdsgroup.co.in", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken,
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        loginID: credentials.username,
-        password: credentials.password,
-      }),
-    });
+  // Now login with CSRF token (POST to root endpoint)
+  const response = await fetch("https://register.kdsgroup.co.in/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrfToken,
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      loginID: credentials.username,
+      password: credentials.password,
+    }),
+  });
 
-    const data = await response.json();
+  const data = await response.json();
 
-    console.log("📡 Login response:", data);
+  console.log("📡 Login response:", data);
 
-    // Handle both success and specific error cases
-    if (!response.ok) {
-      // If max sessions reached, return special response for force logout
-      if (data.showForceLogout) {
-        console.log("⚠️ Max sessions reached - showing force logout option");
-        return {
-          success: false,
-          error: data.error,
-          showForceLogout: true,
-          loginID: data.loginID,
-        };
-      }
-      throw new Error(data.error || "Login failed");
+  // Handle both success and specific error cases
+  if (!response.ok) {
+    // If max sessions reached, return special response for force logout
+    if (data.showForceLogout) {
+      console.log("⚠️ Max sessions reached - showing force logout option");
+      return {
+        success: false,
+        error: data.error,
+        showForceLogout: true,
+        loginID: data.loginID,
+      };
     }
+    throw new Error(data.error || "Login failed");
+  }
 
-    console.log("🍪 Cookies after login (visible only):", document.cookie);
+  console.log("🍪 Cookies after login (visible only):", document.cookie);
 
-    if (data.success) {
-      console.log("✅ Login successful - session cookie set by backend");
-    }
+  if (data.success) {
+    console.log("✅ Login successful - session cookie set by backend");
+    
+    // CRITICAL: Store loginID in localStorage for persistence
+    localStorage.setItem('loginID', credentials.username);
+    console.log("💾 Stored loginID in localStorage:", credentials.username);
+  }
 
-    return data;
-  },
+  return data;
+},
 
   forceLogout: async (loginID) => {
     console.log("🔄 Force logout for:", loginID);
