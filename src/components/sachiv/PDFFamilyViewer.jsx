@@ -9,7 +9,9 @@ const PDFFamilyViewer = ({
   onApprove,
   onReject,
   onEdit,
-  isApproved = false
+  isApproved = false,
+  familyId,
+  villageIndex
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState(null);
@@ -29,11 +31,11 @@ const PDFFamilyViewer = ({
   };
 
   const handleSaveEdit = () => {
-    if (onEdit && editedData) {
-      onEdit(editedData);
-      setIsEditing(false);
-    }
-  };
+  if (onEdit && editedData) {
+    onEdit(editedData, familyId, villageIndex);
+    setIsEditing(false);
+  }
+};
 
   const handleCancelEdit = () => {
     setEditedData(null);
