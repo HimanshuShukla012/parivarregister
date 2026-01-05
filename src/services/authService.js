@@ -5,8 +5,9 @@ export const authService = {
   login: async (credentials) => {
     console.log("🔐 Attempting login for:", credentials.username);
 
-    // First, get CSRF token from the /csrf/ endpoint
-    const csrfResponse = await fetch("/csrf/", {
+    // First, get CSRF token
+    const csrfResponse = await fetch("https://register.kdsgroup.co.in/csrf/", {
+      method: "GET",
       credentials: "include",
     });
     const csrfData = await csrfResponse.json();
@@ -14,8 +15,8 @@ export const authService = {
 
     console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
 
-    // Now login with CSRF token using the /api/ endpoint
-    const response = await fetch("/api/", {
+    // Now login with CSRF token (POST to root endpoint)
+    const response = await fetch("https://register.kdsgroup.co.in/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
