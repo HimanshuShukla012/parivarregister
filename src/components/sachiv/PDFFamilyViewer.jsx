@@ -82,21 +82,31 @@ const PDFFamilyViewer = ({
             {label}:
           </span>
           <input
-            type={field === 'dob' || field === 'leavingDate' ? 'date' : 'text'}
-            value={editedData[memberIndex][field] || ''}
-            onChange={(e) => {
-              const newData = [...editedData];
-              newData[memberIndex][field] = e.target.value;
-              setEditedData(newData);
-            }}
-            style={{
-              flex: 1,
-              padding: '4px 8px',
-              border: '1px solid #d1d5db',
-              borderRadius: '4px',
-              fontSize: '0.85rem'
-            }}
-          />
+  type={field === 'dob' || field === 'leavingDate' ? 'date' : 'text'}
+  value={editedData[memberIndex][field] || ''}
+  onChange={(e) => {
+    const newData = [...editedData];
+    newData[memberIndex] = {
+      ...newData[memberIndex],
+      [field]: e.target.value
+    };
+    setEditedData(newData);
+  }}
+  onFocus={(e) => {
+    // Store cursor position
+    const pos = e.target.selectionStart;
+    requestAnimationFrame(() => {
+      e.target.setSelectionRange(pos, pos);
+    });
+  }}
+  style={{
+    flex: 1,
+    padding: '4px 8px',
+    border: '1px solid #d1d5db',
+    borderRadius: '4px',
+    fontSize: '0.85rem'
+  }}
+/>
         </div>
       );
     }
