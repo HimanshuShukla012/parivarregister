@@ -3,63 +3,66 @@ import api from "./api";
 
 export const authService = {
   login: async (credentials) => {
-  console.log("🔐 Attempting login for:", credentials.username);
+    console.log("🔐 Attempting login for:", credentials.username);
 
-  // First, get CSRF token
-  const csrfResponse = await fetch("https://register.kdsgroup.co.in/csrf/", {
-    method: "GET",
-    credentials: "include",
-  });
-  const csrfData = await csrfResponse.json();
-  const csrfToken = csrfData.csrfToken;
+    // First, get CSRF token
+    const csrfResponse = await fetch(
+      "http://register.kdsgroup.co.in:9000/csrf/",
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+    const csrfData = await csrfResponse.json();
+    const csrfToken = csrfData.csrfToken;
 
-  console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
+    console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
 
-  // Now login with CSRF token (POST to root endpoint)
-  const response = await fetch("https://register.kdsgroup.co.in/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrfToken,
-    },
-    credentials: "include",
-    body: JSON.stringify({
-      loginID: credentials.username,
-      password: credentials.password,
-    }),
-  });
+    // Now login with CSRF token (POST to root endpoint)
+    const response = await fetch("http://register.kdsgroup.co.in:9000/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        loginID: credentials.username,
+        password: credentials.password,
+      }),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  console.log("📡 Login response:", data);
+    console.log("📡 Login response:", data);
 
-  // Handle both success and specific error cases
-  if (!response.ok) {
-    // If max sessions reached, return special response for force logout
-    if (data.showForceLogout) {
-      console.log("⚠️ Max sessions reached - showing force logout option");
-      return {
-        success: false,
-        error: data.error,
-        showForceLogout: true,
-        loginID: data.loginID,
-      };
+    // Handle both success and specific error cases
+    if (!response.ok) {
+      // If max sessions reached, return special response for force logout
+      if (data.showForceLogout) {
+        console.log("⚠️ Max sessions reached - showing force logout option");
+        return {
+          success: false,
+          error: data.error,
+          showForceLogout: true,
+          loginID: data.loginID,
+        };
+      }
+      throw new Error(data.error || "Login failed");
     }
-    throw new Error(data.error || "Login failed");
-  }
 
-  console.log("🍪 Cookies after login (visible only):", document.cookie);
+    console.log("🍪 Cookies after login (visible only):", document.cookie);
 
-  if (data.success) {
-    console.log("✅ Login successful - session cookie set by backend");
-    
-    // CRITICAL: Store loginID in localStorage for persistence
-    localStorage.setItem('loginID', credentials.username);
-    console.log("💾 Stored loginID in localStorage:", credentials.username);
-  }
+    if (data.success) {
+      console.log("✅ Login successful - session cookie set by backend");
 
-  return data;
-},
+      // CRITICAL: Store loginID in localStorage for persistence
+      localStorage.setItem("loginID", credentials.username);
+      console.log("💾 Stored loginID in localStorage:", credentials.username);
+    }
+
+    return data;
+  },
 
   forceLogout: async (loginID) => {
     console.log("🔄 Force logout for:", loginID);
@@ -72,7 +75,7 @@ export const authService = {
 
     // Call the correct endpoint (note: it's '/force_logout/' not '/forceLogout/')
     const response = await fetch(
-      "https://register.kdsgroup.co.in/force_logout/",
+      "http://register.kdsgroup.co.in:9000/force_logout/",
       {
         method: "POST",
         headers: {
@@ -91,7 +94,7 @@ export const authService = {
 
   logout: async () => {
     try {
-      await fetch("https://register.kdsgroup.co.in/logout/", {
+      await fetch("http://register.kdsgroup.co.in:9000/logout/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
