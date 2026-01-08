@@ -68,6 +68,14 @@
   status = 200
   force = true
 
+
+# district_data_by_login
+[[redirects]]
+  from = "/district_data_by_login/"
+  to = "http://register.kdsgroup.co.in/district_data_by_login/"
+  status = 200
+  force = true
+
 # csrf
 [[redirects]]
   from = "/csrf/"
@@ -121,6 +129,13 @@
 [[redirects]]
   from = "/district/*"
   to = "http://register.kdsgroup.co.in/district/:splat"
+  status = 200
+  force = true
+
+
+[[redirects]]
+  from = "/district_data_by_login/*"
+  to = "http://register.kdsgroup.co.in/district_data_by_login/:splat"
   status = 200
   force = true
 

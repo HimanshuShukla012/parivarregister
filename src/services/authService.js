@@ -26,8 +26,11 @@ export const authService = {
       console.log("📡 Login response:", response.data);
 
       // ✅ success (2xx only reaches here)
-      localStorage.setItem("loginID", credentials.username);
-      return response.data;
+const data = response.data;
+localStorage.setItem("loginID", credentials.username);
+localStorage.setItem("user", JSON.stringify(data.user));
+
+return data;
     } catch (error) {
       console.error("❌ Login error:", error);
 
@@ -38,6 +41,8 @@ export const authService = {
         console.log("📡 API Error Data:", apiData);
         return apiData; // <-- return real backend JSON
       }
+
+      
 
       // fallback network error
       return {

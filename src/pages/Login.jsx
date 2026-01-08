@@ -35,15 +35,21 @@ const Login = () => {
       console.log("Login result:", result); // Debug log
 
       if (result.success) {
-        console.log("Redirecting to:", result.redirectTo);
-        navigate(result.redirectTo);
-      } else {
-        setError(result.error);
-        if (result.showForceLogout) {
-          setShowForceLogout(true);
-          setCurrentLoginID(result.loginID);
-        }
-      }
+  console.log("Redirecting to:", result.redirectTo);
+  
+  // Store district name for DPRO users
+  if (result.user && result.user.name && formData.username.toUpperCase().startsWith("DP")) {
+    localStorage.setItem("districtName", result.user.name);
+  }
+  
+  navigate(result.redirectTo);
+} else {
+  setError(result.error);
+  if (result.showForceLogout) {
+    setShowForceLogout(true);
+    setCurrentLoginID(result.loginID);
+  }
+}
     } catch (err) {
       console.error("Login error:", err);
       setError(err.response?.data?.error || "Login failed. Please try again.");
@@ -84,15 +90,21 @@ const Login = () => {
       console.log("Retry login result:", result);
 
       if (result.success) {
-        console.log("Login successful, navigating to:", result.redirectTo);
-        navigate(result.redirectTo);
-      } else {
-        setError(result.error || "Login failed after force logout");
-        if (result.showForceLogout) {
-          setShowForceLogout(true);
-          setCurrentLoginID(result.loginID);
-        }
-      }
+  console.log("Login successful, navigating to:", result.redirectTo);
+  
+  // Store district name for DPRO users
+  if (result.user && result.user.name && formData.username.toUpperCase().startsWith("DP")) {
+    localStorage.setItem("districtName", result.user.name);
+  }
+  
+  navigate(result.redirectTo);
+} else {
+  setError(result.error || "Login failed after force logout");
+  if (result.showForceLogout) {
+    setShowForceLogout(true);
+    setCurrentLoginID(result.loginID);
+  }
+}
     } catch (err) {
       console.error("Force logout error:", err);
       setError(err.message || "Force logout failed. Please try again.");

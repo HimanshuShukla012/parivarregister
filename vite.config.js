@@ -378,6 +378,22 @@ export default defineConfig({
           });
         },
       },
+
+      "/district_data_by_login": {
+        target: "http://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying district_data_by_login:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+
+
       "/getZila": {
         target: "http://register.kdsgroup.co.in",
         changeOrigin: true,
