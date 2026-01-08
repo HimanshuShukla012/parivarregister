@@ -408,6 +408,18 @@ export default defineConfig({
           });
         },
       },
+      "/login": {
+        target: "http://register.kdsgroup.co.in:9000",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
       "/logout": {
         target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,

@@ -28,16 +28,16 @@ function getCookie(name) {
 // Helper function to ensure trailing slash
 function ensureTrailingSlash(url) {
   // Don't add trailing slash if URL already has one or has query parameters
-  if (url.endsWith('/') || url.includes('?')) {
+  if (url.endsWith("/") || url.includes("?")) {
     return url;
   }
-  
+
   // Split URL into path and query parts
-  const [path, query] = url.split('?');
-  
+  const [path, query] = url.split("?");
+
   // Add trailing slash to path
-  const pathWithSlash = path.endsWith('/') ? path : `${path}/`;
-  
+  const pathWithSlash = path.endsWith("/") ? path : `${path}/`;
+
   // Rejoin with query if it exists
   return query ? `${pathWithSlash}?${query}` : pathWithSlash;
 }
@@ -47,7 +47,7 @@ api.interceptors.request.use(
   async (config) => {
     // Ensure trailing slash on URL
     config.url = ensureTrailingSlash(config.url);
-    
+
     console.log(`📤 API Request: ${config.method.toUpperCase()} ${config.url}`);
     console.log("🍪 Current cookies:", document.cookie);
 
