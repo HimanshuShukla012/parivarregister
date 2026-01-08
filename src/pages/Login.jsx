@@ -10,6 +10,7 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState();
   const [showForceLogout, setShowForceLogout] = useState(false);
   const [currentLoginID, setCurrentLoginID] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,6 +62,10 @@ const Login = () => {
       // Call force logout
       const logoutResult = await forceLogout(currentLoginID);
       console.log("Force logout result:", logoutResult);
+
+      if (logoutResult.success) {
+        setSuccessMessage(logoutResult.message);
+      }
 
       if (!logoutResult.success) {
         throw new Error(logoutResult.error || "Force logout failed");
@@ -118,7 +123,11 @@ const Login = () => {
           <form onSubmit={handleSubmit} style={styles.form}>
             {error && (
               <div style={styles.errorBox}>
-                <p style={styles.errorText}>{error}</p>
+                {successMessage ? (
+                  <p style={styles.successText}>{successMessage}</p>
+                ) : (
+                  <p style={styles.errorText}>{error}</p>
+                )}
                 {showForceLogout && (
                   <button
                     type="button"
@@ -333,6 +342,11 @@ const styles = {
   },
   errorText: {
     color: "#dc2626",
+    fontSize: "0.9rem",
+    margin: 0,
+  },
+  successText: {
+    color: "#26dc4eff",
     fontSize: "0.9rem",
     margin: 0,
   },
