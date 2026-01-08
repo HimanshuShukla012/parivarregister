@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Check, XCircle, Edit2, Save } from 'lucide-react';
 
 const PDFFamilyViewer = ({ 
@@ -17,6 +17,15 @@ const PDFFamilyViewer = ({
   const [editedData, setEditedData] = useState(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectRemark, setRejectRemark] = useState('');
+
+useEffect(() => {
+  // Cleanup blob URL when component unmounts or URL changes
+  return () => {
+    if (pdfViewerData.url && pdfViewerData.url.startsWith('blob:')) {
+      URL.revokeObjectURL(pdfViewerData.url);
+    }
+  };
+}, [pdfViewerData.url]);
 
   if (!isOpen) return null;
 

@@ -196,17 +196,44 @@ const SachivDashboard = () => {
 };
 
 
-  const handleViewPDF = (pdfNo, fromPage, toPage, gaonCode, familyData) => {
-    // CRITICAL FIX: No trailing slash before query params!
-    let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
-    
-    if (fromPage) url += `&fromPage=${fromPage}`;
-    if (toPage) url += `&toPage=${toPage}`;
-    
-    console.log('🔍 PDF URL:', url);
-    
-    setPdfViewerData({ url, familyData });
-    setShowPDFViewer(true);
+  const handleViewPDF = async (pdfNo, fromPage, toPage, gaonCode, familyData) => {
+    try {
+      // Build the FULL backend URL directly
+      const baseUrl = import.meta.env.MODE === 'development' 
+        ? 'https://parivarregister.kdsgroup.co.in/app'
+        : '';
+      
+      let url = `${baseUrl}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+      
+      if (fromPage) url += `&fromPage=${fromPage}`;
+      if (toPage) url += `&toPage=${toPage}`;
+      
+      console.log('🔍 Fetching PDF from:', url);
+      
+      // Fetch the PDF as a blob with credentials
+      const response = await fetch(url, {
+        credentials: 'include', // This ensures cookies are sent
+        headers: {
+          'Accept': 'application/pdf'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      // Create a blob URL from the response
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      console.log('✅ PDF blob URL created:', blobUrl);
+      
+      setPdfViewerData({ url: blobUrl, familyData });
+      setShowPDFViewer(true);
+    } catch (error) {
+      console.error('❌ Error loading PDF:', error);
+      alert('PDF लोड करने में त्रुटि हुई। कृपया पुनः प्रयास करें।');
+    }
   };
 
 

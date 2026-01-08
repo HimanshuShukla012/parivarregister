@@ -79,7 +79,7 @@ export default defineConfig({
 
       // Get Register PDF
       "/getRegisterPDF": {
-        target: "https://parivarregister.kdsgroup.co.in",
+        target: "https://parivarregister.kdsgroup.co.in/app",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -203,7 +203,7 @@ export default defineConfig({
         },
       },
       "/getPDFPage": {
-        target: "https://parivarregister.kdsgroup.co.in",
+        target: "https://parivarregister.kdsgroup.co.in/app",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -730,7 +730,7 @@ export default defineConfig({
         },
       },
       "/downloadPDFZipNew": {
-        target: "https://parivarregister.kdsgroup.co.in",
+        target: "https://parivarregister.kdsgroup.co.in/app",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {

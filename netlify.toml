@@ -99,19 +99,19 @@
 # ========== PDF SERVER ENDPOINTS ==========
 [[redirects]]
   from = "/getPDFPage/*"
-  to = "https://parivarregister.kdsgroup.co.in/getPDFPage/:splat"
+  to = "https://parivarregister.kdsgroup.co.in/app/getPDFPage/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getRegisterPDF/*"
-  to = "https://parivarregister.kdsgroup.co.in/getRegisterPDF/:splat"
+  to = "https://parivarregister.kdsgroup.co.in/app/getRegisterPDF/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadPDFZipNew/*"
-  to = "https://parivarregister.kdsgroup.co.in/downloadPDFZipNew/:splat"
+  to = "https://parivarregister.kdsgroup.co.in/app/downloadPDFZipNew/:splat"
   status = 200
   force = true
 

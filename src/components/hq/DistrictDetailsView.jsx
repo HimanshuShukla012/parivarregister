@@ -90,14 +90,14 @@ const DistrictDetailsView = ({ district, onBack }) => {
     console.log('Download clicked for metric:', metric);
     console.log('District object:', district);
     
-    // ALWAYS use zilaCode (numeric) for reliability
-    const districtParam = district.zilaCode;
-    
-    if (!districtParam) {
-      console.error('❌ zilaCode missing from district object');
-      alert('Cannot download: District code is missing. Please refresh the page.');
-      return;
-    }
+    // Use district name for the API call
+const districtParam = district.district;
+
+if (!districtParam) {
+  console.error('❌ district name missing from district object');
+  alert('Cannot download: District name is missing. Please refresh the page.');
+  return;
+}
     
     console.log('✅ Using district code:', districtParam);
     
@@ -107,11 +107,10 @@ const DistrictDetailsView = ({ district, onBack }) => {
       const filename = createSafeFilename(`${district.district}_${metric}`, 'xlsx');
       
       console.log('Download request:', { 
-        districtName: district.district, 
-        districtParam, 
-        metric,
-        url 
-      });
+  districtName: districtParam, 
+  metric,
+  url 
+});
       
       await downloadFile(url, filename);
       console.log('✅ Download completed successfully');
