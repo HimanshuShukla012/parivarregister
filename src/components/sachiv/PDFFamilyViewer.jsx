@@ -21,11 +21,11 @@ const PDFFamilyViewer = ({
 useEffect(() => {
   // Cleanup blob URL when component unmounts or URL changes
   return () => {
-    if (pdfViewerData.url && pdfViewerData.url.startsWith('blob:')) {
-      URL.revokeObjectURL(pdfViewerData.url);
+    if (pdfUrl && pdfUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(pdfUrl);
     }
   };
-}, [pdfViewerData.url]);
+}, [pdfUrl]);
 
   if (!isOpen) return null;
 
