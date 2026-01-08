@@ -237,7 +237,6 @@ const SachivDashboard = () => {
       // Fetch the PDF as a blob with credentials
       const response = await fetch(url, {
         credentials: "include", // This ensures cookies are sent
-        withCredentials: true,
         headers: {
           Accept: "application/pdf",
         },
