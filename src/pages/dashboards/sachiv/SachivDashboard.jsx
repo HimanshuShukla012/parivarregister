@@ -235,16 +235,12 @@ const SachivDashboard = () => {
       console.log("🔍 Fetching PDF from:", url);
 
       // Fetch the PDF as a blob with credentials
-      const response = await api.get(
-        `/getRegisterPDF?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`,
-        {
-          credentials: "include", // This ensures cookies are sent
-          withCredentials: true,
-          headers: {
-            Accept: "application/pdf",
-          },
-        }
-      );
+      const response = await fetch(url, {
+        credentials: "include", // This ensures cookies are sent
+        headers: {
+          Accept: "application/pdf",
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
