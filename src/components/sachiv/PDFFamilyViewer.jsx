@@ -1,6 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { X, Check, XCircle, Edit2, Save } from "lucide-react";
 
+const InfoRow = React.memo(
+  ({
+    label,
+    value,
+    highlight,
+    editable,
+    field,
+    memberIndex,
+    isEditing,
+    editedData,
+    setEditedData,
+  }) => {
+    if (isEditing && editable) {
+      return (
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>
+            {label}:
+          </span>
+
+          <input
+            type={field === "dob" || field === "leavingDate" ? "date" : "text"}
+            value={editedData?.[memberIndex]?.[field] || ""}
+            onChange={(e) => {
+              setEditedData((prev) => {
+                const copy = [...prev];
+                copy[memberIndex] = {
+                  ...copy[memberIndex],
+                  [field]: e.target.value,
+                };
+                return copy;
+              });
+            }}
+            style={{
+              flex: 1,
+              padding: "4px 8px",
+              border: "1px solid #d1d5db",
+              borderRadius: "4px",
+              fontSize: "0.85rem",
+            }}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>{label}:</span>
+        <span style={{ color: highlight ? "#dc2626" : "#1f2937" }}>
+          {value || "-"}
+        </span>
+      </div>
+    );
+  }
+);
+
 const PDFFamilyViewer = ({
   isOpen,
   onClose,
@@ -73,64 +128,64 @@ const PDFFamilyViewer = ({
 
   const displayData = isEditing ? editedData : familyData;
 
-  const InfoRow = React.memo(
-    ({
-      label,
-      value,
-      highlight,
-      editable,
-      field,
-      memberIndex,
-      isEditing,
-      editedData,
-      setEditedData,
-    }) => {
-      if (isEditing && editable) {
-        return (
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-            <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>
-              {label}:
-            </span>
+  // const InfoRow = React.memo(
+  //   ({
+  //     label,
+  //     value,
+  //     highlight,
+  //     editable,
+  //     field,
+  //     memberIndex,
+  //     isEditing,
+  //     editedData,
+  //     setEditedData,
+  //   }) => {
+  //     if (isEditing && editable) {
+  //       return (
+  //         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+  //           <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>
+  //             {label}:
+  //           </span>
 
-            <input
-              type={
-                field === "dob" || field === "leavingDate" ? "date" : "text"
-              }
-              value={editedData?.[memberIndex]?.[field] || ""}
-              onChange={(e) => {
-                setEditedData((prev) => {
-                  const copy = [...prev];
-                  copy[memberIndex] = {
-                    ...copy[memberIndex],
-                    [field]: e.target.value,
-                  };
-                  return copy;
-                });
-              }}
-              style={{
-                flex: 1,
-                padding: "4px 8px",
-                border: "1px solid #d1d5db",
-                borderRadius: "4px",
-                fontSize: "0.85rem",
-              }}
-            />
-          </div>
-        );
-      }
+  //           <input
+  //             type={
+  //               field === "dob" || field === "leavingDate" ? "date" : "text"
+  //             }
+  //             value={editedData?.[memberIndex]?.[field] || ""}
+  //             onChange={(e) => {
+  //               setEditedData((prev) => {
+  //                 const copy = [...prev];
+  //                 copy[memberIndex] = {
+  //                   ...copy[memberIndex],
+  //                   [field]: e.target.value,
+  //                 };
+  //                 return copy;
+  //               });
+  //             }}
+  //             style={{
+  //               flex: 1,
+  //               padding: "4px 8px",
+  //               border: "1px solid #d1d5db",
+  //               borderRadius: "4px",
+  //               fontSize: "0.85rem",
+  //             }}
+  //           />
+  //         </div>
+  //       );
+  //     }
 
-      return (
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>
-            {label}:
-          </span>
-          <span style={{ color: highlight ? "#dc2626" : "#1f2937" }}>
-            {value || "-"}
-          </span>
-        </div>
-      );
-    }
-  );
+  //     return (
+  //       <div style={{ display: "flex", justifyContent: "space-between" }}>
+  //         <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>
+  //           {label}:
+  //         </span>
+  //         <span style={{ color: highlight ? "#dc2626" : "#1f2937" }}>
+  //           {value || "-"}
+  //         </span>
+  //       </div>
+  //     );
+  //   }
+  // );
 
   return (
     <div
