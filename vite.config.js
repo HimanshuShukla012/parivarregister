@@ -5,20 +5,12 @@ import react from "@vitejs/plugin-react";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  build: {
-    // Disable build-time caching
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      },
-    },
-  },
   server: {
     port: 3000,
     proxy: {
       // District details endpoint - IMPORTANT: This must come BEFORE /district_*
       "/district/": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -35,7 +27,7 @@ export default defineConfig({
 
       // Gaon (Village) endpoint - CRITICAL for FamilyEntryForm
       "/gaon": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -57,7 +49,7 @@ export default defineConfig({
 
       // Operator Daily Entry Count
       "/opDailyEntryCount": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -72,7 +64,7 @@ export default defineConfig({
 
       // Insert Family Member
       "/insertFamilyMember": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -103,7 +95,7 @@ export default defineConfig({
       // ========== EXISTING ENDPOINTS ==========
 
       "/getBlockByZila": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -124,7 +116,7 @@ export default defineConfig({
       },
 
       "/getApprovedGaonListWithCodeByBlock": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -139,7 +131,7 @@ export default defineConfig({
 
       // Sachiv-specific endpoints
       "/getGaonBySabha": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -151,7 +143,7 @@ export default defineConfig({
         },
       },
       "/getGaonData": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -163,7 +155,7 @@ export default defineConfig({
         },
       },
       "/sachivApprove": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -175,7 +167,7 @@ export default defineConfig({
         },
       },
       "/update-and-insert": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -187,7 +179,7 @@ export default defineConfig({
         },
       },
       "/approveFamilySachiv": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -199,7 +191,7 @@ export default defineConfig({
         },
       },
       "/rejectFamilySachiv": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -211,23 +203,23 @@ export default defineConfig({
         },
       },
       "/getPDFPage": {
-  target: "https://parivarregister.kdsgroup.co.in",
-  changeOrigin: true,
-  secure: false,
-  configure: (proxy) => {
-    proxy.on("proxyReq", (proxyReq, req) => {
-      console.log("🔄 Proxying getPDFPage:", req.url);
-      if (req.headers.cookie) {
-        proxyReq.setHeader("Cookie", req.headers.cookie);
-      }
-    });
-    proxy.on("proxyRes", (proxyRes) => {
-      console.log("✅ PDF Response:", proxyRes.statusCode);
-    });
-  },
-},
+        target: "https://parivarregister.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            console.log("🔄 Proxying getPDFPage:", req.url);
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+          proxy.on("proxyRes", (proxyRes) => {
+            console.log("✅ PDF Response:", proxyRes.statusCode);
+          });
+        },
+      },
       "/downloadGaonSachiv": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -239,7 +231,7 @@ export default defineConfig({
         },
       },
       "/resetPassword": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -251,7 +243,7 @@ export default defineConfig({
         },
       },
       "/ajax_logout": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -265,7 +257,7 @@ export default defineConfig({
 
       // HQ Dashboard endpoints
       "/district_download_api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -283,7 +275,7 @@ export default defineConfig({
         },
       },
       "/district_overview_api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -295,7 +287,7 @@ export default defineConfig({
         },
       },
       "/district_target_report_api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -307,7 +299,7 @@ export default defineConfig({
         },
       },
       "/district_report_api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -319,7 +311,7 @@ export default defineConfig({
         },
       },
       "/download_district_report_api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -339,7 +331,7 @@ export default defineConfig({
         },
       },
       "/download_block_target_report_api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -351,7 +343,7 @@ export default defineConfig({
         },
       },
       "/block_target_report_api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -363,7 +355,7 @@ export default defineConfig({
         },
       },
       "/block_target_report_download": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -375,7 +367,7 @@ export default defineConfig({
         },
       },
       "/verification_status_api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -387,7 +379,7 @@ export default defineConfig({
         },
       },
       "/getZila": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -399,7 +391,7 @@ export default defineConfig({
         },
       },
       "/csrf": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -416,8 +408,20 @@ export default defineConfig({
           });
         },
       },
+      "/login": {
+        target: "http://register.kdsgroup.co.in:9000",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
       "/logout": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -429,7 +433,7 @@ export default defineConfig({
         },
       },
       "/force_logout": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -441,7 +445,7 @@ export default defineConfig({
         },
       },
       "/api": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -463,7 +467,7 @@ export default defineConfig({
 
       // Digitisation Status Tables
       "/digitisationStatusTbl": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -475,7 +479,7 @@ export default defineConfig({
         },
       },
       "/digitisationStatusTblByZila": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -489,7 +493,7 @@ export default defineConfig({
 
       // Date Range Entry Report
       "/downloadEntryDoneInRange": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -503,7 +507,7 @@ export default defineConfig({
 
       // Takeover/Handover Summary
       "/downloadTakeoverHandoverSummary": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -517,20 +521,20 @@ export default defineConfig({
 
       // Master Digitisation Report
       "/download_master_digitisation_report": {
-  target: "https://register.kdsgroup.co.in",
-  changeOrigin: true,
-  secure: false,
-  configure: (proxy) => {
-    proxy.on("proxyReq", (proxyReq, req) => {
-      if (req.headers.cookie) {
-        proxyReq.setHeader("Cookie", req.headers.cookie);
-      }
+        target: "http://register.kdsgroup.co.in:9000",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
           });
         },
       },
 
       "/adminProjectMonitoringCards": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -542,7 +546,7 @@ export default defineConfig({
         },
       },
       "/adminProjectMonitoringTbls": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -554,7 +558,7 @@ export default defineConfig({
         },
       },
       "/downloadDistrictReport": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -566,7 +570,7 @@ export default defineConfig({
         },
       },
       "/downloadBlockReport": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -580,7 +584,7 @@ export default defineConfig({
 
       // ========== OPERATOR MONITORING ENDPOINTS ==========
       "/adminOpMonitoringCards": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -592,7 +596,7 @@ export default defineConfig({
         },
       },
       "/get_operator_family_counts_monthly": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -604,7 +608,7 @@ export default defineConfig({
         },
       },
       "/get_operator_family_counts_today": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -616,7 +620,7 @@ export default defineConfig({
         },
       },
       "/getOperatorsByZila": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -628,7 +632,7 @@ export default defineConfig({
         },
       },
       "/get_operator_monthly_entries_summary": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -640,7 +644,7 @@ export default defineConfig({
         },
       },
       "/download_operator_family_counts_monthly": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -652,7 +656,7 @@ export default defineConfig({
         },
       },
       "/download_operator_family_counts_today": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -664,7 +668,7 @@ export default defineConfig({
         },
       },
       "/download_operator_monthly_entries_summary": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -678,7 +682,7 @@ export default defineConfig({
 
       // ========== DATA MONITORING ENDPOINTS ==========
       "/adminDataMonitoringCards": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -690,7 +694,7 @@ export default defineConfig({
         },
       },
       "/pDFOverviewTbl": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -702,7 +706,7 @@ export default defineConfig({
         },
       },
       "/blockFamilyCount": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -714,7 +718,7 @@ export default defineConfig({
         },
       },
       "/vilFamilyCount": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -738,7 +742,7 @@ export default defineConfig({
         },
       },
       "/get_supervisor_family_counts_today": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -750,7 +754,7 @@ export default defineConfig({
         },
       },
       "/getSupsByZila": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -762,7 +766,7 @@ export default defineConfig({
         },
       },
       "/get_supervisor_monthly_entries_summary": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -774,7 +778,7 @@ export default defineConfig({
         },
       },
       "/downloadDistFamilyCount": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -786,7 +790,7 @@ export default defineConfig({
         },
       },
       "/downloadBlockFamilyCount": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -798,7 +802,7 @@ export default defineConfig({
         },
       },
       "/downloadVilFamilyCount": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -810,7 +814,7 @@ export default defineConfig({
         },
       },
       "/download_supervisor_family_counts_today": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -822,7 +826,7 @@ export default defineConfig({
         },
       },
       "/download_supervisor_monthly_entries_summary": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -834,7 +838,7 @@ export default defineConfig({
         },
       },
       "/download_supervisor_excel_report": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -846,7 +850,7 @@ export default defineConfig({
         },
       },
       "/downloadDigitisationStatusTblByZila": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -858,7 +862,7 @@ export default defineConfig({
         },
       },
       "/get_gaon_family_counts": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -876,7 +880,7 @@ export default defineConfig({
 
       // ========== PM APPROVAL/ROLLBACK ENDPOINTS - ADD THESE ==========
       "/getRejectedGaonList_": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -911,7 +915,7 @@ export default defineConfig({
       },
 
       "/getRejectedByGaonCode": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -925,7 +929,7 @@ export default defineConfig({
       },
 
       "/get_supervisors_desu": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -939,7 +943,7 @@ export default defineConfig({
       },
 
       "/assignSupervisorToRejectedFamilies": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -956,7 +960,7 @@ export default defineConfig({
       },
 
       "/getAssignedRejectedDataBySupervisor": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -973,7 +977,7 @@ export default defineConfig({
       },
 
       "/get_updated_rejected_families": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -987,7 +991,7 @@ export default defineConfig({
       },
 
       "/get_updated_rejected_gaon": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -1001,7 +1005,7 @@ export default defineConfig({
       },
 
       "/bulk-approve-rejected-families": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -1015,7 +1019,7 @@ export default defineConfig({
       },
 
       "/approve-rejected-family": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -1029,7 +1033,7 @@ export default defineConfig({
       },
 
       "/get_approved_gaon_codes": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -1043,7 +1047,7 @@ export default defineConfig({
       },
 
       "/get_all_approved_by_pm_data": {
-        target: "https://register.kdsgroup.co.in",
+        target: "http://register.kdsgroup.co.in:9000",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {

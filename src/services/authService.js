@@ -5,55 +5,55 @@ export const authService = {
   login: async (credentials) => {
     console.log("🔐 Attempting login for:", credentials.username);
 
-    // First, get CSRF token
-    const csrfResponse = await fetch("https://register.kdsgroup.co.in", {
-      credentials: "include",
-    });
-    const csrfData = await csrfResponse.json();
-    const csrfToken = csrfData.csrfToken;
+    try {
+      // 1️⃣ Get CSRF token
+      const csrfResponse = await api.get("/csrf/", {
+        withCredentials: true,
+      });
 
-    console.log("🔐 CSRF Token obtained:", csrfToken ? "Yes" : "No");
+      const csrfToken = csrfResponse.data?.csrfToken;
+      console.log("🔐 CSRF Token obtained:", !!csrfToken);
 
-    // Now login with CSRF token
-    const response = await fetch("https://register.kdsgroup.co.in", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken,
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        loginID: credentials.username,
-        password: credentials.password,
-      }),
-    });
+      // 2️⃣ Login call via proxy
+      const response = await api.post(
+        "/login/",
+        {
+          loginID: credentials.username,
+          password: credentials.password,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "X-CSRFToken": csrfToken,
+          },
+        }
+      );
 
-    const data = await response.json();
+      const data = response.data;
+      console.log("📡 Login response:", data);
 
-    console.log("📡 Login response:", data);
-
-    // Handle both success and specific error cases
-    if (!response.ok) {
-      // If max sessions reached, return special response for force logout
-      if (data.showForceLogout) {
-        console.log("⚠️ Max sessions reached - showing force logout option");
-        return {
-          success: false,
-          error: data.error,
-          showForceLogout: true,
-          loginID: data.loginID,
-        };
+      // 3️⃣ Handle force logout
+      if (!data.success) {
+        if (data.showForceLogout) {
+          return {
+            success: false,
+            error: data.error,
+            showForceLogout: true,
+            loginID: data.loginID,
+          };
+        }
+        throw new Error(data.error || "Login failed");
       }
-      throw new Error(data.error || "Login failed");
+
+      // 4️⃣ Success handling
+      localStorage.setItem("loginID", credentials.username);
+      console.log("✅ Login successful");
+
+      return data;
+    } catch (error) {
+      console.error("❌ Login error:", error);
+      throw error;
     }
-
-    console.log("🍪 Cookies after login (visible only):", document.cookie);
-
-    if (data.success) {
-      console.log("✅ Login successful - session cookie set by backend");
-    }
-
-    return data;
   },
 
   forceLogout: async (loginID) => {
@@ -67,7 +67,7 @@ export const authService = {
 
     // Call the correct endpoint (note: it's '/force_logout/' not '/forceLogout/')
     const response = await fetch(
-      "https://register.kdsgroup.co.in/force_logout/",
+      "http://register.kdsgroup.co.in:9000/force_logout/",
       {
         method: "POST",
         headers: {
@@ -86,13 +86,7 @@ export const authService = {
 
   logout: async () => {
     try {
-      // Clear all browser caches before logout
-      if ('caches' in window) {
-        const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
-      }
-      
-      await fetch("https://register.kdsgroup.co.in/logout/", {
+      await fetch("http://register.kdsgroup.co.in:9000/logout/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,9 +97,10 @@ export const authService = {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Clear ALL localStorage and sessionStorage
-      localStorage.clear();
-      sessionStorage.clear();
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("loginID");
+      console.log("🧹 Local storage cleared");
     }
   },
 

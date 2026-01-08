@@ -187,9 +187,13 @@ const SachivDashboard = () => {
   };
 
   const handleRejectFamily = (id, gaonCode) => {
-    setRejectData({ id, gaonCode });
-    setShowRejectModal(true);
-  };
+  console.log('🔴 handleRejectFamily called!');
+  console.log('ID:', id);
+  console.log('Gaon Code:', gaonCode);
+  setRejectData({ id, gaonCode });
+  setShowRejectModal(true);
+  console.log('🔴 Modal should be shown now, showRejectModal:', true);
+};
 
 
   const handleViewPDF = (pdfNo, fromPage, toPage, gaonCode, familyData) => {
@@ -458,24 +462,33 @@ const SachivDashboard = () => {
             });
           }}
           onEdit={(editedFamilyData) => {
-            const formData = new FormData();
-            editedFamilyData.forEach((member, index) => {
-              Object.keys(member).forEach(key => {
-                formData.append(`${key}_${index}`, member[key]);
-              });
-            });
-            
-            sachivService.updateAndInsert(formData).then(() => {
-              alert('परिवार सफलतापूर्वक अपडेट हो गया!');
-              setShowPDFViewer(false);
-              if (selectedGaonForVerification) {
-                handleVillageClick(selectedGaonForVerification, 'verification');
-              }
-            }).catch(error => {
-              console.error('Error updating family:', error);
-              alert('अपडेट करने में त्रुटि हुई');
-            });
-          }}
+  // Use the same format as EditFamilyModal
+  const updatedFamilyData = editedFamilyData.map(member => ({
+    ...member,
+    houseNumberNum: editedFamilyData[0].houseNumberNum,
+    houseNumberText: editedFamilyData[0].houseNumberText,
+    familyHeadName: editedFamilyData[0].familyHeadName
+  }));
+
+  const payload = {
+    familyData: [{},...updatedFamilyData],
+    gaonCode: updatedFamilyData[0].gaonCode,
+    houseNumberNum: editedFamilyData[0].houseNumberNum,
+    houseNumberText: editedFamilyData[0].houseNumberText,
+    familyHeadName: editedFamilyData[0].familyHeadName
+  };
+
+  sachivService.updateAndInsert(payload).then(() => {
+    alert('परिवार सफलतापूर्वक अपडेट हो गया!');
+    setShowPDFViewer(false);
+    if (selectedGaonForVerification) {
+      handleVillageClick(selectedGaonForVerification, 'verification');
+    }
+  }).catch(error => {
+    console.error('Error updating family:', error);
+    alert('अपडेट करने में त्रुटि हुई');
+  });
+}}
           isApproved={pdfViewerData.familyData?.[0]?.status === 'Approved'}
         />
       )}

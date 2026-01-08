@@ -2,11 +2,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "",
+  baseURL: "/", // Use empty string to make relative URLs work correctly in both dev and prod
   headers: {
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Pragma': 'no-cache',
-    'Expires': '0',
     "Content-Type": "application/json",
   },
   withCredentials: true, // CRITICAL: Send cookies with every request
@@ -31,27 +28,26 @@ function getCookie(name) {
 // Helper function to ensure trailing slash
 function ensureTrailingSlash(url) {
   // Don't add trailing slash if URL already has one or has query parameters
-  if (url.endsWith('/') || url.includes('?')) {
+  if (url.endsWith("/") || url.includes("?")) {
     return url;
   }
-  
+
   // Split URL into path and query parts
-  const [path, query] = url.split('?');
-  
+  const [path, query] = url.split("?");
+
   // Add trailing slash to path
-  const pathWithSlash = path.endsWith('/') ? path : `${path}/`;
-  
+  const pathWithSlash = path.endsWith("/") ? path : `${path}/`;
+
   // Rejoin with query if it exists
   return query ? `${pathWithSlash}?${query}` : pathWithSlash;
 }
 
 // Request interceptor for CSRF token and trailing slash
-// Request interceptor for CSRF token and trailing slash
 api.interceptors.request.use(
   async (config) => {
     // Ensure trailing slash on URL
     config.url = ensureTrailingSlash(config.url);
-    
+
     console.log(`📤 API Request: ${config.method.toUpperCase()} ${config.url}`);
     console.log("🍪 Current cookies:", document.cookie);
 
@@ -121,10 +117,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// Disable all axios caching - MUST BE AFTER INTERCEPTORS
-api.defaults.headers.common['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-api.defaults.headers.common['Pragma'] = 'no-cache';
-api.defaults.headers.common['Expires'] = '0';
 
 export default api;
