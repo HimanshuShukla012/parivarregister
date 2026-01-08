@@ -73,57 +73,64 @@ const PDFFamilyViewer = ({
 
   const displayData = isEditing ? editedData : familyData;
 
-  const InfoRow = ({
-    label,
-    value,
-    highlight,
-    editable,
-    field,
-    memberIndex,
-    isEditing,
-    editedData,
-    setEditedData,
-  }) => {
-    if (isEditing && editable) {
+  const InfoRow = React.memo(
+    ({
+      label,
+      value,
+      highlight,
+      editable,
+      field,
+      memberIndex,
+      isEditing,
+      editedData,
+      setEditedData,
+    }) => {
+      if (isEditing && editable) {
+        return (
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>
+              {label}:
+            </span>
+
+            <input
+              type={
+                field === "dob" || field === "leavingDate" ? "date" : "text"
+              }
+              value={editedData?.[memberIndex]?.[field] || ""}
+              onChange={(e) => {
+                setEditedData((prev) => {
+                  const copy = [...prev];
+                  copy[memberIndex] = {
+                    ...copy[memberIndex],
+                    [field]: e.target.value,
+                  };
+                  return copy;
+                });
+              }}
+              style={{
+                flex: 1,
+                padding: "4px 8px",
+                border: "1px solid #d1d5db",
+                borderRadius: "4px",
+                fontSize: "0.85rem",
+              }}
+            />
+          </div>
+        );
+      }
+
       return (
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>
             {label}:
           </span>
-
-          <input
-            type={field === "dob" ? "date" : "text"}
-            value={editedData[memberIndex][field] || ""}
-            onChange={(e) => {
-              setEditedData((prev) => {
-                const copy = [...prev];
-                copy[memberIndex] = {
-                  ...copy[memberIndex],
-                  [field]: e.target.value,
-                };
-                return copy;
-              });
-            }}
-            style={{
-              flex: 1,
-              padding: "4px 8px",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-            }}
-          />
+          <span style={{ color: highlight ? "#dc2626" : "#1f2937" }}>
+            {value || "-"}
+          </span>
         </div>
       );
     }
-
-    return (
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <span style={{ minWidth: "100px", fontSize: "0.85rem" }}>{label}:</span>
-        <span style={{ color: highlight ? "#dc2626" : "#1f2937" }}>
-          {value || "-"}
-        </span>
-      </div>
-    );
-  };
+  );
 
   return (
     <div
@@ -389,6 +396,9 @@ const PDFFamilyViewer = ({
                       editable={true}
                       field="houseNumberNum"
                       memberIndex={0}
+                      isEditing={isEditing}
+                      editedData={editedData}
+                      setEditedData={setEditedData}
                     />
                     <InfoRow
                       label="परिवार के प्रमुख"
@@ -396,9 +406,24 @@ const PDFFamilyViewer = ({
                       editable={true}
                       field="familyHeadName"
                       memberIndex={0}
+                      isEditing={isEditing}
+                      editedData={editedData}
+                      setEditedData={setEditedData}
                     />
-                    <InfoRow label="गाँव" value={displayData[0].gaon} />
-                    <InfoRow label="गाँव कोड" value={displayData[0].gaonCode} />
+                    <InfoRow
+                      label="गाँव"
+                      value={displayData[0].gaon}
+                      isEditing={isEditing}
+                      editedData={editedData}
+                      setEditedData={setEditedData}
+                    />
+                    <InfoRow
+                      label="गाँव कोड"
+                      value={displayData[0].gaonCode}
+                      isEditing={isEditing}
+                      editedData={editedData}
+                      setEditedData={setEditedData}
+                    />
                   </div>
                 </div>
 
@@ -492,20 +517,22 @@ const PDFFamilyViewer = ({
                         <InfoRow
                           label="सदस्य का नाम"
                           value={member.memberName}
-                          editable
+                          editable={true}
                           field="memberName"
                           memberIndex={index}
                           isEditing={isEditing}
                           editedData={editedData}
                           setEditedData={setEditedData}
                         />
-
                         <InfoRow
                           label="पिता/पति"
                           value={member.fatherOrHusbandName}
                           editable={true}
                           field="fatherOrHusbandName"
                           memberIndex={index}
+                          isEditing={isEditing}
+                          editedData={editedData}
+                          setEditedData={setEditedData}
                         />
                         <InfoRow
                           label="लिंग"
@@ -513,6 +540,9 @@ const PDFFamilyViewer = ({
                           editable={true}
                           field="gender"
                           memberIndex={index}
+                          isEditing={isEditing}
+                          editedData={editedData}
+                          setEditedData={setEditedData}
                         />
                         <InfoRow
                           label="जन्म तिथि"
@@ -522,6 +552,9 @@ const PDFFamilyViewer = ({
                           editable={true}
                           field="dob"
                           memberIndex={index}
+                          isEditing={isEditing}
+                          editedData={editedData}
+                          setEditedData={setEditedData}
                         />
                         <InfoRow
                           label="धर्म"
@@ -529,6 +562,9 @@ const PDFFamilyViewer = ({
                           editable={true}
                           field="religion"
                           memberIndex={index}
+                          isEditing={isEditing}
+                          editedData={editedData}
+                          setEditedData={setEditedData}
                         />
                         <InfoRow
                           label="जाति"
@@ -536,6 +572,9 @@ const PDFFamilyViewer = ({
                           editable={true}
                           field="caste"
                           memberIndex={index}
+                          isEditing={isEditing}
+                          editedData={editedData}
+                          setEditedData={setEditedData}
                         />
                         <InfoRow
                           label="व्यवसाय"
@@ -543,6 +582,9 @@ const PDFFamilyViewer = ({
                           editable={true}
                           field="business"
                           memberIndex={index}
+                          isEditing={isEditing}
+                          editedData={editedData}
+                          setEditedData={setEditedData}
                         />
                         <InfoRow
                           label="शिक्षा"
@@ -550,6 +592,9 @@ const PDFFamilyViewer = ({
                           editable={true}
                           field="literacy"
                           memberIndex={index}
+                          isEditing={isEditing}
+                          editedData={editedData}
+                          setEditedData={setEditedData}
                         />
                         {member.qualification && (
                           <InfoRow
@@ -558,6 +603,9 @@ const PDFFamilyViewer = ({
                             editable={true}
                             field="qualification"
                             memberIndex={index}
+                            isEditing={isEditing}
+                            editedData={editedData}
+                            setEditedData={setEditedData}
                           />
                         )}
                         {member.description && (
@@ -568,6 +616,9 @@ const PDFFamilyViewer = ({
                             editable={true}
                             field="description"
                             memberIndex={index}
+                            isEditing={isEditing}
+                            editedData={editedData}
+                            setEditedData={setEditedData}
                           />
                         )}
                       </div>
