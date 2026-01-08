@@ -496,7 +496,7 @@
 
 [[redirects]]
   from = "/login/"
-  to = "http://register.kdsgroup.co.in/"
+  to = "http://register.kdsgroup.co.in/login/"
   status = 200
   force = true
 
