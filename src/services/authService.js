@@ -7,14 +7,10 @@ export const authService = {
 
     try {
       // 1️⃣ Get CSRF token
-      const csrfResponse = await api.get("/csrf/", {
-        withCredentials: true,
-      });
-
+      const csrfResponse = await api.get("/csrf/", { withCredentials: true });
       const csrfToken = csrfResponse.data?.csrfToken;
-      console.log("🔐 CSRF Token obtained:", !!csrfToken);
 
-      // 2️⃣ Login call via proxy
+      // 2️⃣ Login call
       const response = await api.post(
         "/login/",
         {
@@ -23,36 +19,31 @@ export const authService = {
         },
         {
           withCredentials: true,
-          headers: {
-            "X-CSRFToken": csrfToken,
-          },
+          headers: { "X-CSRFToken": csrfToken },
         }
       );
 
-      const data = response.data;
-      console.log("📡 Login response:", data);
+      console.log("📡 Login response:", response.data);
 
-      // 3️⃣ Handle force logout
-      if (!data.success) {
-        if (data.showForceLogout) {
-          return {
-            success: false,
-            error: data.error,
-            showForceLogout: true,
-            loginID: data.loginID,
-          };
-        }
-        throw new Error(data.error || "Login failed");
-      }
-
-      // 4️⃣ Success handling
+      // ✅ success (2xx only reaches here)
       localStorage.setItem("loginID", credentials.username);
-      console.log("✅ Login successful");
-
-      return data;
+      return response.data;
     } catch (error) {
       console.error("❌ Login error:", error);
-      throw error;
+
+      // ✅ IMPORTANT: read backend response
+      const apiData = error.response?.data;
+
+      if (apiData) {
+        console.log("📡 API Error Data:", apiData);
+        return apiData; // <-- return real backend JSON
+      }
+
+      // fallback network error
+      return {
+        success: false,
+        error: "Network error. Please try again.",
+      };
     }
   },
 
@@ -66,17 +57,27 @@ export const authService = {
       ?.split("=")[1];
 
     // Call the correct endpoint (note: it's '/force_logout/' not '/forceLogout/')
-    const response = await fetch(
-      "http://register.kdsgroup.co.in/force_logout/",
+    const response = await api.post(
+      "/force_logout/",
       {
-        method: "POST",
+        loginID,
+      },
+      {
+        withCredentials: true,
         headers: {
-          "Content-Type": "application/json",
           "X-CSRFToken": csrfToken,
         },
-        credentials: "include",
-        body: JSON.stringify({ loginID }),
       }
+
+      // {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     "X-CSRFToken": csrfToken,
+      //   },
+      //   credentials: "include",
+      //   body: JSON.stringify({ loginID }),
+      // }
     );
 
     const data = await response.json();
