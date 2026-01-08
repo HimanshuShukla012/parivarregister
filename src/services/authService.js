@@ -67,7 +67,7 @@ export const authService = {
 
     // Call the correct endpoint (note: it's '/force_logout/' not '/forceLogout/')
     const response = await fetch(
-      "http://register.kdsgroup.co.in:9000/force_logout/",
+      "http://register.kdsgroup.co.in/force_logout/",
       {
         method: "POST",
         headers: {
@@ -86,7 +86,7 @@ export const authService = {
 
   logout: async () => {
     try {
-      await fetch("http://register.kdsgroup.co.in:9000/logout/", {
+      await fetch("http://register.kdsgroup.co.in/logout/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
