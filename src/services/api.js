@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/", // Use empty string to make relative URLs work correctly in both dev and prod
+  baseURL: "", // Use empty string to make relative URLs work correctly in both dev and prod
   headers: {
     "Content-Type": "application/json",
   },
