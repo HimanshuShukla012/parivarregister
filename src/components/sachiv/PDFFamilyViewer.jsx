@@ -446,10 +446,20 @@ const PDFFamilyViewer = ({
                 >
                   <div style={{ display: "grid", gap: "12px" }}>
                     <InfoRow
-                      label="मकान नंबर"
+                      label="मकान नम्बर (अंकों में"
                       value={displayData[0].houseNumberNum}
                       editable={true}
                       field="houseNumberNum"
+                      memberIndex={0}
+                      isEditing={isEditing}
+                      editedData={editedData}
+                      setEditedData={setEditedData}
+                    />
+                    <InfoRow
+                      label="मकान नम्बर (अक्षरों में)"
+                      value={formData.common.houseNumberText}
+                      editable={true}
+                      field="houseNumberText"
                       memberIndex={0}
                       isEditing={isEditing}
                       editedData={editedData}
