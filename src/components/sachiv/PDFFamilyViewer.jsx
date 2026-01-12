@@ -457,7 +457,7 @@ const PDFFamilyViewer = ({
                     />
                     <InfoRow
                       label="मकान नम्बर (अक्षरों में)"
-                      value={displayData[0].houseNumberNum}
+                      value={displayData[0].houseNumberText}
                       editable={true}
                       field="houseNumberText"
                       memberIndex={0}
