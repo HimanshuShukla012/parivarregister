@@ -1,6 +1,7 @@
 // src/pages/dashboards/dpro/DPRODashboard.jsx
 import { useState, useEffect, useRef } from "react";
 import dproService from "../../../services/dproService";
+import * as XLSX from "xlsx";
 import "../../../assets/styles/pages/hq.css"; // Reuse HQ styles
 
 const DPRODashboard = () => {
@@ -298,6 +299,76 @@ const DPRODashboard = () => {
     }
   };
 
+  const downloadBlockReportExcel = () => {
+    try {
+      const wb = XLSX.utils.book_new();
+
+      const data = blockReport.map((b, i) => ({
+        "SL NO": i + 1,
+        "Block Name": b.block_name,
+        "No. of GPs": b.no_of_gps,
+        "GPs Scanned": b.no_of_gps_scanned,
+        "Families Registered": b.no_of_families_registered,
+        "Families Verified": b.no_of_families_record_verified,
+        "% Data Verification": b.percentage_data_verification,
+        "GPs Data Verified": b.no_of_gps_data_verified,
+        "Pending GPs": b.pending_gps_for_verification,
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, "Block Report");
+
+      XLSX.writeFile(wb, `${districtName}_Block_Report.xlsx`);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const downloadCompletedGpExcel = () => {
+    try {
+      const wb = XLSX.utils.book_new();
+
+      const data = gpData.map((g, i) => ({
+        "SL NO": i + 1,
+        "Block Name": g.name_of_block,
+        "GP Name": g.name_of_gp,
+        "Families Registered": g.no_of_families_registered_in_gp,
+        "Families Verified": g.no_of_families_data_verified,
+        "% Data Verification": g.percentage_of_data_verification,
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, "Completed GPs");
+
+      XLSX.writeFile(wb, `${districtName}_Completed_GP_Report.xlsx`);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const downloadPendingGpExcel = () => {
+    try {
+      const wb = XLSX.utils.book_new();
+
+      const data = gpPendingData.map((g, i) => ({
+        "SL NO": i + 1,
+        "Block Name": g.name_of_block,
+        "Pending GP": g.name_of_pending_gps,
+        "Families Registered": g.no_of_families_registered_in_gp,
+        "Families Verified": g.no_of_families_data_verified,
+        "Pending Families": g.pending_families_for_verification,
+        "% Data Verification": g.percentage_of_data_verification,
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, "Pending GPs");
+
+      XLSX.writeFile(wb, `${districtName}_Pending_GP_Report.xlsx`);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleViewPDF = (pdfNo, fromPage, toPage, gaonCode) => {
     dproService.viewPDFPage(pdfNo, fromPage, toPage, gaonCode);
   };
@@ -460,12 +531,12 @@ const DPRODashboard = () => {
             <div className="table-container">
               <div className="table-header">
                 <h3 className="table-title">Block Report - {districtName}</h3>
-                {/* <button
+                <button
                   className="download-btn"
-                  onClick={handleDownloadBlockReport}
+                  onClick={downloadBlockReportExcel}
                 >
                   <i className="fas fa-download"></i> Download Report
-                </button> */}
+                </button>
               </div>
               <div className="table-wrapper">
                 <table>
@@ -630,6 +701,12 @@ const DPRODashboard = () => {
                 <h3 className="table-title">
                   Block Report - {gpData[0]?.name_of_block}
                 </h3>
+                <button
+                  className="download-btn"
+                  onClick={downloadCompletedGpExcel}
+                >
+                  <i className="fas fa-download"></i> Download Report
+                </button>
               </div>
               <div className="table-wrapper">
                 <table>
@@ -672,6 +749,12 @@ const DPRODashboard = () => {
                 <h3 className="table-title">
                   Block Report - {gpPendingData[0]?.name_of_block}
                 </h3>
+                <button
+                  className="download-btn"
+                  onClick={downloadPendingGpExcel}
+                >
+                  <i className="fas fa-download"></i> Download Report
+                </button>
               </div>
               <div className="table-wrapper">
                 <table>
