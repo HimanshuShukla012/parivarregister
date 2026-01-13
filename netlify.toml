@@ -265,6 +265,24 @@
   status = 200
   force = true
 
+  [[redirects]]
+  from = "/tehsil_gp_target_report_api_/*"
+  to = "http://register.kdsgroup.co.in/tehsil_gp_target_report_api_/:splat"
+  status = 200
+  force = true
+
+  [[redirects]]
+  from = "/pending_gp_verification_report_api/*"
+  to = "http://register.kdsgroup.co.in/pending_gp_verification_report_api/:splat"
+  status = 200
+  force = true
+
+  [[redirects]]
+  from = "/gp_wise_detail_report_api/*"
+  to = "http://register.kdsgroup.co.in/gp_wise_detail_report_api/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/block_target_report_download/*"
   to = "http://register.kdsgroup.co.in/block_target_report_download/:splat"

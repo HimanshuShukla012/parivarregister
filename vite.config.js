@@ -354,6 +354,43 @@ export default defineConfig({
           });
         },
       },
+      //DPRO Dashboard API
+      "/tehsil_gp_target_report_api_": {
+        target: "http://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+      "/pending_gp_verification_report_api": {
+        target: "http://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
+      "/gp_wise_detail_report_api": {
+        target: "http://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
       "/block_target_report_download": {
         target: "http://register.kdsgroup.co.in",
         changeOrigin: true,
@@ -392,7 +429,6 @@ export default defineConfig({
           });
         },
       },
-
 
       "/getZila": {
         target: "http://register.kdsgroup.co.in",

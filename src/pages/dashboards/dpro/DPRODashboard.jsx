@@ -1,9 +1,10 @@
 // src/pages/dashboards/dpro/DPRODashboard.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import dproService from "../../../services/dproService";
 import "../../../assets/styles/pages/hq.css"; // Reuse HQ styles
 
 const DPRODashboard = () => {
+  const gpSectionRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [districtName, setDistrictName] = useState("");
   const [districtOverview, setDistrictOverview] = useState(null);
@@ -19,18 +20,24 @@ const DPRODashboard = () => {
   const [gaonData, setGaonData] = useState([]);
   const [showGaonData, setShowGaonData] = useState(false);
   const [error, setError] = useState("");
+  const [gpData, setGpData] = useState([]);
+  const [gpPendingData, setPendingData] = useState([]);
+  const [showGpData, setShowGpData] = useState(false);
+  const [showPendingGpData, setShowPendingGpData] = useState(false);
+
+  console.log("blockReport", blockReport);
 
   useEffect(() => {
     // Get district name from localStorage (set during login)
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const district = user.name || localStorage.getItem("districtName");
-    
+
     if (!district) {
       alert("District information not found. Please login again.");
       window.location.href = "/";
       return;
     }
-    
+
     setDistrictName(district);
     initDashboard(district);
   }, []);
@@ -47,84 +54,89 @@ const DPRODashboard = () => {
     try {
       // Get loginId from localStorage
       const loginId = localStorage.getItem("loginID");
-      
+
       if (!loginId) {
         alert("Login ID not found. Please login again.");
         window.location.href = "/";
         return;
       }
 
-      const [overview, details, blocks, verification, districtData] = await Promise.all([
-  dproService.getDistrictOverview(district),
-  dproService.getDistrictDetails(district),
-  dproService.getBlockReport(district),
-  dproService.getVerificationStatus(district),
-  dproService.getDistrictDataByLogin(loginId),
-]);
+      const [overview, details, blocks, verification, districtData] =
+        await Promise.all([
+          dproService.getDistrictOverview(district),
+          dproService.getDistrictDetails(district),
+          dproService.getBlockReport(district),
+          dproService.getVerificationStatus(district),
+          dproService.getDistrictDataByLogin(loginId),
+        ]);
 
-// Merge block report data into overview for accurate totals
-// Sum up data from all blocks for this district
-const totalDataEntryDone = blocks.reduce((sum, block) => {
-  return sum + (block.families_data_entry_done || 0);
-}, 0);
+      // Merge block report data into overview for accurate totals
+      // Sum up data from all blocks for this district
+      const totalDataEntryDone = blocks.reduce((sum, block) => {
+        return sum + (block.families_data_entry_done || 0);
+      }, 0);
 
-const totalSachivVerified = blocks.reduce((sum, block) => {
-  return sum + (block.sachiv_verified || 0);
-}, 0);
+      const totalSachivVerified = blocks.reduce((sum, block) => {
+        return sum + (block.sachiv_verified || 0);
+      }, 0);
 
-const totalVillages = blocks.reduce((sum, block) => {
-  return sum + (block.villages || 0);
-}, 0);
+      const totalVillages = blocks.reduce((sum, block) => {
+        return sum + (block.villages || 0);
+      }, 0);
 
-const totalTargetedVillages = blocks.reduce((sum, block) => {
-  return sum + (block.targeted_villages || 0);
-}, 0);
+      const totalTargetedVillages = blocks.reduce((sum, block) => {
+        return sum + (block.targeted_villages || 0);
+      }, 0);
 
-const totalApproximateFamilies = blocks.reduce((sum, block) => {
-  return sum + (block.approximate_families || 0);
-}, 0);
+      const totalApproximateFamilies = blocks.reduce((sum, block) => {
+        return sum + (block.approximate_families || 0);
+      }, 0);
 
-const totalGP = blocks.reduce((sum, block) => {
-  return sum + (block.gp || 0);
-}, 0);
+      const totalGP = blocks.reduce((sum, block) => {
+        return sum + (block.gp || 0);
+      }, 0);
 
-// Merge the totals into overview
-const mergedOverview = {
-  ...overview,
-  data_entry_done: totalDataEntryDone,
-  sachiv_verified: totalSachivVerified,
-  villages: totalVillages,
-  targeted_villages: totalTargetedVillages,
-  approximate_families: totalApproximateFamilies,
-  gp: totalGP,
-};
+      // Merge the totals into overview
+      const mergedOverview = {
+        ...overview,
+        data_entry_done: totalDataEntryDone,
+        sachiv_verified: totalSachivVerified,
+        villages: totalVillages,
+        targeted_villages: totalTargetedVillages,
+        approximate_families: totalApproximateFamilies,
+        gp: totalGP,
+      };
 
-setDistrictOverview(mergedOverview);
-setDistrictDetails(details);
-setBlockReport(blocks);
+      setDistrictOverview(mergedOverview);
+      setDistrictDetails(details);
+      setBlockReport(blocks);
 
-// Get sachiv verified and rejected from district data API
-const sachivVerifiedFamilies = parseInt(districtData?.data?.sachivVerified || 0);
-const sachivRejectedFamilies = parseInt(districtData?.data?.sachivRejected || 0);
-const dataEntryDone = totalDataEntryDone || 0;
+      // Get sachiv verified and rejected from district data API
+      const sachivVerifiedFamilies = parseInt(
+        districtData?.data?.sachivVerified || 0
+      );
+      const sachivRejectedFamilies = parseInt(
+        districtData?.data?.sachivRejected || 0
+      );
+      const dataEntryDone = totalDataEntryDone || 0;
 
-// Calculate percentages based on data entry done
-const sachivVerifiedPercent = dataEntryDone > 0 ? ((sachivVerifiedFamilies / dataEntryDone) * 100) : 0;
-const adoVerifiedPercent = verification?.ado_verified_percent || 0;
-const dproVerifiedPercent = verification?.dpro_verified_percent || 0;
+      // Calculate percentages based on data entry done
+      const sachivVerifiedPercent =
+        dataEntryDone > 0 ? (sachivVerifiedFamilies / dataEntryDone) * 100 : 0;
+      const adoVerifiedPercent = verification?.ado_verified_percent || 0;
+      const dproVerifiedPercent = verification?.dpro_verified_percent || 0;
 
-const calculatedVerification = {
-  sachiv_verified_percent: sachivVerifiedPercent,
-  ado_verified_percent: adoVerifiedPercent,
-  dpro_verified_percent: dproVerifiedPercent,
-  sachiv_verified_families: sachivVerifiedFamilies,
-  sachiv_rejected_families: sachivRejectedFamilies,
-  data_entry_done: dataEntryDone
-};
+      const calculatedVerification = {
+        sachiv_verified_percent: sachivVerifiedPercent,
+        ado_verified_percent: adoVerifiedPercent,
+        dpro_verified_percent: dproVerifiedPercent,
+        sachiv_verified_families: sachivVerifiedFamilies,
+        sachiv_rejected_families: sachivRejectedFamilies,
+        data_entry_done: dataEntryDone,
+      };
 
-setVerificationStatus(calculatedVerification);
-setSachivVerifiedCount(sachivVerifiedFamilies);
-
+      setVerificationStatus(calculatedVerification);
+      setSachivVerifiedCount(sachivVerifiedFamilies);
     } catch (error) {
       console.error("Error initializing DPRO dashboard:", error);
       alert("Failed to load dashboard data. Please try again.");
@@ -191,10 +203,68 @@ setSachivVerifiedCount(sachivVerifiedFamilies);
     }
   };
 
+  const handleCompletedGpData = async (block) => {
+    console.log("bjbjlkj", block);
+    // setSelectedBlock(block);
+    setShowGpData(false);
+
+    if (block) {
+      try {
+        const gaonData = await dproService.getCompletedGPReport(block);
+        setShowGpData(true);
+        setGpData(gaonData);
+        if (gaonData.length === 0) {
+          setError("No villages found for this block");
+        }
+        // 👉 scroll to GP section
+        requestAnimationFrame(() => {
+          gpSectionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        });
+      } catch (error) {
+        console.error("Error fetching gaons:", error);
+        setError("Failed to load villages");
+        setGaons([]);
+      }
+    }
+  };
+
+  const handlePendingGpData = async (block) => {
+    console.log("bjbjlkj", block);
+    // setSelectedBlock(block);
+    setShowPendingGpData(false);
+
+    if (block) {
+      try {
+        const gaonData = await dproService.getPendingGPReport(block);
+        console.log("gaonData", gaonData);
+
+        setShowPendingGpData(true);
+        setPendingData(gaonData);
+        if (gaonData.length === 0) {
+          setError("No villages found for this block");
+        }
+        // 👉 scroll to GP section
+        requestAnimationFrame(() => {
+          gpSectionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        });
+      } catch (error) {
+        console.error("Error fetching gaons:", error);
+        setError("Failed to load villages");
+        setGaons([]);
+      }
+    }
+  };
+
   const handleDownloadMetric = async (metric, e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     try {
       const blob = await dproService.downloadMetricData(districtName, metric);
       const url = window.URL.createObjectURL(blob);
@@ -315,7 +385,12 @@ setSachivVerifiedCount(sachivVerifiedFamilies);
               <span style={{ marginRight: "12px", fontWeight: 600 }}>
                 {districtName}
               </span>
-              <a href="/" className="logout" onClick={handleLogout}>
+              <a
+                href="/"
+                className="logout"
+                style={{ position: "relative", padding: "10px" }}
+                onClick={handleLogout}
+              >
                 <i className="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
               </a>
@@ -326,9 +401,7 @@ setSachivVerifiedCount(sachivVerifiedFamilies);
 
       {/* Main Content */}
       <div className="main-content">
-        <h1 className="page-title">
-          DPRO Dashboard - {districtName} District
-        </h1>
+        <h1 className="page-title">DPRO Dashboard - {districtName} District</h1>
 
         {/* District Overview Card */}
         {!showDetailsView && districtOverview && (
@@ -337,7 +410,7 @@ setSachivVerifiedCount(sachivVerifiedFamilies);
               <h2 className="section-title">District Overview</h2>
               <div className="section-line"></div>
             </div>
-            <div className="district-cards">
+            {/* <div className="district-cards">
               <div className="district-card" onClick={handleViewDetails}>
                 <div className="district-name">{districtName}</div>
                 <div className="district-metrics">
@@ -383,6 +456,77 @@ setSachivVerifiedCount(sachivVerifiedFamilies);
                   </div>
                 </div>
               </div>
+            </div> */}
+            <div className="table-container">
+              <div className="table-header">
+                <h3 className="table-title">Block Report - {districtName}</h3>
+                {/* <button
+                  className="download-btn"
+                  onClick={handleDownloadBlockReport}
+                >
+                  <i className="fas fa-download"></i> Download Report
+                </button> */}
+              </div>
+              <div className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>SL. NO.</th>
+                      <th>Block Name</th>
+                      <th>No. of GP's</th>
+                      <th>No. of GP's Scanned</th>
+                      <th>No. of Families registered</th>
+                      <th>No. of Families record verified</th>
+                      <th>% of Data Verification</th>
+                      <th>No. of GP's Data verified</th>
+                      <th>Pending GP's for verification</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {blockReport.map((block, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{block.block_name}</td>
+                        <td>{block.no_of_gps}</td>
+                        <td>{block.no_of_gps_scanned}</td>
+                        <td>{block.no_of_families_registered}</td>
+                        <td>{block.no_of_families_record_verified}</td>
+                        <td>{block.percentage_data_verification}</td>
+                        <td style={{ cursor: "pointer" }}>
+                          <div className="view_button_box">
+                            <span>{block.no_of_gps_data_verified}</span>
+                            {/* {block.no_of_gps_data_verified != 0 && ( */}
+                            <button
+                              className="download-btn view_button"
+                              onClick={() =>
+                                handleCompletedGpData(block.block_name)
+                              }
+                            >
+                              <i className="fas fa-eye"></i>
+                            </button>
+                            {/* )} */}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="view_button_box">
+                            <span>{block.pending_gps_for_verification}</span>
+                            {/* {block.pending_gps_for_verification != 0 && ( */}
+                            <button
+                              className="download-btn view_button"
+                              onClick={() =>
+                                handlePendingGpData(block.block_name)
+                              }
+                            >
+                              <i className="fas fa-eye"></i>
+                            </button>
+                            {/* )} */}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -424,11 +568,15 @@ setSachivVerifiedCount(sachivVerifiedFamilies);
                 },
                 {
                   label: "Approx. Families",
-                  value: safeNumber(districtDetails.approximateFamilies).toLocaleString(),
+                  value: safeNumber(
+                    districtDetails.approximateFamilies
+                  ).toLocaleString(),
                 },
                 {
                   label: "Data Entry Done",
-                  value: safeNumber(districtDetails.dataEntryDone).toLocaleString(),
+                  value: safeNumber(
+                    districtDetails.dataEntryDone
+                  ).toLocaleString(),
                 },
                 {
                   label: "Data Entry %",
@@ -471,43 +619,38 @@ setSachivVerifiedCount(sachivVerifiedFamilies);
         )}
 
         {/* Block Report Table */}
-        {blockReport && blockReport.length > 0 && (
-          <div className="section">
+        {showGpData && gpData.length > 0 && (
+          <div className="section" ref={gpSectionRef}>
             <div className="section-header">
-              <h2 className="section-title">Block Wise Summary</h2>
+              <h2 className="section-title">Completed GP's Table</h2>
               <div className="section-line"></div>
             </div>
             <div className="table-container">
               <div className="table-header">
-                <h3 className="table-title">Block Report - {districtName}</h3>
-                <button
-                  className="download-btn"
-                  onClick={handleDownloadBlockReport}
-                >
-                  <i className="fas fa-download"></i> Download Report
-                </button>
+                <h3 className="table-title">
+                  Block Report - {gpData[0]?.name_of_block}
+                </h3>
               </div>
               <div className="table-wrapper">
                 <table>
                   <thead>
                     <tr>
-                      <th>Block Name</th>
-                      <th>Total GP</th>
-                      <th>Total Villages</th>
-                      <th>Targeted Villages</th>
-                      <th>Approximate Families</th>
-                      <th>Data Entry Done</th>
+                      <th>Name of Block</th>
+                      <th>Name of GP</th>
+                      <th>No. of Families registered in GP</th>
+                      <th>No. of families data verified</th>
+                      <th>% of Data Verification</th>
+                      {/* <th>Data Entry Done</th> */}
                     </tr>
                   </thead>
                   <tbody>
-                    {blockReport.map((block, index) => (
+                    {gpData.map((block, index) => (
                       <tr key={index}>
-                        <td>{block.block}</td>
-                        <td>{block.gp}</td>
-                        <td>{block.villages}</td>
-                        <td>{block.targeted_villages}</td>
-                        <td>{block.approximate_families?.toLocaleString()}</td>
-                        <td>{block.families_data_entry_done?.toLocaleString()}</td>
+                        <td>{block.name_of_block}</td>
+                        <td>{block.name_of_gp}</td>
+                        <td>{block.no_of_families_registered_in_gp}</td>
+                        <td>{block.no_of_families_data_verified}</td>
+                        <td>{block.percentage_of_data_verification}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -517,196 +660,46 @@ setSachivVerifiedCount(sachivVerifiedFamilies);
           </div>
         )}
 
-        {/* Verification Status */}
-        {verificationStatus && (
-          <div className="section">
+        {/* Block Report Table */}
+        {showPendingGpData && gpPendingData.length > 0 && (
+          <div className="section" ref={gpSectionRef}>
             <div className="section-header">
-              <h2 className="section-title">Verification Status</h2>
+              <h2 className="section-title">Pending GP's Table</h2>
               <div className="section-line"></div>
             </div>
-            <div className="verification-cards">
-              <div className="verification-card">
-                <div className="verification-icon sachiv">
-                  <i className="fas fa-user-check"></i>
-                </div>
-                <div className="verification-content">
-                  <div className="verification-percentage">
-                    {safePercent(verificationStatus.sachiv_verified_percent)}
-                  </div>
-                  <div className="verification-label">Sachiv Verified</div>
-                </div>
+            <div className="table-container">
+              <div className="table-header">
+                <h3 className="table-title">
+                  Block Report - {gpPendingData[0]?.name_of_block}
+                </h3>
               </div>
-              <div className="verification-card">
-                <div className="verification-icon ado">
-                  <i className="fas fa-user-shield"></i>
-                </div>
-                <div className="verification-content">
-                  <div className="verification-percentage">
-                    {safePercent(verificationStatus.ado_verified_percent)}
-                  </div>
-                  <div className="verification-label">ADO Verified</div>
-                </div>
-              </div>
-              <div className="verification-card">
-                <div className="verification-icon dpro">
-                  <i className="fas fa-user-tie"></i>
-                </div>
-                <div className="verification-content">
-                  <div className="verification-percentage">
-                    {safePercent(verificationStatus.dpro_verified_percent)}
-                  </div>
-                  <div className="verification-label">DPRO Verified</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Verify Data Entry Form */}
-        <div className="section">
-          <div className="section-header">
-            <h2 className="section-title">Verify Data Entry</h2>
-            <div className="section-line"></div>
-          </div>
-
-          {error && (
-            <div
-              style={{
-                padding: "12px",
-                margin: "10px 0",
-                backgroundColor: "#fee2e2",
-                border: "1px solid #ef4444",
-                borderRadius: "6px",
-                color: "#dc2626",
-                fontSize: "14px",
-              }}
-            >
-              <i className="fas fa-exclamation-triangle" style={{ marginRight: "8px" }}></i>
-              {error}
-            </div>
-          )}
-
-          <div className="filter-section">
-            <div className="formSubContainer">
-              <div>
-                <label htmlFor="blockSelect">
-                  ब्लाक <span className="required">*</span>
-                </label>
-                <select
-                  id="blockSelect"
-                  value={selectedBlock}
-                  onChange={handleBlockChange}
-                >
-                  <option value="">Select Block</option>
-                  {blocks.map((block) => (
-                    <option key={block.blockCode || block.block} value={block.block}>
-                      {block.block}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="gaonSelect">
-                  गाँव <span className="required">*</span>
-                </label>
-                <select
-                  id="gaonSelect"
-                  value={selectedGaon}
-                  onChange={handleGaonChange}
-                  disabled={!selectedBlock}
-                >
-                  <option value="">Select Gaon</option>
-                  {gaons.map((gaon) => (
-                    <option key={gaon.gaonCode} value={gaon.gaonCode}>
-                      {gaon.gaon}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <button
-                id="gaonBtn"
-                type="button"
-                onClick={handleViewGaonData}
-                disabled={!selectedGaon}
-              >
-                <i className="fas fa-search"></i> डेटा प्राप्त करें
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Gaon Data Table */}
-        {showGaonData && gaonData.length > 0 && (
-          <div className="section">
-            <div className="section-header">
-              <h2 className="section-title">गाँव डेटा</h2>
-              <div className="section-line"></div>
-            </div>
-            <div className="table-container1">
-              <table className="gaon-data-table">
-                <thead>
-                  <tr>
-                    <th>जिला</th>
-                    <th>तहसील</th>
-                    <th>ब्लाक</th>
-                    <th>गाँव सभा</th>
-                    <th>गाँव कोड</th>
-                    <th>गाँव</th>
-                    <th>न्याय पंचायत</th>
-                    <th>क्रम संख्या</th>
-                    <th>मकान नम्बर</th>
-                    <th>परिवार के प्रमुख का नाम</th>
-                    <th>परिवार के सदस्य का नाम</th>
-                    <th>पिता/पति का नाम</th>
-                    <th>लिंग</th>
-                    <th>धर्म</th>
-                    <th>जाति</th>
-                    <th>जन्म तिथि</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {gaonData.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.zila || ""}</td>
-                      <td>{row.tehsil || ""}</td>
-                      <td>{row.block || ""}</td>
-                      <td>{row.sabha || ""}</td>
-                      <td>{row.gaonCode || ""}</td>
-                      <td>{row.gaon || ""}</td>
-                      <td>{row.panchayat || ""}</td>
-                      <td>{row.serialNo || ""}</td>
-                      <td>{row.houseNumberNum || ""}</td>
-                      <td>{row.familyHeadName || ""}</td>
-                      <td>{row.memberName || ""}</td>
-                      <td>{row.fatherOrHusbandName || ""}</td>
-                      <td>{row.gender || ""}</td>
-                      <td>{row.religion || ""}</td>
-                      <td>{row.caste || ""}</td>
-                      <td>{row.dob || ""}</td>
-                      <td>
-                        {(row.serialNo === "1" || row.serialNo === 1) && (
-                          <button
-                            className="editBtn"
-                            onClick={() =>
-                              handleViewPDF(
-                                row.pdfNo,
-                                row.fromPage,
-                                row.toPage,
-                                row.gaonCode
-                              )
-                            }
-                          >
-                            <i className="fas fa-eye"></i> View
-                          </button>
-                        )}
-                      </td>
+              <div className="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name of Block</th>
+                      <th>Name of Pending GP's</th>
+                      <th>No. of Families registered in GP</th>
+                      <th>No. of families data verified</th>
+                      <th>Pending families for verification</th>
+                      <th>% of Data Verification</th>
+                      {/* <th>Data Entry Done</th> */}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {gpPendingData.map((block, index) => (
+                      <tr key={index}>
+                        <td>{block.name_of_block}</td>
+                        <td>{block.name_of_pending_gps}</td>
+                        <td>{block.no_of_families_registered_in_gp}</td>
+                        <td>{block.no_of_families_data_verified}</td>
+                        <td>{block.pending_families_for_verification}</td>
+                        <td>{block.percentage_of_data_verification}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
