@@ -547,3 +547,130 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Supervisor-specific endpoints
+[[redirects]]
+  from = "/getPendingVilSupervisor/*"
+  to = "http://register.kdsgroup.co.in/getPendingVilSupervisor/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getCompletedVilSupervisor/*"
+  to = "http://register.kdsgroup.co.in/getCompletedVilSupervisor/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getRejectedFamilies/*"
+  to = "http://register.kdsgroup.co.in/getRejectedFamilies/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getRejectedGaonList/*"
+  to = "http://register.kdsgroup.co.in/getRejectedGaonList/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/supervisorUpdate/*"
+  to = "http://register.kdsgroup.co.in/supervisorUpdate/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/supervisorRejectedUpdate/*"
+  to = "http://register.kdsgroup.co.in/supervisorRejectedUpdate/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/supervisorApprove/*"
+  to = "http://register.kdsgroup.co.in/supervisorApprove/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/approveFamilySup/*"
+  to = "http://register.kdsgroup.co.in/approveFamilySup/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/approveRejectedFamilySup/*"
+  to = "http://register.kdsgroup.co.in/approveRejectedFamilySup/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/deleteRecord/*"
+  to = "http://register.kdsgroup.co.in/deleteRecord/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/deleteRejectedRecord/*"
+  to = "http://register.kdsgroup.co.in/deleteRejectedRecord/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/addRecordAfter/*"
+  to = "http://register.kdsgroup.co.in/addRecordAfter/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/addRejectedRecordAfter/*"
+  to = "http://register.kdsgroup.co.in/addRejectedRecordAfter/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/deleteDuplicate/*"
+  to = "http://register.kdsgroup.co.in/deleteDuplicate/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadPendingGaonExcel/*"
+  to = "http://register.kdsgroup.co.in/downloadPendingGaonExcel/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadGaonSupervisor/*"
+  to = "http://register.kdsgroup.co.in/downloadGaonSupervisor/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getOperators/*"
+  to = "http://register.kdsgroup.co.in/getOperators/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/insertNewOperator/*"
+  to = "http://register.kdsgroup.co.in/insertNewOperator/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/deleteOperator/*"
+  to = "http://register.kdsgroup.co.in/deleteOperator/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/vilNotStartedTblDESU/*"
+  to = "http://register.kdsgroup.co.in/vilNotStartedTblDESU/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/downloadVilNotStartedTblDESU/*"
+  to = "http://register.kdsgroup.co.in/downloadVilNotStartedTblDESU/:splat"
+  status = 200
+  force = true

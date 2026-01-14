@@ -1111,6 +1111,260 @@ export default defineConfig({
           });
         },
       },
+
+      // Add after the existing supervisor endpoints section
+"/getPendingVilSupervisor": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/getCompletedVilSupervisor": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/getRejectedFamilies": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/getRejectedGaonList": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/supervisorUpdate": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/supervisorRejectedUpdate": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/supervisorApprove": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/approveFamilySup": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/approveRejectedFamilySup": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/deleteRecord": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/deleteRejectedRecord": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/addRecordAfter": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/addRejectedRecordAfter": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/deleteDuplicate": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/downloadPendingGaonExcel": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/downloadGaonSupervisor": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/getOperators": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/insertNewOperator": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/deleteOperator": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/vilNotStartedTblDESU": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/downloadVilNotStartedTblDESU": {
+  target: "http://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
     },
   },
 });
