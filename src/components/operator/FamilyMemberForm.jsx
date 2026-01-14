@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
   const [showQualification, setShowQualification] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   // Initialize conditional fields based on existing data
   useEffect(() => {
-    setShowQualification(data.literacy === 'साक्षर');
-    setShowDescription(data.reason === 'सर्किल छोड़ दिया');
+    setShowQualification(data.literacy === "साक्षर");
+    setShowDescription(data.reason === "सर्किल छोड़ दिया");
   }, [data.literacy, data.reason]);
 
   const handleChange = (field, value) => {
@@ -18,36 +18,42 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
 
   const handleLiteracyChange = (e) => {
     const value = e.target.value;
-    handleChange('literacy', value);
-    setShowQualification(value === 'साक्षर');
-    
+    handleChange("literacy", value);
+    setShowQualification(value === "साक्षर");
+
     // Clear qualification if not साक्षर
-    if (value !== 'साक्षर') {
-      handleChange('qualification', '');
+    if (value !== "साक्षर") {
+      handleChange("qualification", "");
     }
   };
 
   const handleReasonChange = (e) => {
     const value = e.target.value;
-    handleChange('reason', value);
-    setShowDescription(value === 'सर्किल छोड़ दिया');
-    
+    handleChange("reason", value);
+    setShowDescription(value === "सर्किल छोड़ दिया");
+
     // Clear description if not सर्किल छोड़ दिया
-    if (value !== 'सर्किल छोड़ दिया') {
-      handleChange('desc', '');
+    if (value !== "सर्किल छोड़ दिया") {
+      handleChange("desc", "");
     }
   };
 
-  const handleHindiInput = (e) => {
-    const regex = /^[\u0900-\u097F ]*$/;
-    if (!regex.test(e.target.value)) {
-      e.target.value = e.target.value.replace(/[^\u0900-\u097F ]/g, '');
-    }
+  // const handleHindiInput = (e) => {
+  //   const regex = /^[\u0900-\u097F ]*$/;
+  //   if (!regex.test(e.target.value)) {
+  //     e.target.value = e.target.value.replace(/[^\u0900-\u097F ]/g, "");
+  //   }
+  // };
+
+  const sanitizeHindi = (value) => {
+    return value.replace(/[^a-zA-Z\u0900-\u097F ]/g, "");
   };
 
   return (
     <div className="repeaterForm">
-      <h4>सदस्य #<span id={`familyNumber_${memberIndex}`}>{memberIndex}</span></h4>
+      <h4>
+        सदस्य #<span id={`familyNumber_${memberIndex}`}>{memberIndex}</span>
+      </h4>
 
       <div>
         <label htmlFor={`memberName_${memberIndex}`}>
@@ -57,9 +63,12 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
           type="text"
           name="memberName"
           id={`memberName_${memberIndex}`}
-          value={data.memberName || ''}
-          onChange={(e) => handleChange('memberName', e.target.value)}
-          onInput={handleHindiInput}
+          value={data.memberName || ""}
+          onChange={(e) =>
+            handleChange("memberName", sanitizeHindi(e.target.value))
+          }
+          // onChange={(e) => handleChange("memberName", e.target.value)}
+          // onInput={handleHindiInput}
           required
         />
       </div>
@@ -72,9 +81,12 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
           type="text"
           name="fatherOrHusbandName"
           id={`fatherOrHusbandName_${memberIndex}`}
-          value={data.fatherOrHusbandName || ''}
-          onChange={(e) => handleChange('fatherOrHusbandName', e.target.value)}
-          onInput={handleHindiInput}
+          value={data.fatherOrHusbandName || ""}
+          onChange={(e) =>
+            handleChange("fatherOrHusbandName", sanitizeHindi(e.target.value))
+          }
+          // onChange={(e) => handleChange("fatherOrHusbandName", e.target.value)}
+          // onInput={handleHindiInput}
         />
       </div>
 
@@ -85,11 +97,13 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
         <select
           name="gender"
           id={`gender_${memberIndex}`}
-          value={data.gender || ''}
-          onChange={(e) => handleChange('gender', e.target.value)}
+          value={data.gender || ""}
+          onChange={(e) => handleChange("gender", e.target.value)}
           required
         >
-          <option value="" disabled>कृपया लिंग का चयन करें</option>
+          <option value="" disabled>
+            कृपया लिंग का चयन करें
+          </option>
           <option value="पुरुष">पुरुष</option>
           <option value="महिला">महिला</option>
           <option value="अन्य">अन्य</option>
@@ -102,8 +116,8 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
           type="date"
           name="dob"
           id={`dob_${memberIndex}`}
-          value={data.dob || '1900-01-01'}
-          onChange={(e) => handleChange('dob', e.target.value)}
+          value={data.dob || "1900-01-01"}
+          onChange={(e) => handleChange("dob", e.target.value)}
           min="1900-01-01"
           max={today}
         />
@@ -115,9 +129,12 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
           type="text"
           name="business"
           id={`business_${memberIndex}`}
-          value={data.business || ''}
-          onChange={(e) => handleChange('business', e.target.value)}
-          onInput={handleHindiInput}
+          value={data.business || ""}
+          // onChange={(e) => handleChange("business", e.target.value)}
+          onChange={(e) =>
+            handleChange("business", sanitizeHindi(e.target.value))
+          }
+          // onInput={handleHindiInput}
         />
       </div>
 
@@ -126,7 +143,7 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
         <select
           name="literacy"
           id={`literacy_${memberIndex}`}
-          value={data.literacy || ''}
+          value={data.literacy || ""}
           onChange={handleLiteracyChange}
         >
           <option value="">कृपया साक्षर या निरक्षर का चयन करें</option>
@@ -141,8 +158,8 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
           <select
             name="qualification"
             id={`qualification_${memberIndex}`}
-            value={data.qualification || ''}
-            onChange={(e) => handleChange('qualification', e.target.value)}
+            value={data.qualification || ""}
+            onChange={(e) => handleChange("qualification", e.target.value)}
           >
             <option value="">कृपया योग्यता का चयन करें</option>
             <option value="<5">&lt;5</option>
@@ -166,8 +183,8 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
           type="date"
           name="leavingDate"
           id={`leavingDate_${memberIndex}`}
-          value={data.leavingDate || ''}
-          onChange={(e) => handleChange('leavingDate', e.target.value)}
+          value={data.leavingDate || ""}
+          onChange={(e) => handleChange("leavingDate", e.target.value)}
           min="1900-01-01"
           max={today}
         />
@@ -178,7 +195,7 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
         <select
           name="reason"
           id={`reason_${memberIndex}`}
-          value={data.reason || ''}
+          value={data.reason || ""}
           onChange={handleReasonChange}
         >
           <option value="">कृपया चयन करें</option>
@@ -194,9 +211,12 @@ const FamilyMemberForm = ({ memberIndex, data = {}, onChange }) => {
             type="text"
             name="desc"
             id={`desc_${memberIndex}`}
-            value={data.desc || ''}
-            onChange={(e) => handleChange('desc', e.target.value)}
-            onInput={handleHindiInput}
+            value={data.desc || ""}
+            // onChange={(e) => handleChange("desc", e.target.value)}
+            onChange={(e) =>
+              handleChange("desc", sanitizeHindi(e.target.value))
+            }
+            // onInput={handleHindiInput}
           />
         </div>
       )}
