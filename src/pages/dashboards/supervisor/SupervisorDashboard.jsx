@@ -12,7 +12,7 @@ import AddOperatorModal from '../../../components/supervisor/AddOperatorModal';
 import OperatorMonitoring from '../../../components/supervisor/OperatorMonitoring';
 import DataMonitoring from '../../../components/supervisor/DataMonitoring';
 import MessageModal from '../../../components/supervisor/MessageModal';
-import '../../../assets/styles/pages/supervisor.css';
+import '../../../assets/styles/pages/supervisor-scoped.css';
 
 // Block mapping (same as original)
 const BLOCKS = {
@@ -92,55 +92,64 @@ const SupervisorDashboard = () => {
   const [villages, setVillages] = useState([]);
   const [rejectedVillages, setRejectedVillages] = useState([]);
 
-  const loginID = user.loginID;
-  const assignedDistrict = user.districts[0] || '';
-  const assignedBlocks = BLOCKS[loginID] || [];
+  // Get loginID from localStorage IMMEDIATELY - don't wait for state
+const storedLoginID = localStorage.getItem('loginID') || '';
+const loginID = user.loginID || storedLoginID;
+const assignedBlocks = BLOCKS[storedLoginID] || [];
+const assignedDistrict = user.districts[0] || '';
 
-  useEffect(() => {
-    initDashboard();
+useEffect(() => {
+  initDashboard();
 
-    const handleUnload = () => {
-      supervisorService.ajaxLogout();
-    };
+  const handleUnload = () => {
+    supervisorService.ajaxLogout();
+  };
 
-    window.addEventListener('unload', handleUnload);
-    return () => window.removeEventListener('unload', handleUnload);
-  }, []);
+  window.addEventListener('unload', handleUnload);
+  return () => window.removeEventListener('unload', handleUnload);
+}, []);
 
-  const initDashboard = async () => {
-    const loginID = localStorage.getItem('loginID');
-    if (!loginID) {
-      navigate('/');
-      return;
-    }
+const initDashboard = async () => {
+  const loginID = localStorage.getItem('loginID');
+  if (!loginID) {
+    navigate('/');
+    return;
+  }
 
-    // In real implementation, fetch user details from backend
-    // For now, using localStorage/hardcoded data
-    setUser({
-      loginID,
-      name: 'Supervisor Name', // This should come from backend
-      districts: ['District Name'] // This should come from backend
-    });
+  // Set user data
+  setUser({
+    loginID,
+    name: 'Supervisor Name',
+    districts: ['Ambedkar Nagar']
+  });
 
-    // Fetch rejected villages to check for flicker
+  // Fetch rejected villages using the loginID directly
+  const blocks = BLOCKS[loginID] || [];
+  if (blocks.length > 0) {
     try {
-      const rejectedList = await supervisorService.getRejectedGaonList(assignedBlocks.join(','));
-      setRejectedVillages(rejectedList);
-      setRejectedHasFlicker(rejectedList.length > 0);
+      const rejectedList = await supervisorService.getRejectedGaonList(blocks.join(','));
+      const villageArray = Array.isArray(rejectedList) ? rejectedList : [];
+      setRejectedVillages(villageArray);
+      setRejectedHasFlicker(villageArray.length > 0);
     } catch (error) {
       console.error('Error fetching rejected villages:', error);
+      setRejectedVillages([]);
     }
-  };
+  }
+};
 
   const handlePendingRegisterClick = () => {
-    setViewMode('pending');
-    setGaonData([]);
-  };
+  setViewMode('pending');
+  setGaonData([]);
+  setVillages([]);
+  setPendingForm({ block: '', gaonCode: '', status: '1' });
+};
 
   const handleCompletedRegisterClick = () => {
-    setViewMode('completed');
-    setGaonData([]);
-  };
+  setViewMode('completed');
+  setGaonData([]);
+  setCompletedForm({ block: '' });
+};
 
   const handleRejectedFamiliesClick = () => {
     setViewMode('rejected');
@@ -209,27 +218,30 @@ const SupervisorDashboard = () => {
   };
 
   const handleRejectedFormSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const data = await supervisorService.getRejectedFamilies(rejectedForm.gaonCode);
-      // Sort data by family groups (same as original)
-      data.sort((a, b) => {
-        const keyA = (a.houseNumberNum || '') + (a.houseNumberText || '') + (a.familyHeadName || '');
-        const keyB = (b.houseNumberNum || '') + (b.houseNumberText || '') + (b.familyHeadName || '');
-        if (keyA === keyB) {
-          return parseInt(a.serialNo) - parseInt(b.serialNo);
-        }
-        return keyA.localeCompare(keyB);
-      });
-      setGaonData(data);
-      setSelectedGaon(rejectedForm.gaonCode);
-    } catch (error) {
-      console.error('Error fetching rejected families:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const data = await supervisorService.getRejectedFamilies(rejectedForm.gaonCode);
+    // Ensure data is an array
+    const familyArray = Array.isArray(data) ? data : [];
+    // Sort data by family groups (same as original)
+    familyArray.sort((a, b) => {
+      const keyA = (a.houseNumberNum || '') + (a.houseNumberText || '') + (a.familyHeadName || '');
+      const keyB = (b.houseNumberNum || '') + (b.houseNumberText || '') + (b.familyHeadName || '');
+      if (keyA === keyB) {
+        return parseInt(a.serialNo) - parseInt(b.serialNo);
+      }
+      return keyA.localeCompare(keyB);
+    });
+    setGaonData(familyArray);
+    setSelectedGaon(rejectedForm.gaonCode);
+  } catch (error) {
+    console.error('Error fetching rejected families:', error);
+    setGaonData([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleEditFamily = (familyData) => {
     setEditFamilyData(familyData);
@@ -351,15 +363,17 @@ const SupervisorDashboard = () => {
 
   if (loading && !gaonData.length) {
     return (
-      <div id="loading-screen" style={{ display: 'flex' }}>
+      <div className="supervisor-page">
+        <div id="loading-screen" style={{ display: 'flex' }}>
         <div className="spinner"></div>
         <h2>&nbsp;&nbsp;&nbsp;Loading, please wait...</h2>
+      </div>
       </div>
     );
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <div className="supervisor-page">
       <SupervisorSidebar
         user={user}
         onPendingRegisterClick={handlePendingRegisterClick}

@@ -1,4 +1,9 @@
-body {
+/* ========================================
+   SCOPED SUPERVISOR CSS
+   All styles prefixed with .supervisor-page
+   ======================================== */
+
+.supervisor-page {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -6,11 +11,12 @@ body {
     justify-content: end;
 }
 
-a {
+.supervisor-page a {
     text-decoration: none;
 }
 
-.sidebar {
+/* Sidebar Styles */
+.supervisor-page .sidebar {
     position: fixed;
     width: 18%;
     background-color: #FFDE59;
@@ -21,29 +27,27 @@ a {
     left: 0;
 }
 
-.toggleBtn {
+.supervisor-page .toggleBtn {
     background: none;
     border: none;
 }
 
-.sidebar-header {
+.supervisor-page .sidebar-header {
     display: flex;
     align-items: center;
     margin-left: 12px;
     margin-bottom: 2em;
     text-align: center;
     justify-content: center;
-
 }
 
-.sidebar-header .fas {
+.supervisor-page .sidebar-header .fas {
     color: black;
     margin-right: 10px;
     font-size: 3em;
 }
 
-
-.title {
+.supervisor-page .title {
     font-size: 1.9em;
     font-weight: bold;
     color: black;
@@ -51,7 +55,8 @@ a {
     word-wrap: break-word;
 }
 
-.data-table {
+/* Data Table */
+.supervisor-page .data-table {
     width: 90%;
     margin: auto;
     margin-bottom: 6em;
@@ -62,26 +67,26 @@ a {
     background-color: white;
 }
 
-.data-table th,
-.data-table td {
+.supervisor-page .data-table th,
+.supervisor-page .data-table td {
     border: 2px solid #000000;
     padding: 3%;
     color: #000000;
 }
 
-
-.data-table th {
+.supervisor-page .data-table th {
     background-color: rgb(255, 255, 255);
     color: #040404;
     font-size: larger;
 }
 
-.dropdown {
+/* Dropdown Styles */
+.supervisor-page .dropdown {
     border-top: 2px solid black;
     position: relative;
 }
 
-.dropbtn {
+.supervisor-page .dropbtn {
     background-color: #FFDE59;
     font-weight: bold;
     padding: 13px;
@@ -90,7 +95,7 @@ a {
     font-size: 15px;
 }
 
-.dropdown-content {
+.supervisor-page .dropdown-content {
     display: none;
     background-color: #FFDE59;
     position: absolute;
@@ -102,7 +107,7 @@ a {
     overflow-y: auto;
 }
 
-.dropdown-content a {
+.supervisor-page .dropdown-content a {
     color: black;
     padding: 10px;
     text-decoration: none;
@@ -111,20 +116,21 @@ a {
     border-bottom: 1px solid black;
 }
 
-.dropdown-content a:hover,
-.active {
+.supervisor-page .dropdown-content a:hover,
+.supervisor-page .active {
     background-color: white;
 }
 
-.dropbtn:hover {
+.supervisor-page .dropbtn:hover {
     background-color: white;
 }
 
-.dropdown:hover .dropdown-content {
+.supervisor-page .dropdown:hover .dropdown-content {
     display: block;
 }
 
-.logout {
+/* Logout Button */
+.supervisor-page .logout {
     display: flex;
     font-weight: bold;
     align-items: center;
@@ -138,35 +144,36 @@ a {
     margin-top: 7em;
 }
 
-.logout .icon {
+.supervisor-page .logout .icon {
     font-size: 24px;
     margin-right: 15px;
     color: black;
 }
 
-.logout span {
+.supervisor-page .logout span {
     color: black;
 }
 
-.content {
+/* Content Area */
+.supervisor-page .content {
     overflow-y: auto;
     box-sizing: border-box;
     width: 80%;
     margin: 1%;
 }
 
-.main-content {
-
+.supervisor-page .main-content {
     padding: 20px;
     display: flex;
     align-items: center;
 }
 
-.header .title {
+.supervisor-page .header .title {
     font-size: 34px;
 }
 
-.download-btn {
+/* Buttons */
+.supervisor-page .download-btn {
     background-color: #7ED957;
     color: black;
     height: 3em;
@@ -179,7 +186,7 @@ a {
     margin-left: 5em;
 }
 
-.verified-btn {
+.supervisor-page .verified-btn {
     background: linear-gradient(90deg, #ff3131, #ff914d);
     color: black;
     padding: 18px;
@@ -192,50 +199,49 @@ a {
     margin-left: 5em;
 }
 
-.verified-btn:disabled {
+.supervisor-page .verified-btn:disabled {
     background-color: light-dark(rgba(239, 239, 239, 0.3), rgba(19, 1, 1, 0.3));
     color: light-dark(rgba(16, 16, 16, 0.3), rgba(255, 255, 255, 0.3));
 }
 
-.table-container {
+/* Table Container */
+.supervisor-page .table-container {
     width: 100%;
     max-height: 75vh;
     overflow: auto;
     border: 2px solid black;
     box-sizing: border-box;
-
 }
 
-thead {
+.supervisor-page thead {
     position: sticky;
     top: 0;
 }
 
-.main-table {
+.supervisor-page .main-table {
     width: 100%;
     border-collapse: collapse;
     overflow: auto;
 }
 
-.main-table th {
+.supervisor-page .main-table th {
     padding: 8px;
     border: 2px solid black;
     text-align: center;
     background-color: #FFDE59;
 }
 
-.main-table th,
-.main-table td {
+.supervisor-page .main-table th,
+.supervisor-page .main-table td {
     padding: 8px;
     border: 2px solid black;
     text-align: center;
     min-width: 7em;
     max-width: 15em;
     word-wrap: break-word;
-
 }
 
-.main-table button {
+.supervisor-page .main-table button {
     background-color: #FFDE59;
     color: black;
     border: 2px solid black;
@@ -244,13 +250,14 @@ thead {
     border-radius: 5px;
 }
 
-.button {
+.supervisor-page .button {
     display: flex;
     justify-content: flex-end;
     width: 95%;
 }
 
-.formModal {
+/* Modal Styles */
+.supervisor-page .formModal {
     position: fixed;
     left: 0;
     top: 0;
@@ -265,13 +272,13 @@ thead {
     align-content: center;
 }
 
-.formModal.isVisible {
+.supervisor-page .formModal.isVisible {
     opacity: 1;
     visibility: visible;
     transition: opacity 0.3s 0s, visibility 0s 0s;
 }
 
-.popupModal {
+.supervisor-page .popupModal {
     text-align: center;
     border-radius: 20px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
@@ -285,7 +292,7 @@ thead {
     background-color: #fff;
 }
 
-.close-button {
+.supervisor-page .close-button {
     background: none;
     border: none;
     width: 40px;
@@ -297,36 +304,37 @@ thead {
     font-weight: 700;
 }
 
-.formGrid {
+.supervisor-page .formGrid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.5em;
 }
 
-.popupModal h1 {
+.supervisor-page .popupModal h1 {
     margin: 0 0 1.3em 0;
     z-index: 1;
 }
 
-#familyForm label {
+/* Family Form */
+.supervisor-page #familyForm label {
     display: block;
     text-align: center;
     font-size: 14px;
 }
 
-#familyForm input,
-#familyForm select {
+.supervisor-page #familyForm input,
+.supervisor-page #familyForm select {
     border-radius: 10px;
     border: 1px solid rgba(0, 0, 0, 0.25);
     padding: 8px;
     width: 85%;
 }
 
-#familyForm select {
+.supervisor-page #familyForm select {
     width: 92%;
 }
 
-#familyForm input[type='submit'] {
+.supervisor-page #familyForm input[type='submit'] {
     margin-top: 2em;
     background-color: #0097B3;
     color: white;
@@ -335,7 +343,7 @@ thead {
     padding: 1.3%;
 }
 
-.headerbg {
+.supervisor-page .headerbg {
     background: #FFDE59;
     position: absolute;
     width: 100%;
@@ -346,7 +354,7 @@ thead {
     border-top-right-radius: 20px;
 }
 
-.popupMod {
+.supervisor-page .popupMod {
     text-align: center;
     border-radius: 20px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
@@ -360,40 +368,29 @@ thead {
     display: flex;
 }
 
-.popupMod h1 {
+.supervisor-page .popupMod h1 {
     margin: auto;
 }
 
-.close-button {
-    background: none;
-    border: none;
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    font-size: larger;
-    font-weight: 700;
-}
-
-.popup.isVisible {
+.supervisor-page .popup.isVisible {
     opacity: 1;
     visibility: visible;
     transition: opacity 0.3s 0s, visibility 0s 0s;
 }
 
-.remark{
+.supervisor-page .remark {
     display: flex;
     padding-top: 0;
     padding-bottom: 0;
     justify-content: center;
 }
 
-.hidden {
+.supervisor-page .hidden {
     display: none !important;
 }
 
-.success-popup {
+/* Success Popup */
+.supervisor-page .success-popup {
     display: none;
     position: fixed;
     top: 50%;
@@ -406,7 +403,8 @@ thead {
     width: 300px;
     text-align: center;
 }
-.success-popup button {
+
+.supervisor-page .success-popup button {
     margin-top: 10px;
     padding: 5px 10px;
     background-color: white;
@@ -414,13 +412,15 @@ thead {
     border: none;
     cursor: pointer;
 }
-.error-message{
-color:#ff3131;
-font-weight: bold;
+
+.supervisor-page .error-message {
+    color: #ff3131;
+    font-weight: bold;
     margin-top: 10px;
 }
 
-.popup-overlay {
+/* Popup Overlay */
+.supervisor-page .popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -431,7 +431,7 @@ font-weight: bold;
     display: none;
 }
 
-.popup {
+.supervisor-page .popup {
     position: fixed;
     top: 30%;
     left: 55%;
@@ -446,15 +446,19 @@ font-weight: bold;
     max-width: 33%;
 }
 
-#getPendingRegForm, #getRejectedFamForm, #getHTOverviewForm, #getCompletedRegForm {
+/* Form Styles */
+.supervisor-page #getPendingRegForm,
+.supervisor-page #getRejectedFamForm,
+.supervisor-page #getHTOverviewForm,
+.supervisor-page #getCompletedRegForm {
     border: 1px solid;
     padding: 1em;
-    font-weight: 600;    
+    font-weight: 600;
 }
 
-#getPendingRegForm select, 
-#getRejectedFamForm select, 
-#getCompletedRegForm select {
+.supervisor-page #getPendingRegForm select,
+.supervisor-page #getRejectedFamForm select,
+.supervisor-page #getCompletedRegForm select {
     margin: 0 1em;
     height: 2.8em;
     width: 18em;
@@ -463,10 +467,10 @@ font-weight: bold;
     padding-left: 10px;
 }
 
-#getPendingRegForm button,
-#getRejectedFamForm button,
-#getCompletedRegForm button,
-#getHTOverviewForm button {
+.supervisor-page #getPendingRegForm button,
+.supervisor-page #getRejectedFamForm button,
+.supervisor-page #getCompletedRegForm button,
+.supervisor-page #getHTOverviewForm button {
     border-radius: 15px;
     height: 29px;
     padding: 2px 10px;
@@ -474,7 +478,7 @@ font-weight: bold;
     border: 1px solid;
 }
 
-.close-btn {
+.supervisor-page .close-btn {
     border: none;
     padding: 10px;
     cursor: pointer;
@@ -484,32 +488,35 @@ font-weight: bold;
     border-radius: 19%;
 }
 
-#resetPasswordForm, #addOperatorForm {
+/* Reset and Add Operator Forms */
+.supervisor-page #resetPasswordForm,
+.supervisor-page #addOperatorForm {
     width: 83%;
     margin: auto;
     text-align: end;
 }
 
-#resetPasswordForm label, #addOperatorForm label {
+.supervisor-page #resetPasswordForm label,
+.supervisor-page #addOperatorForm label {
     text-align: left;
     width: 45%;
 }
 
-#resetForm h1, 
-#addOperatorPopup h1 {
+.supervisor-page #resetForm h1,
+.supervisor-page #addOperatorPopup h1 {
     margin: 5px 0 1em 10px;
 }
 
-#resetPasswordForm div,
-#addOperatorForm div {
+.supervisor-page #resetPasswordForm div,
+.supervisor-page #addOperatorForm div {
     display: flex;
     justify-content: space-between;
     margin: 1em 0;
     align-items: center;
 }
 
-#resetPasswordForm input,
-#addOperatorForm input{
+.supervisor-page #resetPasswordForm input,
+.supervisor-page #addOperatorForm input {
     height: 2em;
     padding: 5px 0 0 5px;
     border-radius: 6px;
@@ -517,8 +524,8 @@ font-weight: bold;
     width: 65%;
 }
 
-#resetPasswordForm button,
-#addOperatorForm button{
+.supervisor-page #resetPasswordForm button,
+.supervisor-page #addOperatorForm button {
     margin: 1em;
     background-color: #7ED957;
     color: black;
@@ -530,14 +537,14 @@ font-weight: bold;
     cursor: pointer;
 }
 
-#msg{
+.supervisor-page #msg {
     margin: auto;
     margin-top: 1.5em;
     margin-bottom: 13px;
     text-align: center;
 }
 
-#msg .download-btn{
+.supervisor-page #msg .download-btn {
     display: inline;
     padding: 9px;
     width: 11%;
@@ -545,23 +552,18 @@ font-weight: bold;
     height: 2.7em;
 }
 
-
-
-
-
-
-/* Handover/Takeover Section styling */
-#handoverTakeoverSection, #pDFUploadSection {
+/* Handover/Takeover Section */
+.supervisor-page #handoverTakeoverSection,
+.supervisor-page #pDFUploadSection {
     margin-top: 20px;
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
- 
 }
 
-#handoverTakeoverSection h2 {
+.supervisor-page #handoverTakeoverSection h2 {
     margin-top: 0;
     color: #333;
     font-size: 1.5em;
@@ -569,22 +571,42 @@ font-weight: bold;
     padding-bottom: 10px;
 }
 
-/* Form styling */
-.container form, #hTEntriesForm, #handoverTakeoverSection form, #pDFUploadSection form, #changePassForm {
+/* Container Forms */
+.supervisor-page .container form,
+.supervisor-page #hTEntriesForm,
+.supervisor-page #handoverTakeoverSection form,
+.supervisor-page #pDFUploadSection form,
+.supervisor-page #changePassForm {
     margin-bottom: 20px;
 }
 
-.container label,#hTEntriesForm label,#handoverTakeoverSection label, #pDFUploadSection label, #changePassForm label {
+.supervisor-page .container label,
+.supervisor-page #hTEntriesForm label,
+.supervisor-page #handoverTakeoverSection label,
+.supervisor-page #pDFUploadSection label,
+.supervisor-page #changePassForm label {
     margin-bottom: 8px;
     font-weight: bold;
     color: #555;
 }
 
-.container input[type="text"], .container input[type="number"], .container select, .container input[type="file"],
-#hTEntriesForm input[type="text"], #hTEntriesForm input[type="number"], #hTEntriesForm select, #hTEntriesForm input[type="file"],
-#handoverTakeoverSection input[type="text"], #handoverTakeoverSection input[type="number"], #handoverTakeoverSection select, #handoverTakeoverSection input[type="file"],
-#pDFUploadSection input[type="text"], #pDFUploadSection input[type="number"], #pDFUploadSection select, #pDFUploadSection input[type="file"],
-#changePassForm input {
+.supervisor-page .container input[type="text"],
+.supervisor-page .container input[type="number"],
+.supervisor-page .container select,
+.supervisor-page .container input[type="file"],
+.supervisor-page #hTEntriesForm input[type="text"],
+.supervisor-page #hTEntriesForm input[type="number"],
+.supervisor-page #hTEntriesForm select,
+.supervisor-page #hTEntriesForm input[type="file"],
+.supervisor-page #handoverTakeoverSection input[type="text"],
+.supervisor-page #handoverTakeoverSection input[type="number"],
+.supervisor-page #handoverTakeoverSection select,
+.supervisor-page #handoverTakeoverSection input[type="file"],
+.supervisor-page #pDFUploadSection input[type="text"],
+.supervisor-page #pDFUploadSection input[type="number"],
+.supervisor-page #pDFUploadSection select,
+.supervisor-page #pDFUploadSection input[type="file"],
+.supervisor-page #changePassForm input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -592,8 +614,13 @@ font-weight: bold;
     border-radius: 4px;
     box-sizing: border-box;
 }
-.container button, #hTEntriesForm button, #handoverTakeoverSection button, 
-#pDFUploadSection button, #pDFUploadSection input[type="submit"], #changePassForm button {
+
+.supervisor-page .container button,
+.supervisor-page #hTEntriesForm button,
+.supervisor-page #handoverTakeoverSection button,
+.supervisor-page #pDFUploadSection button,
+.supervisor-page #pDFUploadSection input[type="submit"],
+.supervisor-page #changePassForm button {
     background-color: #4CAF50;
     padding: 12px 20px;
     border: none;
@@ -602,28 +629,28 @@ font-weight: bold;
     font-size: 16px;
 }
 
-/* Styling for the confirmationTable */
-#confirmationTable {
+/* Table Styles */
+.supervisor-page #confirmationTable {
     border: 2px solid black;
 }
 
-#confirmationTable th, #confirmationTable td {
-    border: 2px solid black; 
-    padding: 8px; 
-}
-
-
-/* Styling for the dataTable */
-#dataTable {
-    border: 2px solid black; 
-}
-
-#dataTable th, #dataTable td{
-    border: 2px solid black; 
+.supervisor-page #confirmationTable th,
+.supervisor-page #confirmationTable td {
+    border: 2px solid black;
     padding: 8px;
 }
-/* Style for popup close button */
-.popup-close-btn {
+
+.supervisor-page #dataTable {
+    border: 2px solid black;
+}
+
+.supervisor-page #dataTable th,
+.supervisor-page #dataTable td {
+    border: 2px solid black;
+    padding: 8px;
+}
+
+.supervisor-page .popup-close-btn {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -635,11 +662,11 @@ font-weight: bold;
     transition: color 0.3s ease;
 }
 
-.popup-close-btn:hover {
-    color: red; 
+.supervisor-page .popup-close-btn:hover {
+    color: red;
 }
 
-#hTEntriesPopup {
+.supervisor-page #hTEntriesPopup {
     position: fixed;
     top: 12%;
     left: 55%;
@@ -654,25 +681,14 @@ font-weight: bold;
     max-width: 65%;
 }
 
-
-.panel-wrapper {
+/* Panel Wrapper */
+.supervisor-page .panel-wrapper {
     display: flex;
     width: 100%;
     box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-    .panel-wrapper {
-        flex-direction: column;
-    }
-
-    .left-panel,
-    .right-panel {
-        width: 100%;
-    }
-}
-
-.subContainer {
+.supervisor-page .subContainer {
     width: 50%;
     height: 62vh;
     overflow: auto;
@@ -680,34 +696,34 @@ font-weight: bold;
     border: 2px solid black;
 }
 
-.pdf-container {
+/* PDF Styles */
+.supervisor-page .pdf-container {
     width: 100%;
     height: 90%;
     max-height: 600px;
     overflow: hidden;
-
 }
 
-.pdf-embed {
+.supervisor-page .pdf-embed {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-#pdfForm {
+.supervisor-page #pdfForm {
     margin-top: 4em;
     margin-bottom: 2em;
     display: flex;
     justify-content: center;
 }
 
-#pdfForm input {
+.supervisor-page #pdfForm input {
     border-radius: 2px;
     border: 1px solid rgba(0, 0, 0, 0.25);
     padding: 7px 5px;
 }
 
-#pdfForm button {
+.supervisor-page #pdfForm button {
     background: rgba(204, 204, 204, 0.35);
     padding: 8px 12px;
     cursor: pointer;
@@ -716,7 +732,7 @@ font-weight: bold;
     border: none;
 }
 
-#changePassPopup {
+.supervisor-page #changePassPopup {
     position: fixed;
     top: 12%;
     left: 55%;
@@ -731,92 +747,55 @@ font-weight: bold;
     max-width: 65%;
 }
 
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-    }
-
-    .button {
-        width: 52%;
-        flex-direction: column;
-    }
-
-    .download-btn, .verified-btn {
-        margin-left: 0;
-        width: 80%;
-    }
-    
-    .formGrid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    #getPendingRegForm input, #getCompletedRegForm select {
-        width: -webkit-fill-available;
-        margin: 0;
-        margin-bottom: 15px;
-    }
-    
-    #getPendingRegForm button, #getRejectedFamForm button, #getCompletedRegForm button {
-        height: -webkit-fill-available;
-    }
-
-    .subContainer{
-        width: 98%;
-        border-right: 2px solid black !important;
-    }
-}
-
-
-
-#familyForm {
+/* Family Form Styles */
+.supervisor-page #familyForm {
     max-height: 70vh;
 }
 
-.form-row {
+.supervisor-page .form-row {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 1rem;
-    border: 1px solid #ddd; /* Lighter border for a cleaner look */
+    border: 1px solid #ddd;
     padding: 15px;
-    border-radius: 8px; /* Slightly more rounded corners for modern design */
-    background-color: #f9f9f9; /* Subtle background color for contrast */
-    gap: 10px; /* Add space between items for a balanced layout */
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    gap: 10px;
 }
 
-.form-group {
-    flex: 1 1 calc(33.333% - 10px); /* Automatically adjust width for 3 columns with gaps */
-    margin-bottom: 10px; /* Separate rows of fields */
-    min-width: 200px; /* Ensure fields don’t get too narrow */
+.supervisor-page .form-group {
+    flex: 1 1 calc(33.333% - 10px);
+    margin-bottom: 10px;
+    min-width: 200px;
 }
 
-.form-group label {
+.supervisor-page .form-group label {
     display: block;
-    margin-bottom: 8px; /* Slightly increased spacing for clarity */
-    font-weight: 600; /* Slightly bolder for readability */
+    margin-bottom: 8px;
+    font-weight: 600;
     font-size: 14px;
-    color: #555; /* Neutral color for better contrast */
+    color: #555;
 }
 
-.form-control {
+.supervisor-page .form-control {
     width: 100%;
-    padding: 10px; /* Increased padding for a more comfortable input size */
+    padding: 10px;
     box-sizing: border-box;
-    border: 1px solid #ccc; /* Clean, standard border */
-    border-radius: 5px; /* Rounded corners for consistency */
-    background-color: #fff; /* White background for inputs */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
     font-size: 14px;
-    color: #333; /* Darker text for better readability */
-    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth focus effect */
+    color: #333;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Focus Effect */
-.form-control:focus {
-    border-color: #007bff; /* Highlight with primary color on focus */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Subtle glow effect */
+.supervisor-page .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
     outline: none;
 }
 
-.btn {
+.supervisor-page .btn {
     display: inline-block;
     font-size: 16px;
     padding: 10px 20px;
@@ -829,34 +808,22 @@ font-weight: bold;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.btn:hover {
+.supervisor-page .btn:hover {
     background-color: #0056b3;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Submit Button */
-.btn-primary {
+.supervisor-page .btn-primary {
     background-color: #28a745;
     margin-top: 15px;
 }
 
-.btn-primary:hover {
+.supervisor-page .btn-primary:hover {
     background-color: #218838;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .form-group {
-        flex: 1 1 100%; /* Full width for smaller screens */
-    }
-
-    .form-row {
-        gap: 5px; /* Reduce gaps for smaller screens */
-        padding: 10px; /* Adjust padding for compact space */
-    }
-}
-
-#loading-screen {
+/* Loading Screen */
+.supervisor-page #loading-screen {
     display: none;
     position: fixed;
     top: 0;
@@ -871,7 +838,7 @@ font-weight: bold;
     align-items: center;
 }
 
-.spinner {
+.supervisor-page .spinner {
     border: 4px solid #f3f3f3;
     border-top: 4px solid #3498db;
     border-radius: 50%;
@@ -884,51 +851,43 @@ font-weight: bold;
     0% {
         transform: rotate(0deg);
     }
-
     100% {
         transform: rotate(360deg);
     }
 }
 
-
-/* dashboard */
-
-.registerDownloadBtn {
+/* Dashboard Styles */
+.supervisor-page .registerDownloadBtn {
     background-color: #FFDE59;
     border-radius: 10px;
 }
 
-.hidden {
-    display: none;
-}
-
-.monitoring-section {
+.supervisor-page .monitoring-section {
     margin-top: 20px;
     padding: 10px;
     background-color: #f9f9f9;
     border: 1px solid #ccc;
 }
 
-.container {
+.supervisor-page .container {
     width: 100%;
 }
 
-.panel {
+.supervisor-page .panel {
     text-align: center;
     margin-bottom: 20px;
-
 }
 
-.CountCard div {
+.supervisor-page .CountCard div {
     font-size: 2.5vh;
     height: 13vh;
 }
 
-.CountContent {
+.supervisor-page .CountContent {
     margin-left: 7%;
 }
 
-.Counts {
+.supervisor-page .Counts {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -936,14 +895,14 @@ font-weight: bold;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-.centeredCounts {
+.supervisor-page .centeredCounts {
     justify-content: space-between;
     align-items: center;
     gap: 20px;
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.card {
+.supervisor-page .card {
     background-color: rgb(48, 48, 48);
     border-radius: 10px;
     display: flex;
@@ -958,8 +917,7 @@ font-weight: bold;
     box-sizing: border-box;
 }
 
-
-.card .icon-container {
+.supervisor-page .card .icon-container {
     width: 60px;
     height: 60px;
     background-color: rgb(214, 234, 248);
@@ -970,60 +928,57 @@ font-weight: bold;
     flex-shrink: 0;
 }
 
-
-.card i {
+.supervisor-page .card i {
     font-size: 30px;
     color: rgb(52, 152, 219);
 }
 
-
-/* Project Monitoring Specific Gradients for Each Card  */
-#registersTakeoverCollectedCard {
+/* Card Gradient Styles */
+.supervisor-page #registersTakeoverCollectedCard {
     background-image: linear-gradient(180deg, #ffde59, #ff9553, #ff9553);
 }
 
-#registersHandoverCollectedCard {
+.supervisor-page #registersHandoverCollectedCard {
     background-image: linear-gradient(180deg, #5de0e6, #004aad);
 }
 
-#villagesPendingForUploadCard {
+.supervisor-page #villagesPendingForUploadCard {
     background-image: linear-gradient(135deg, #5de0e6, #004aad);
 }
 
-#villagesEntryDoneCard {
+.supervisor-page #villagesEntryDoneCard {
     background-image: linear-gradient(180deg, #0097b2, #7ed957);
 }
 
-#villagesEntryNotStartedCard {
+.supervisor-page #villagesEntryNotStartedCard {
     background-image: linear-gradient(180deg, #ff3131, #ff914d);
 }
 
-#villagesVerifiedBySachivCard {
+.supervisor-page #villagesVerifiedBySachivCard {
     background-image: linear-gradient(90deg, #ffde59, #ff9553);
 }
 
-#blocksVerifiedByADOCard {
+.supervisor-page #blocksVerifiedByADOCard {
     background-image: linear-gradient(90deg, #5de0e6, #0078a6);
 }
 
-#districtsCompletedCard {
+.supervisor-page #districtsCompletedCard {
     background-image: linear-gradient(180deg, #0097b2, #7ed957);
 }
 
-/* Operator Monitoring Specific Gradients for Each Card  */
-#numberofOperatorTakeoverCollected {
+.supervisor-page #numberofOperatorTakeoverCollected {
     background-image: linear-gradient(180deg, #5de0e6, #004aad);
 }
 
-#highestDailyAverage {
+.supervisor-page #highestDailyAverage {
     background-image: linear-gradient(180deg, #0097b2, #7ed957);
 }
 
-#lowestDailyAverage {
+.supervisor-page #lowestDailyAverage {
     background-image: linear-gradient(180deg, #ff3131, #ff914d);
 }
 
-.card .CountContent {
+.supervisor-page .card .CountContent {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -1031,24 +986,25 @@ font-weight: bold;
     flex-grow: 1;
 }
 
-.card .CountNumber {
+.supervisor-page .card .CountNumber {
     font-size: 2.5em;
     font-weight: bold;
     margin: 0;
 }
 
-.card .CountText {
+.supervisor-page .card .CountText {
     color: white;
     margin-top: 5px;
     text-align: left;
 }
 
-.scanningTables {
+/* Scanning Tables */
+.supervisor-page .scanningTables {
     width: 100%;
     margin: auto;
 }
 
-.scanningTables table {
+.supervisor-page .scanningTables table {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
@@ -1056,59 +1012,57 @@ font-weight: bold;
     font-size: 14px;
 }
 
-.scanningTables td,
-.scanningTables th {
+.supervisor-page .scanningTables td,
+.supervisor-page .scanningTables th {
     padding: 0.2em;
     border: 1px solid black;
     margin: 0;
     font-weight: normal;
 }
 
-
-.scanningTables h4 {
+.supervisor-page .scanningTables h4 {
     justify-content: space-between;
     text-align: left;
     display: flex;
     padding: 10px;
 }
 
-.scanningTable1 {
+.supervisor-page .scanningTable1 {
     margin-bottom: 25px;
 }
 
-.tableOverflow {
+.supervisor-page .tableOverflow {
     max-height: 200px;
     overflow-y: auto;
-
 }
 
-.tableOverflow table {
+.supervisor-page .tableOverflow table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.tableOverflow th,
-.tableOverflow td {
+.supervisor-page .tableOverflow th,
+.supervisor-page .tableOverflow td {
     border: 1px solid black;
     padding: 8px;
     text-align: center;
     font-size: 18px;
 }
 
-.tableOverflow th {
+.supervisor-page .tableOverflow th {
     background-color: #FFDE59;
     font-weight: bold;
     font-size: large;
 }
 
-.operatorCount {
+.supervisor-page .operatorCount {
     justify-content: space-between;
     align-items: center;
     gap: 20px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-.operatorTable1 h4 {
+.supervisor-page .operatorTable1 h4 {
     font-weight: bold;
     text-align: left;
     padding: 10px;
@@ -1116,70 +1070,59 @@ font-weight: bold;
     justify-content: space-between;
 }
 
-.tableContainer {
+.supervisor-page .tableContainer {
     overflow-x: auto;
     margin-bottom: 20px;
     max-height: 300px;
     overflow-y: auto;
 }
 
-.operatorTableBorder {
+.supervisor-page .operatorTableBorder {
     width: 93%;
     margin: 31px;
 }
 
-.operatorTable1 {
+.supervisor-page .operatorTable1 {
     margin-bottom: 20px;
 }
 
-table {
+.supervisor-page table {
     border-collapse: collapse;
     width: 100%;
 }
 
-th,
-td {
+.supervisor-page th,
+.supervisor-page td {
     border: 1px solid black;
     padding: 8px;
     text-align: center;
     font-size: 18px;
 }
 
-th {
+.supervisor-page th {
     background-color: #FFDE59;
     font-size: large;
 }
 
-.container {
-    width: 100%;
-    margin: 0 auto;
-}
-
-.panel {
-    width: 100%;
-}
-
-.dataCount {
-
+.supervisor-page .dataCount {
     justify-content: space-between;
     align-items: center;
     gap: 20px;
     margin-left: 108px;
 }
 
-#management-table-container {
+.supervisor-page #management-table-container {
     width: 97%;
     margin: auto;
-
 }
 
-.managementTable {
+.supervisor-page .managementTable {
     margin-bottom: 20px;
     border-radius: 8px;
 }
 
-.managementTable h4,
-#operator-table-container h4 {
+.supervisor-page .managementTable h4,
+.supervisor-page #operator-table-container h4 {
     font-size: x-large;
     background-color: #ff4d4d;
     color: white;
@@ -1190,27 +1133,26 @@ th {
     align-items: center;
 }
 
-.managementTable table {
+.supervisor-page .managementTable table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
     text-align: center;
-
 }
 
-.managementTable th,
-.managementTable td {
+.supervisor-page .managementTable th,
+.supervisor-page .managementTable td {
     padding: 8px;
     border: 1px solid black;
     font-size: large;
 }
 
-#scanning-table-container {
+.supervisor-page #scanning-table-container {
     position: relative;
     padding-top: 50px;
 }
 
-.downloadButton {
+.supervisor-page .downloadButton {
     font-size: 16px;
     padding: 10px 20px;
     background-color: #007bff;
@@ -1220,15 +1162,15 @@ th {
     border-radius: 5px;
 }
 
-.downloadButton:hover {
+.supervisor-page .downloadButton:hover {
     background-color: #0056b3;
 }
 
-.scanningTable1 {
+.supervisor-page .scanningTable1 {
     width: 100%;
 }
 
-.backgroundRed {
+.supervisor-page .backgroundRed {
     color: white;
     background-color: #ff3131;
     padding: 5px;
@@ -1236,22 +1178,15 @@ th {
     display: inline-block;
 }
 
-.tableOverflow {
-    overflow-x: auto;
-}
-
-.scanningTableBorder {
-
-
+.supervisor-page .scanningTableBorder {
     margin-bottom: 20px;
 }
 
-.dropdown .dropdown-content {
+.supervisor-page .dropdown .dropdown-content {
     display: none;
 }
 
-
-.dropdown-content .dropbtn1 {
+.supervisor-page .dropdown-content .dropbtn1 {
     background: none;
     border: none;
     padding: 10px 20px;
@@ -1261,24 +1196,21 @@ th {
     border-bottom: 2px solid #000000;
 }
 
-
-.dropdown-content .dropbtn1:last-child {
+.supervisor-page .dropdown-content .dropbtn1:last-child {
     border-bottom: none;
 }
 
-
-.dropdown-content .dropbtn1:hover {
+.supervisor-page .dropdown-content .dropbtn1:hover {
     background-color: white;
 }
 
-
-.dropdown-content .dropbtn1.active {
+.supervisor-page .dropdown-content .dropbtn1.active {
     background-color: white;
     color: #000;
     font-weight: bold;
 }
 
-.grid-container {
+.supervisor-page .grid-container {
     display: flex;
     flex-direction: column;
     display: grid;
@@ -1289,9 +1221,8 @@ th {
     grid-auto-rows: 155px;
 }
 
-
-.stat-card,
-.single-stat-card {
+.supervisor-page .stat-card,
+.supervisor-page .single-stat-card {
     background-color: rgb(48, 48, 48);
     border-radius: 10px;
     color: white;
@@ -1308,8 +1239,7 @@ th {
     word-break: break-word;
 }
 
-
-.icon-wrapper {
+.supervisor-page .icon-wrapper {
     width: 30px;
     height: 30px;
     padding: 10px;
@@ -1321,12 +1251,12 @@ th {
     flex-shrink: 0;
 }
 
-.icon-wrapper i {
+.supervisor-page .icon-wrapper i {
     font-size: 20px;
     color: rgb(52, 152, 219);
 }
 
-.content-wrapper {
+.supervisor-page .content-wrapper {
     text-align: left;
     display: flex;
     flex-direction: column;
@@ -1334,48 +1264,47 @@ th {
     flex-grow: 1;
 }
 
-.number {
+.supervisor-page .number {
     font-size: 2.5em;
     font-weight: bold;
     margin: 0;
 }
 
-.label {
+.supervisor-page .label {
     font-size: 1em;
     margin-top: 5px;
 }
 
-
-.single-stat-card {
+.supervisor-page .single-stat-card {
     grid-column: span 5;
     justify-self: center;
     flex-direction: row;
 }
 
-.single-stat-card .icon-wrapper {
+.supervisor-page .single-stat-card .icon-wrapper {
     width: 30px;
     height: 30px;
     padding: 10px;
 }
 
-.single-stat-card .icon-wrapper i {
+.supervisor-page .single-stat-card .icon-wrapper i {
     font-size: 20px;
 }
 
-.single-stat-card .content-wrapper {
+.supervisor-page .single-stat-card .content-wrapper {
     text-align: left;
 }
 
-.single-stat-card .number {
+.supervisor-page .single-stat-card .number {
     font-size: 2.5em;
 }
 
-.single-stat-card .label {
+.supervisor-page .single-stat-card .label {
     font-size: 1em;
     margin-top: 5px;
 }
 
-.backgroundRed1 {
+.supervisor-page .backgroundRed1 {
     background-color: #ff4d4d;
     color: white;
     padding: 10px;
@@ -1386,7 +1315,7 @@ th {
     font-size: x-large;
 }
 
-.download-btn1 {
+.supervisor-page .download-btn1 {
     background-color: #7ED957 !important;
     color: black !important;
     border-radius: 31px;
@@ -1394,62 +1323,7 @@ th {
     display: inline-block;
 }
 
-#loading-screen {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    text-align: center;
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.tableHeading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #ddd;
-}
-
-/* .download-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.download-btn:hover {
-    background-color: #0056b3;
-} */
-.download-btn2 {
+.supervisor-page .download-btn2 {
     background-color: #007bff;
     color: white;
     border: none;
@@ -1460,151 +1334,24 @@ th {
     border-radius: 5px;
 }
 
-.download-btn2:hover {
+.supervisor-page .download-btn2:hover {
     background-color: #0056b3;
 }
 
-
-
-
-@media (max-width: 768px) {
-    .Counts {
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        margin-right: 5px;
-    }
-
-    .grid-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        grid-auto-rows: auto;
-    }
-
-
-    .stat-card,
-    .single-stat-card {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-        gap: 10px;
-        max-width: 100%;
-    }
-
-    .icon-wrapper {
-        height: 40px;
-        padding: 5px;
-    }
-
-    .icon-wrapper i {
-        font-size: 18px;
-    }
-
-    .content-wrapper {
-        text-align: center;
-    }
-
-    .number {
-        font-size: 1.8em;
-    }
-
-    .label {
-        font-size: 0.9em;
-        margin-top: 3px;
-    }
-
-    .single-stat-card {
-        grid-column: span 1;
-    }
-
-    .centeredCounts {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-        margin-left: 0;
-    }
-
-    .operatorCount {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-        margin-left: 10px;
-    }
-
+.supervisor-page .tableHeading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
 }
 
-@media (max-width: 480px) {
-    .Counts {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        margin-right: 5px;
-    }
-
-    .grid-container {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        grid-auto-rows: auto;
-    }
-
-    .stat-card,
-    .single-stat-card {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-        gap: 10px;
-        max-width: 100%;
-    }
-
-    .icon-wrapper {
-        width: 40px;
-        height: 40px;
-        padding: 5px;
-    }
-
-    .icon-wrapper i {
-        font-size: 18px;
-    }
-
-    .content-wrapper {
-        text-align: center;
-    }
-
-    .number {
-        font-size: 1.8em;
-        /* Slightly smaller font size */
-    }
-
-    .label {
-        font-size: 0.9em;
-        /* Adjusted label size */
-        margin-top: 3px;
-    }
-
-    .single-stat-card {
-        grid-column: span 1;
-
-    }
-
-    .centeredCounts {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        margin-left: 0;
-    }
-
-    .operatorCount {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-        margin-left: 10px;
-    }
-
-}
-
-.tooltip {
+.supervisor-page .tooltip {
     position: relative;
 }
 
-.tooltip .tooltiptext {
+.supervisor-page .tooltip .tooltiptext {
     visibility: hidden;
     width: 150px;
     background-color: black;
@@ -1618,7 +1365,7 @@ th {
     left: 103%;
 }
 
-.tooltip .tooltiptext::after {
+.supervisor-page .tooltip .tooltiptext::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -1629,7 +1376,7 @@ th {
     border-color: transparent black transparent transparent;
 }
 
-.tooltip .tooltiptextleft {
+.supervisor-page .tooltip .tooltiptextleft {
     visibility: hidden;
     width: 150px;
     background-color: black;
@@ -1643,7 +1390,7 @@ th {
     right: 102%;
 }
 
-.tooltip .tooltiptextleft::after {
+.supervisor-page .tooltip .tooltiptextleft::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -1654,23 +1401,23 @@ th {
     border-color: transparent transparent transparent black;
 }
 
-.tooltip:hover .tooltiptext,
-.tooltip:hover .tooltiptextleft {
+.supervisor-page .tooltip:hover .tooltiptext,
+.supervisor-page .tooltip:hover .tooltiptextleft {
     visibility: visible;
 }
 
-.progress-bar-wrapper {
+.supervisor-page .progress-bar-wrapper {
     margin: 10px 0;
     width: 100%;
 }
 
-.progress-bar-wrapper span {
+.supervisor-page .progress-bar-wrapper span {
     display: block;
     margin-bottom: 5px;
     font-size: 14px;
 }
 
-.progress-bar {
+.supervisor-page .progress-bar {
     width: 0%;
     height: 20px;
     background-color: #4caf50;
@@ -1680,50 +1427,7 @@ th {
     transition: width 0.3s;
 }
 
-
-
-
-/* Handover/Takeover Section styling */
-#pDFUploadSection {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-/* Form styling */
-#pDFUploadSection form {
-    margin-bottom: 20px;
-}
-
-#pDFUploadSection label {
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #555;
-}
-
-#pDFUploadSection input[type="text"], #pDFUploadSection input[type="number"], 
-#pDFUploadSection select, #pDFUploadSection input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-#pDFUploadSection button, #pDFUploadSection input[type="submit"] {
-    background-color: #4CAF50;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#blockDigiReportForm select {
+.supervisor-page #blockDigiReportForm select {
     margin: 0 1em;
     height: 2.8em;
     width: 19em;
@@ -1732,13 +1436,14 @@ th {
     padding-left: 10px;
 }
 
-#formContainer form {
+.supervisor-page #formContainer form {
     border: 1px solid;
     padding: 1em;
     font-weight: 600;
 }
 
-#formContainer select, #formContainer input[type='date'] {
+.supervisor-page #formContainer select,
+.supervisor-page #formContainer input[type='date'] {
     margin: 0 1em;
     height: 1.7em;
     width: 15em;
@@ -1747,7 +1452,7 @@ th {
     padding-left: 10px;
 }
 
-#formContainer input[type='submit'] {
+.supervisor-page #formContainer input[type='submit'] {
     border-radius: 15px;
     height: 29px;
     padding: 2px 10px;
@@ -1755,7 +1460,7 @@ th {
     border: 1px solid;
 }
 
-.headingContainer {
+.supervisor-page .headingContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1768,63 +1473,226 @@ th {
     margin: 0;
 }
 
-#flicker {
-	opacity: 1;
-	animation: flickerI 2s linear  reverse infinite;
+.supervisor-page #flicker {
+    opacity: 1;
+    animation: flickerI 2s linear reverse infinite;
     background-color: red;
     border-radius: 259%;
     font-size: 10px;
     margin-right: 6px;
 }
-#flicker::after {
-	content: '';
-	width: 150%;
-	-webkit-box-shadow: -35px 0px 60px 8px rgba(255,255,255,1);
-	-moz-box-shadow: -35px 0px 60px 8px rgba(255,255,255,1);
-	box-shadow: -35px 0px 60px 8px rgba(255,255,255,1);
+
+.supervisor-page #flicker::after {
+    content: '';
+    width: 150%;
+    -webkit-box-shadow: -35px 0px 60px 8px rgba(255,255,255,1);
+    -moz-box-shadow: -35px 0px 60px 8px rgba(255,255,255,1);
+    box-shadow: -35px 0px 60px 8px rgba(255,255,255,1);
 }
 
 @keyframes flickerI {
-	0% {
-		opacity: 0.4;
-	}
-	5% {
-		opacity: 0.5;
-	}
-	10% {
-		opacity: 0.6;
-	}
-	15% {
-		opacity: 0.85;
-	}
-	25% {
-		opacity: 0.5;
-	}
-	30% {
-		opacity: 1;
-	}
-	35% {
-		opacity: 0.1;
-	}
-	40% {
-		opacity: 0.25;
-	}
-	45% {
-		opacity: 0.5;
-	}
-	60% {
-		opacity: 1;
-	}
-	70% {
-		opacity: 0.85;
-	}
-	80% {
-		opacity: 0.4;
-	}
-	90% {
-		opacity: 0.5;
-	}
-	100% {
-		opacity: 1;
-	}
+    0% { opacity: 0.4; }
+    5% { opacity: 0.5; }
+    10% { opacity: 0.6; }
+    15% { opacity: 0.85; }
+    25% { opacity: 0.5; }
+    30% { opacity: 1; }
+    35% { opacity: 0.1; }
+    40% { opacity: 0.25; }
+    45% { opacity: 0.5; }
+    60% { opacity: 1; }
+    70% { opacity: 0.85; }
+    80% { opacity: 0.4; }
+    90% { opacity: 0.5; }
+    100% { opacity: 1; }
 }
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .supervisor-page .panel-wrapper {
+        flex-direction: column;
+    }
+
+    .supervisor-page .left-panel,
+    .supervisor-page .right-panel {
+        width: 100%;
+    }
+
+    .supervisor-page .sidebar {
+        width: 100%;
+    }
+
+    .supervisor-page .button {
+        width: 52%;
+        flex-direction: column;
+    }
+
+    .supervisor-page .download-btn,
+    .supervisor-page .verified-btn {
+        margin-left: 0;
+        width: 80%;
+    }
+
+    .supervisor-page .formGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .supervisor-page #getPendingRegForm input,
+    .supervisor-page #getCompletedRegForm select {
+        width: -webkit-fill-available;
+        margin: 0;
+        margin-bottom: 15px;
+    }
+
+    .supervisor-page #getPendingRegForm button,
+    .supervisor-page #getRejectedFamForm button,
+    .supervisor-page #getCompletedRegForm button {
+        height: -webkit-fill-available;
+    }
+
+    .supervisor-page .subContainer {
+        width: 98%;
+        border-right: 2px solid black !important;
+    }
+
+    .supervisor-page .form-group {
+        flex: 1 1 100%;
+    }
+
+    .supervisor-page .form-row {
+        gap: 5px;
+        padding: 10px;
+    }
+
+    .supervisor-page .Counts {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-right: 5px;
+    }
+
+    .supervisor-page .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        grid-auto-rows: auto;
+    }
+
+    .supervisor-page .stat-card,
+    .supervisor-page .single-stat-card {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        gap: 10px;
+        max-width: 100%;
+    }
+
+    .supervisor-page .icon-wrapper {
+        height: 40px;
+        padding: 5px;
+    }
+
+    .supervisor-page .icon-wrapper i {
+        font-size: 18px;
+    }
+
+    .supervisor-page .content-wrapper {
+        text-align: center;
+    }
+
+    .supervisor-page .number {
+        font-size: 1.8em;
+    }
+
+    .supervisor-page .label {
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+
+    .supervisor-page .single-stat-card {
+        grid-column: span 1;
+    }
+
+    .supervisor-page .centeredCounts {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        margin-left: 0;
+    }
+
+    .supervisor-page .operatorCount {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        margin-left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .supervisor-page .Counts {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-right: 5px;
+    }
+
+    .supervisor-page .grid-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        grid-auto-rows: auto;
+    }
+
+    .supervisor-page .stat-card,
+    .supervisor-page .single-stat-card {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        gap: 10px;
+        max-width: 100%;
+    }
+
+    .supervisor-page .icon-wrapper {
+        width: 40px;
+        height: 40px;
+        padding: 5px;
+    }
+
+    .supervisor-page .icon-wrapper i {
+        font-size: 18px;
+    }
+
+    .supervisor-page .content-wrapper {
+        text-align: center;
+    }
+
+    .supervisor-page .number {
+        font-size: 1.8em;
+    }
+
+    .supervisor-page .label {
+        font-size: 0.9em;
+        margin-top: 3px;
+    }
+
+    .supervisor-page .single-stat-card {
+        grid-column: span 1;
+    }
+
+    .supervisor-page .centeredCounts {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-left: 0;
+    }
+
+    .supervisor-page .operatorCount {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        margin-left: 10px;
+    }
+}
+
+/* ========================================
+   END OF SCOPED SUPERVISOR CSS
+   ======================================== */

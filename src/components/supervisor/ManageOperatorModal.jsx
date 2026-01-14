@@ -70,12 +70,28 @@ const ManageOperatorModal = ({ loginID, onClose, onAddOperator }) => {
   return (
     <>
       <div 
-        className="popup-overlay" 
-        style={{ display: 'block' }}
-        onClick={onClose}
-      ></div>
+  className="popup-overlay" 
+  style={{ display: 'block' }}
+  onClick={(e) => {
+    if (e.target.className === 'popup-overlay') {
+      onClose();
+    }
+  }}
+></div>
       
-      <div className="popup" style={{ display: 'block', maxWidth: '800px' }}>
+      <div className="popup" style={{ 
+  display: 'block', 
+  maxWidth: '800px',
+  position: 'fixed',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  backgroundColor: 'white',
+  zIndex: 1001,
+  padding: '20px',
+  borderRadius: '8px',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+}}>
         <button className="close-btn" onClick={onClose}>X</button>
         <h1 style={{ marginBottom: '20px' }}>Manage Operators</h1>
 

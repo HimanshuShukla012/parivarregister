@@ -19,16 +19,18 @@ const supervisorService = {
   },
 
   // Get rejected families
-  getRejectedFamilies: async (gaonCode) => {
-    const response = await api.get(`/getRejectedFamilies/?gaonCode=${gaonCode}`);
-    return response.data;
-  },
+getRejectedFamilies: async (gaonCode) => {
+  const response = await api.get(`/getRejectedFamilies/?gaonCode=${gaonCode}`);
+  // Ensure we always return an array
+  return Array.isArray(response.data) ? response.data : [];
+},
 
   // Get rejected gaon list
-  getRejectedGaonList: async (blocks) => {
-    const response = await api.get(`/getRejectedGaonList/?blocks=${blocks}`);
-    return response.data;
-  },
+getRejectedGaonList: async (blocks) => {
+  const response = await api.get(`/getRejectedGaonList/?blocks=${blocks}`);
+  // Ensure we always return an array
+  return Array.isArray(response.data) ? response.data : [];
+},
 
   // Update family data (supervisor)
   supervisorUpdate: async (formData) => {
@@ -36,11 +38,12 @@ const supervisorService = {
     return response.data;
   },
 
-  // Update rejected family data
   supervisorRejectedUpdate: async (formData) => {
-    const response = await api.post('/supervisoRejectedUpdate/', formData);
-    return response.data;
-  },
+  const response = await api.post('/supervisorRejectedUpdate/', formData);
+  return response.data;
+},
+
+
 
   // Approve register
   supervisorApprove: async (tableName) => {
@@ -48,17 +51,16 @@ const supervisorService = {
     return response.data;
   },
 
-  // Approve family
   approveFamilySup: async (id, gaonCode) => {
-    const response = await api.get(`/approveFamilySup?id=${id}&gaonCode=${gaonCode}`);
-    return response.data;
-  },
+  const response = await api.get(`/approveFamilySup/?id=${id}&gaonCode=${gaonCode}`);
+  return response.data;
+},
 
   // Approve rejected family
   approveRejectedFamilySup: async (id, gaonCode) => {
-    const response = await api.get(`/approveRejectedFamilySup?id=${id}&gaonCode=${gaonCode}`);
-    return response.data;
-  },
+  const response = await api.get(`/approveRejectedFamilySup/?id=${id}&gaonCode=${gaonCode}`);
+  return response.data;
+},
 
   // Delete record
   deleteRecord: async (id, gaonCode) => {
@@ -170,9 +172,9 @@ const supervisorService = {
 
   // Operator Monitoring
   adminOpMonitoringCards: async (loginID) => {
-    const response = await api.get(`/adminOpMonitoringCards?loginID=${loginID}`);
-    return response.data;
-  },
+  const response = await api.get(`/adminOpMonitoringCards/?loginID=${loginID}`);
+  return response.data;
+},
 
   getOperatorFamilyCountsMonthly: async (zila, loginID, month, year) => {
     let url = `/get_operator_family_counts_monthly/?zila=${zila}&loginID=${loginID}`;
@@ -202,19 +204,19 @@ const supervisorService = {
 
   // Data Monitoring
   adminDataMonitoringCards: async () => {
-    const response = await api.get('/adminDataMonitoringCards');
-    return response.data;
-  },
+  const response = await api.get('/adminDataMonitoringCards/');
+  return response.data;
+},
 
   blockFamilyCount: async (zila) => {
-    const response = await api.get(`/blockFamilyCount?zila=${zila}`);
-    return response.data;
-  },
+  const response = await api.get(`/blockFamilyCount/?zila=${zila}`);
+  return response.data;
+},
 
   vilFamilyCount: async (zila, block) => {
-    const response = await api.get(`/vilFamilyCount?zila=${zila}&block=${block}`);
-    return response.data;
-  },
+  const response = await api.get(`/vilFamilyCount/?zila=${zila}&block=${block}`);
+  return response.data;
+},
 
   // Village not started table
   vilNotStartedTblDESU: async (zila, blocks) => {
@@ -238,16 +240,16 @@ const supervisorService = {
   },
 
   downloadBlockFamilyCount: (zila) => {
-    window.location.href = `/downloadBlockFamilyCount?zila=${zila}`;
-  },
+  window.location.href = `/downloadBlockFamilyCount/?zila=${zila}`;
+},
 
   downloadVilFamilyCount: (zila, block) => {
-    window.location.href = `/downloadVilFamilyCount?zila=${zila}&block=${block}`;
-  },
+  window.location.href = `/downloadVilFamilyCount/?zila=${zila}&block=${block}`;
+},
 
   downloadVilNotStartedTblDESU: (zila, blocks) => {
-    window.location.href = `/downloadVilNotStartedTblDESU?zila=${zila}&blocks=${blocks}`;
-  },
+  window.location.href = `/downloadVilNotStartedTblDESU/?zila=${zila}&blocks=${blocks}`;
+},
 
   // Ajax logout
   ajaxLogout: async () => {
