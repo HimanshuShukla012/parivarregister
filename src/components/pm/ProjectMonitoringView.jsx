@@ -95,6 +95,7 @@ const ProjectMonitoringView = () => {
   //   window.location.href = url;
   //   target = "_blank";
   // };
+  //DOWNLOAD REPORT
   const handleDownloadReport = (url) => {
     window.location.href = url; // opens in same tab
   };
