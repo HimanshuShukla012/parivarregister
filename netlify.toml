@@ -90,6 +90,12 @@
   status = 200
   force = true
 
+  [[redirects]]
+  from = "/district_overview_excel_api/"
+  to = "http://register.kdsgroup.co.in/district_overview_excel_api/"
+  status = 200
+  force = true
+
 # adminDataMonitoringCards
 [[redirects]]
   from = "/adminDataMonitoringCards/"
