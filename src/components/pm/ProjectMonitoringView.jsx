@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import api from "../../services/api";
 import pmService from "../../services/pmService";
+import supervisorService from "../../services/supervisorService";
 
 const ProjectMonitoringView = () => {
   const [loading, setLoading] = useState(true);
@@ -95,8 +96,21 @@ const ProjectMonitoringView = () => {
   //   window.location.href = url;
   //   target = "_blank";
   // };
-  const handleDownloadReport = (url) => {
-    window.open(url);
+  // const handleDownloadReport = (url) => {
+  //   window.location.href = url; // opens in same tab
+  // };
+
+  const handleDownloadReport = async () => {
+    const res = await api.get("/district_overview_excel_api/", {
+      responseType: "blob",
+    });
+
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "DistrictReport.xlsx");
+    document.body.appendChild(link);
+    link.click();
   };
 
   const handleDownloadGPReport = () => {
