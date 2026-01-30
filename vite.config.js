@@ -2,7 +2,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
+// http://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
@@ -79,7 +79,7 @@ export default defineConfig({
 
       // Get Register PDF
       "/getRegisterPDF": {
-        target: "https://parivarregister.kdsgroup.co.in/app",
+        target: "http://parivarregister.kdsgroup.co.in/app",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -203,7 +203,7 @@ export default defineConfig({
         },
       },
       "/getPDFPage": {
-        target: "https://parivarregister.kdsgroup.co.in/app",
+        target: "http://parivarregister.kdsgroup.co.in/app",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
@@ -794,7 +794,7 @@ export default defineConfig({
         },
       },
       "/downloadPDFZipNew": {
-        target: "https://parivarregister.kdsgroup.co.in/app",
+        target: "http://parivarregister.kdsgroup.co.in/app",
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {
