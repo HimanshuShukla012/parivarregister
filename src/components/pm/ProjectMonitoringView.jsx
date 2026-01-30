@@ -100,17 +100,21 @@ const ProjectMonitoringView = () => {
   //   window.location.href = url; // opens in same tab
   // };
 
-  const handleDownloadReport = async () => {
-    const res = await api.get("/district_overview_excel_api/", {
-      responseType: "blob",
-    });
+  // const handleDownloadReport = async () => {
+  //   const res = await api.get("/district_overview_excel_api/", {
+  //     responseType: "blob",
+  //   });
 
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "DistrictReport.xlsx");
-    document.body.appendChild(link);
-    link.click();
+  //   const url = window.URL.createObjectURL(new Blob([res.data]));
+  //   const link = document.createElement("a");
+  //   link.href = url;
+  //   link.setAttribute("download", "DistrictReport.xlsx");
+  //   document.body.appendChild(link);
+  //   link.click();
+  // };
+
+  const handleDownloadReport = (url) => {
+    window.open(url, "_blank");
   };
 
   const handleDownloadGPReport = () => {
@@ -119,7 +123,7 @@ const ProjectMonitoringView = () => {
     //   return;
     // }
     handleDownloadReport(
-      `http://register.kdsgroup.co.in/download_gp_wise_report/`,
+      `https://register.kdsgroup.co.in/download_gp_wise_report/`,
     );
   };
 
@@ -129,7 +133,7 @@ const ProjectMonitoringView = () => {
     //   return;
     // }
     handleDownloadReport(
-      `http://register.kdsgroup.co.in/download_block_wise_report/`,
+      `https://register.kdsgroup.co.in/download_block_wise_report/`,
     );
   };
 
@@ -618,7 +622,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadReport(
-                    "http://register.kdsgroup.co.in/district_overview_excel_api/",
+                    "https://register.kdsgroup.co.in/district_overview_excel_api/",
                   )
                 }
                 style={{
@@ -666,7 +670,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadGPReport(
-                    "http://register.kdsgroup.co.in/district_overview_excel_api/",
+                    "https://register.kdsgroup.co.in/district_overview_excel_api/",
                   )
                 }
                 style={{
