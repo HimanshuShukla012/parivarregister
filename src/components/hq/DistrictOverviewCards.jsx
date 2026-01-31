@@ -1,10 +1,10 @@
 // src/components/hq/DistrictOverviewCards.jsx
-import React from 'react';
+import React from "react";
 
 const DistrictOverviewCards = ({ districts, onDistrictClick }) => {
   // Add safety checks
   if (!districts) {
-    console.warn('⚠️ districts is null/undefined');
+    console.warn("⚠️ districts is null/undefined");
     return (
       <div className="section">
         <div className="section-header">
@@ -17,14 +17,14 @@ const DistrictOverviewCards = ({ districts, onDistrictClick }) => {
   }
 
   if (!Array.isArray(districts)) {
-    console.error('❌ districts is not an array:', districts);
+    console.error("❌ districts is not an array:", districts);
     return (
       <div className="section">
         <div className="section-header">
           <h2 className="section-title">District Overview</h2>
           <div className="section-line"></div>
         </div>
-        <p style={{ color: 'red' }}>Error: Invalid district data format</p>
+        <p style={{ color: "red" }}>Error: Invalid district data format</p>
       </div>
     );
   }
@@ -42,9 +42,9 @@ const DistrictOverviewCards = ({ districts, onDistrictClick }) => {
   }
 
   const getPendingColor = (gpPending) => {
-    if (gpPending < 10) return 'pending-green';
-    if (gpPending >= 10 && gpPending <= 100) return 'pending-yellow';
-    return 'pending-red';
+    if (gpPending < 10) return "pending-green";
+    if (gpPending >= 10 && gpPending <= 100) return "pending-yellow";
+    return "pending-red";
   };
 
   return (
@@ -55,22 +55,36 @@ const DistrictOverviewCards = ({ districts, onDistrictClick }) => {
       </div>
       <div className="district-cards" id="districtCards">
         {districts.map((district) => {
+          console.log(district, ">>>");
+
+          // const totalGPs = district.gp || 0;
+          // const gpScanned =
+          //   Math.round(totalGPs * (district.gp_scanned_percent || 0)) / 100;
+          // const gpPending = Math.floor(totalGPs - gpScanned);
           const totalGPs = district.gp || 0;
-          const gpScanned = Math.floor(totalGPs * (district.gp_scanned_percent || 0) / 100);
+          const percent = district.gp_scanned_percent || 0;
+
+          const rawScanned = (totalGPs * percent) / 100;
+
+          const gpScanned =
+            percent >= 90
+              ? Math.round(rawScanned) // round when ≥ 90%
+              : Math.floor(rawScanned); // otherwise floor
+
           const gpPending = totalGPs - gpScanned;
           const approximateFamilies = district.approximate_families || 0;
-          
+
           // FIX 1: Use the merged data_entry_done value (district-specific)
           // This comes from the HQDashboard merge operation
           const dataEntryDone = district.data_entry_done || 0;
-          const sachivVerified = district.sachiv_verified || 0;
+          const sachivVerified = district.sachiv_verified;
 
           return (
-            <div 
+            <div
               key={district.zilaCode || district.district}
               className="district-card"
               onClick={() => onDistrictClick(district.zilaCode)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
             >
               <div className="district-name">{district.district}</div>
               <div className="district-metrics">
@@ -83,7 +97,9 @@ const DistrictOverviewCards = ({ districts, onDistrictClick }) => {
                   <div className="district-metric-label">GPs Scanned</div>
                 </div>
                 <div className="district-metric">
-                  <div className={`district-metric-value ${getPendingColor(gpPending)}`}>
+                  <div
+                    className={`district-metric-value ${getPendingColor(gpPending)}`}
+                  >
                     {gpPending}
                   </div>
                   <div className="district-metric-label">GPs Pending</div>
