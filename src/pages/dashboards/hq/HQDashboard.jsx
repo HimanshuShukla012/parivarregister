@@ -51,17 +51,18 @@ const HQDashboard = () => {
       ]);
 
       setZilaList(zilas);
-
+      console.log("overview>>>", overview);
       // FIX 1: Merge district report data into overview for accurate data_entry_done
       const reportMap = new Map(report.map((r) => [r.district, r]));
-      const mergedOverview = overview.map((district) => ({
-        ...district,
-        data_entry_done:
-          reportMap.get(district.district)?.families_data_entry_done || 0,
-        sachiv_verified: reportMap.get(district.district)?.sachiv_verified || 0,
-      }));
+      // const mergedOverview = overview.map((district) => ({
+      //   ...district,
+      //   data_entry_done:
+      //     reportMap.get(district.district)?.families_data_entry_done || 0,
+      //   sachiv_verified: reportMap.get(district.district)?.sachiv_verified || 0,
+      // }));
+      // console.log(">>", mergedOverview);
 
-      setDistrictOverview(mergedOverview);
+      setDistrictOverview(overview);
       setDistrictReport(report);
       setVerificationStatus(verification);
     } catch (error) {
@@ -86,7 +87,7 @@ const HQDashboard = () => {
         const overviewDistrict = districtOverview.find(
           (d) =>
             d.district === districtIdentifier ||
-            d.zilaCode === districtIdentifier
+            d.zilaCode === districtIdentifier,
         );
 
         if (overviewDistrict && overviewDistrict.zilaCode) {
@@ -187,8 +188,20 @@ const HQDashboard = () => {
               alt="KDS Logo"
               className="kds-logo"
             />
-            <div className="user-info">
-              <a href="/" className="logout" onClick={handleLogout}>
+            <div
+              className="user-info"
+              style={{
+                position: "relative",
+                padding: "0px",
+                overflow: "hidden",
+              }}
+            >
+              <a
+                href="/"
+                className="logout"
+                onClick={handleLogout}
+                style={{ position: "relative", padding: "10px" }}
+              >
                 <i className="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
               </a>
@@ -218,6 +231,11 @@ const HQDashboard = () => {
               <DistrictDetailsView
                 district={districtDetails}
                 onBack={handleBackToOverview}
+                overviewData={districtOverview.find(
+                  (d) =>
+                    d.district === selectedDistrict ||
+                    d.zilaCode === selectedDistrict,
+                )}
               />
             )}
 
