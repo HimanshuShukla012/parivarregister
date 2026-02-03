@@ -20,17 +20,17 @@ export const authService = {
         {
           withCredentials: true,
           headers: { "X-CSRFToken": csrfToken },
-        }
+        },
       );
 
       console.log("📡 Login response:", response.data);
 
       // ✅ success (2xx only reaches here)
-const data = response.data;
-localStorage.setItem("loginID", credentials.username);
-localStorage.setItem("user", JSON.stringify(data.user));
+      const data = response.data;
+      localStorage.setItem("loginID", credentials.username);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-return data;
+      return data;
     } catch (error) {
       console.error("❌ Login error:", error);
 
@@ -41,8 +41,6 @@ return data;
         console.log("📡 API Error Data:", apiData);
         return apiData; // <-- return real backend JSON
       }
-
-      
 
       // fallback network error
       return {
@@ -72,7 +70,7 @@ return data;
         headers: {
           "X-CSRFToken": csrfToken,
         },
-      }
+      },
 
       // {
       //   method: "POST",
