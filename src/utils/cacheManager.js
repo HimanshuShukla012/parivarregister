@@ -4,28 +4,28 @@ export const cacheManager = {
   clearAllCaches: async () => {
     try {
       // Clear localStorage
-      localStorage.clear();
-      
+      // localStorage.clear();
+
       // Clear sessionStorage
       sessionStorage.clear();
-      
+
       // Clear Service Worker caches
-      if ('caches' in window) {
+      if ("caches" in window) {
         const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        await Promise.all(cacheNames.map((name) => caches.delete(name)));
       }
-      
-      console.log('✅ All caches cleared');
+
+      console.log("✅ All caches cleared");
       return true;
     } catch (error) {
-      console.error('❌ Error clearing caches:', error);
+      console.error("❌ Error clearing caches:", error);
       return false;
     }
   },
 
   // Disable browser back/forward cache
   disableBFCache: () => {
-    window.addEventListener('pageshow', (event) => {
+    window.addEventListener("pageshow", (event) => {
       if (event.persisted) {
         window.location.reload();
       }
@@ -36,9 +36,9 @@ export const cacheManager = {
   addNoCacheHeaders: (headers = {}) => {
     return {
       ...headers,
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-      'Pragma': 'no-cache',
-      'Expires': '0',
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
     };
-  }
+  },
 };

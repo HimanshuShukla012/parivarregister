@@ -90,6 +90,12 @@
   status = 200
   force = true
 
+  [[redirects]]
+  from = "/district_overview_excel_api/"
+  to = "http://register.kdsgroup.co.in/district_overview_excel_api/"
+  status = 200
+  force = true
+
 # adminDataMonitoringCards
 [[redirects]]
   from = "/adminDataMonitoringCards/"
@@ -107,19 +113,19 @@
 # ========== PDF SERVER ENDPOINTS ==========
 [[redirects]]
   from = "/getPDFPage/*"
-  to = "https://parivarregister.kdsgroup.co.in/app/getPDFPage/:splat"
+  to = "http://parivarregister.kdsgroup.co.in/app/getPDFPage/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getRegisterPDF/*"
-  to = "https://parivarregister.kdsgroup.co.in/app/getRegisterPDF/:splat"
+  to = "http://parivarregister.kdsgroup.co.in/app/getRegisterPDF/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadPDFZipNew/*"
-  to = "https://parivarregister.kdsgroup.co.in/app/downloadPDFZipNew/:splat"
+  to = "http://parivarregister.kdsgroup.co.in/app/downloadPDFZipNew/:splat"
   status = 200
   force = true
 

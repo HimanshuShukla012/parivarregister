@@ -295,10 +295,10 @@
 }
 
 .page-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0.5rem;
-  left: 2rem;
+  left: calc(50% - 40px);
   width: 80px;
   height: 4px;
   background: linear-gradient(90deg, #5b21b6, #7c3aed);
@@ -334,7 +334,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Section Styles */
@@ -355,7 +357,7 @@
 }
 
 .pm-section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -376,7 +378,9 @@
 .pm-stat-card {
   padding: 1.5rem;
   border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   gap: 1.25rem;
@@ -386,7 +390,7 @@
 }
 
 .pm-stat-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -399,7 +403,9 @@
 
 .pm-stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.15), 0 4px 8px -2px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 12px 24px -4px rgba(0, 0, 0, 0.15),
+    0 4px 8px -2px rgba(0, 0, 0, 0.08);
 }
 
 .pm-card-icon-wrapper {
@@ -725,16 +731,16 @@
   .pm-sidebar {
     width: 240px;
   }
-  
+
   .pm-content {
     margin-left: 240px;
     width: calc(100% - 240px);
   }
-  
+
   .pm-cards-grid {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   }
-  
+
   .pm-timeline-cards {
     grid-template-columns: 1fr;
   }
@@ -746,95 +752,95 @@
     max-width: 280px;
     transform: translateX(-100%);
   }
-  
+
   .pm-sidebar:not(.hidden) {
     transform: translateX(0);
   }
-  
+
   .pm-content {
     margin-left: 0;
     width: 100%;
   }
-  
+
   .pm-content.full-width {
     margin-left: 0;
   }
-  
+
   #openMenu {
     display: flex !important;
   }
-  
+
   .pm-header-top {
     padding: 1rem 1rem 1rem 4rem;
   }
-  
+
   .pm-header-top .logo-img {
     height: 40px;
   }
-  
+
   .pm-header-top .title-section h1 {
     font-size: 1rem;
   }
-  
+
   .pm-header-top .title-section h2 {
     font-size: 0.8rem;
   }
-  
+
   .pm-header-top .kds-logo {
     height: 35px;
   }
-  
+
   .page-title {
     font-size: 1.5rem;
     padding: 1.5rem 1rem 1rem 1rem;
   }
-  
+
   .page-title::after {
     left: 1rem;
   }
-  
+
   .pm-container {
     padding: 1rem;
   }
-  
+
   .pm-section-title {
     font-size: 1.5rem;
   }
-  
+
   .pm-cards-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .pm-table-header {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .pm-table-actions {
     flex-direction: column;
   }
-  
+
   .pm-search-input {
     width: 100%;
   }
-  
+
   .pm-download-btn {
     width: 100%;
     justify-content: center;
   }
-  
+
   .pm-table-wrapper {
     overflow-x: auto;
   }
-  
+
   .pm-table {
     min-width: 600px;
   }
-  
+
   .pm-pagination {
     flex-wrap: wrap;
   }
-  
+
   .pm-page-info {
     width: 100%;
     text-align: center;
