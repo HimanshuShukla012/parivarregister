@@ -1,8 +1,51 @@
 // src/components/hq/DistrictReportTable.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { downloadFile, createSafeFilename } from "../../utils/downloadHelper";
 
 const DistrictReportTable = ({ data, onDistrictClick }) => {
+  const [mergedData, setMergedData] = useState(data || []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const mergeSachivVerified = async () => {
+      try {
+        if (!data || data.length === 0) {
+          if (isMounted) setMergedData([]);
+          return;
+        }
+
+        const overviewRes = await axios.get("/district_overview_api/");
+
+        const sachivMap = {};
+        (overviewRes.data || []).forEach((item) => {
+          const key = (item.district || "").trim().toLowerCase();
+          sachivMap[key] = item.sachiv_verified ?? 0;
+        });
+
+        const merged = data.map((row) => {
+          const key = (row.district || "").trim().toLowerCase();
+          return {
+            ...row,
+            sachiv_verified: sachivMap[key] ?? row.sachiv_verified ?? 0,
+          };
+        });
+
+        if (isMounted) setMergedData(merged);
+      } catch (e) {
+        console.error("Sachiv merge error:", e);
+        if (isMounted) setMergedData(data || []);
+      }
+    };
+
+    mergeSachivVerified();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [data]);
+
   const handleDownload = async () => {
     try {
       const filename = createSafeFilename("District_Report");
@@ -53,8 +96,8 @@ const DistrictReportTable = ({ data, onDistrictClick }) => {
               </tr>
             </thead>
             <tbody id="districtTableBody">
-              {data && data.length > 0 ? (
-                data.map((district, index) => (
+              {mergedData && mergedData.length > 0 ? (
+                mergedData.map((district, index) => (
                   <tr key={index}>
                     <td>
                       <a
