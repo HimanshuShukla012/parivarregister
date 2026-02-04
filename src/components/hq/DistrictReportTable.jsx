@@ -1,18 +1,17 @@
 // src/components/hq/DistrictReportTable.jsx
-import React from 'react';
-import hqService from '../../services/hqService';
-import { downloadFile, createSafeFilename } from '../../utils/downloadHelper';
+import React from "react";
+import { downloadFile, createSafeFilename } from "../../utils/downloadHelper";
 
 const DistrictReportTable = ({ data, onDistrictClick }) => {
   const handleDownload = async () => {
-  try {
-    const filename = createSafeFilename('District_Report');
-    await downloadFile('/download_district_report_api/', filename);
-  } catch (error) {
-    console.error('Download error:', error);
-    alert(`Download failed: ${error.message}`);
-  }
-};
+    try {
+      const filename = createSafeFilename("District_Report");
+      await downloadFile("/download_district_report_api/", filename);
+    } catch (error) {
+      console.error("Download error:", error);
+      alert(`Download failed: ${error.message}`);
+    }
+  };
 
   const handleDistrictNameClick = (districtName) => {
     if (onDistrictClick) {
@@ -26,12 +25,12 @@ const DistrictReportTable = ({ data, onDistrictClick }) => {
         <h2 className="section-title">District Wise Summary</h2>
         <div className="section-line"></div>
       </div>
-      
+
       <div className="table-container">
         <div className="table-header">
           <h3 className="table-title">Comprehensive District Report</h3>
-          <button 
-            id="downloadDistrictReport" 
+          <button
+            id="downloadDistrictReport"
             className="download-btn"
             onClick={handleDownload}
           >
@@ -50,6 +49,7 @@ const DistrictReportTable = ({ data, onDistrictClick }) => {
                 <th>Targeted Villages</th>
                 <th>Approximate No. of Families</th>
                 <th>No. of Families Data Entry Done</th>
+                <th>Sachiv Verified</th>
               </tr>
             </thead>
             <tbody id="districtTableBody">
@@ -57,15 +57,15 @@ const DistrictReportTable = ({ data, onDistrictClick }) => {
                 data.map((district, index) => (
                   <tr key={index}>
                     <td>
-                      <a 
-                        href="#" 
+                      <a
+                        href="#"
                         className="district-link"
                         onClick={(e) => {
                           e.preventDefault();
                           handleDistrictNameClick(district.district);
                         }}
                       >
-                        {district.district}
+                        {district.district} {console.log(district)}
                       </a>
                     </td>
                     <td>{district.blocks}</td>
@@ -74,7 +74,10 @@ const DistrictReportTable = ({ data, onDistrictClick }) => {
                     <td>{district.uninhabited_villages}</td>
                     <td>{district.targeted_villages}</td>
                     <td>{district.approximate_families?.toLocaleString()}</td>
-                    <td>{district.families_data_entry_done?.toLocaleString()}</td>
+                    <td>
+                      {district.families_data_entry_done?.toLocaleString()}
+                    </td>
+                    <td>{district.sachiv_verified?.toLocaleString()}</td>
                   </tr>
                 ))
               ) : (
