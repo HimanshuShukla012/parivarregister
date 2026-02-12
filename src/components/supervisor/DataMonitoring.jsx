@@ -1,13 +1,14 @@
 // src/components/supervisor/DataMonitoring.jsx
-import React, { useState, useEffect } from 'react';
-import supervisorService from '../../services/supervisorService';
+import React, { useState, useEffect } from "react";
+import supervisorService from "../../services/supervisorService";
 
 const DataMonitoring = ({ assignedDistrict, assignedBlocks }) => {
   const [cards, setCards] = useState({});
   const [blockData, setBlockData] = useState([]);
   const [villageData, setVillageData] = useState([]);
   const [blocks, setBlocks] = useState([]);
-  const [villageForm, setVillageForm] = useState({ block: '' });
+  const [villageForm, setVillageForm] = useState({ block: "" });
+  const [loading, setLoading] = useState(false); // ✅ loader state
 
   useEffect(() => {
     fetchCards();
@@ -20,7 +21,7 @@ const DataMonitoring = ({ assignedDistrict, assignedBlocks }) => {
       const data = await supervisorService.adminDataMonitoringCards();
       setCards(data);
     } catch (error) {
-      console.error('Error fetching cards:', error);
+      console.error("Error fetching cards:", error);
     }
   };
 
@@ -29,7 +30,7 @@ const DataMonitoring = ({ assignedDistrict, assignedBlocks }) => {
       const data = await supervisorService.getBlockByZila(assignedDistrict);
       setBlocks(data);
     } catch (error) {
-      console.error('Error fetching blocks:', error);
+      console.error("Error fetching blocks:", error);
     }
   };
 
@@ -40,124 +41,102 @@ const DataMonitoring = ({ assignedDistrict, assignedBlocks }) => {
         srNo: idx + 1,
         zila: assignedDistrict,
         block,
-        count
+        count,
       }));
       setBlockData(tableData);
     } catch (error) {
-      console.error('Error fetching block data:', error);
+      console.error("Error fetching block data:", error);
     }
   };
 
   const handleVillageSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // ✅ start loader
     try {
-      const data = await supervisorService.vilFamilyCount(assignedDistrict, villageForm.block);
+      const data = await supervisorService.vilFamilyCount(
+        assignedDistrict,
+        villageForm.block,
+      );
       const tableData = Object.entries(data).map(([gaon, count], idx) => ({
         srNo: idx + 1,
         zila: assignedDistrict,
         block: villageForm.block,
         gaon,
-        count
+        count,
       }));
       setVillageData(tableData);
     } catch (error) {
-      console.error('Error fetching village data:', error);
+      console.error("Error fetching village data:", error);
+    } finally {
+      setLoading(false); // ✅ stop loader
     }
   };
 
   return (
     <div id="managementMonitoringSection" className="section">
-      <div className="left-aligned-container">
-        <div className="panel">
-          <h1>Data Overview</h1>
-          
-          <div className="grid-container">
-            <div className="stat-card single-stat-card" id="noOfFamily">
-              <div className="icon-wrapper">
-                <i className="fa fa-users"></i>
-              </div>
-              <div className="content-wrapper">
-                <span className="number">{cards[assignedDistrict] || 0}</span>
-                <span className="CountText" style={{ color: 'white' }}>
-                  Total Family Counts in
-                </span>
-                <div className="label">{assignedDistrict}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Block Wise Family Counts */}
       <div id="management-table-container">
-        <div id="blockWiseFormContainer">
-          <div id="headingContainer" className="headingContainer">
-            <h4 className="backgroundRed1" id="blockWiseHeading">
-              Block Wise Family Counts {blockData.length > 0 && `(${blockData.length})`}
+        <div
+          id="villageFamilyFormContainer"
+          style={{
+            background:
+              "linear-gradient(90deg, rgb(111,123,247), rgb(123,76,160))",
+            padding: "20px",
+            borderRadius: "18px",
+            marginBottom: "20px",
+          }}
+        >
+          <div
+            id="headingContainer"
+            style={{
+              color: "#fff",
+              fontSize: "22px",
+              fontWeight: "600",
+              marginBottom: "14px",
+            }}
+          >
+            <h4 id="villageFamilyHeading" style={{ margin: 0 }}>
+              Village Wise Family Counts{" "}
+              {villageData.length > 0 && `(${villageData.length})`}
             </h4>
-            {blockData.length > 0 && (
-              <button
-                id="downloadBWData"
-                className="download-btn2"
-                onClick={() => supervisorService.downloadBlockFamilyCount(assignedDistrict)}
-              >
-                Download
-              </button>
-            )}
           </div>
-          <div className="managementTable managementTableBorder">
-            <div className="tableContainer" id="newBWTableContainer">
-              {blockData.length > 0 && (
-                <table style={{ width: '100%' }}>
-                  <thead>
-                    <tr>
-                      <th>S.No.</th>
-                      <th>District</th>
-                      <th>Block</th>
-                      <th>No. of Family Counts</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {blockData.map((row) => (
-                      <tr key={row.srNo}>
-                        <td>{row.srNo}</td>
-                        <td>{row.zila}</td>
-                        <td>{row.block}</td>
-                        <td>{row.count}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          </div>
-        </div>
 
-        {/* Village Wise Family Counts */}
-        <div id="villageFamilyFormContainer">
-          <div id="headingContainer" className="headingContainer">
-            <h4 className="backgroundRed1" id="villageFamilyHeading">
-              Village Wise Family Counts {villageData.length > 0 && `(${villageData.length})`}
-            </h4>
-            {villageData.length > 0 && (
-              <button
-                id="downloadVillageData"
-                className="download-btn2"
-                onClick={() => supervisorService.downloadVilFamilyCount(assignedDistrict, villageForm.block)}
-              >
-                Download
-              </button>
-            )}
-          </div>
-          <div id="formContainer">
-            <form onSubmit={handleVillageSubmit} id="getVilForm">
-              <label htmlFor="blockVilF">ब्लाक <span className="required">*</span></label>
+          <div
+            id="formContainer"
+            style={{
+              background: "#fff",
+              borderRadius: "14px",
+              padding: "16px",
+            }}
+          >
+            <form
+              onSubmit={handleVillageSubmit}
+              id="getVilForm"
+              style={{
+                display: "flex",
+                gap: "12px",
+                alignItems: "center",
+                border: "none",
+              }}
+            >
+              <label htmlFor="blockVilF" style={{ fontWeight: "500" }}>
+                ब्लाक <span className="required">*</span>
+              </label>
+
               <select
                 name="blockVilF"
                 id="blockVilF"
                 value={villageForm.block}
                 onChange={(e) => setVillageForm({ block: e.target.value })}
                 required
+                style={{
+                  flex: 1,
+                  padding: "8px 10px",
+                  borderRadius: "8px",
+                  border: "1px solid #ccc",
+                  height: "35px",
+                  width: "300px",
+                  margin: "0px",
+                }}
               >
                 <option value="">Select Block</option>
                 {blocks.map((b) => (
@@ -166,13 +145,70 @@ const DataMonitoring = ({ assignedDistrict, assignedBlocks }) => {
                   </option>
                 ))}
               </select>
-              <input type="submit" value="डाटा पाएं" id="vBtn" />
+
+              <input
+                type="submit"
+                value={loading ? "Loading..." : "Get Data"} // ✅ text change
+                id="vBtn"
+                disabled={loading} // ✅ disable while loading
+                style={{
+                  background: "rgb(34, 197, 94)",
+                  color: "rgb(255, 255, 255)",
+                  border: "none",
+                  fontWeight: 600,
+                  borderRadius: "8px",
+                  height: "35px",
+                  fontSize: "15px",
+                  lineHeight: "35px",
+                  cursor: loading ? "not-allowed" : "pointer",
+                  width: "150px",
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  opacity: loading ? 0.7 : 1,
+                }}
+              />
+
+              {villageData.length > 0 && (
+                <button
+                  id="downloadVillageData"
+                  className="download-btn2"
+                  onClick={() =>
+                    supervisorService.downloadVilFamilyCount(
+                      assignedDistrict,
+                      villageForm.block,
+                    )
+                  }
+                  style={{
+                    background: "#2563eb",
+                    color: "#fff",
+                    border: "none",
+                    padding: "8px 18px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                  }}
+                >
+                  Download
+                </button>
+              )}
             </form>
           </div>
-          <div className="managementTable managementTableBorder">
-            <div className="tableContainer" id="newVillageTableContainer">
+
+          <div className="managementTable managementTableBorder ">
+            <div
+              className="tableContainer"
+              id="newVillageTableContainer"
+              style={{
+                background: "rgb(255, 255, 255)",
+                borderRadius: "16px",
+                boxShadow: "rgba(0, 0, 0, 0.1) 0px 8px 25px",
+                overflowX: "auto",
+              }}
+            >
               {villageData.length > 0 && (
-                <table style={{ width: '100%' }}>
+                <table style={{ width: "100%" }}>
                   <thead>
                     <tr>
                       <th>S.No.</th>

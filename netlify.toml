@@ -454,6 +454,12 @@
   status = 200
   force = true
 
+  [[redirects]]
+  from = "/getGaonListWithCodeByBlock/*"
+  to = "http://register.kdsgroup.co.in/getGaonListWithCodeByBlock/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/downloadDigitisationStatusTblByZila/*"
   to = "http://register.kdsgroup.co.in/downloadDigitisationStatusTblByZila/:splat"

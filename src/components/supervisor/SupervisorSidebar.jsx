@@ -1,172 +1,204 @@
 // src/components/supervisor/SupervisorSidebar.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const SupervisorSidebar = ({ 
-  user, 
+const SupervisorSidebar = ({
+  user,
   onPendingRegisterClick,
   onCompletedRegisterClick,
   onRejectedFamiliesClick,
   onVilPendingClick,
   onDashboardClick,
   onManageOperatorsClick,
-  onChangePassword, 
+  onChangePassword,
   onLogout,
-  rejectedHasFlicker 
+  rejectedHasFlicker,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [activeItem, setActiveItem] = useState("");
 
   return (
     <>
-      <div className={`sidebar ${collapsed ? 'hidden' : ''}`}>
-        <div style={{ textAlign: 'end', paddingRight: '5px', paddingTop: '5px' }}>
-          <button className="toggleBtn" id="collapseMenu" onClick={() => setCollapsed(true)}>
+      <div
+        className={`sidebar ${collapsed ? "hidden" : ""}`}
+        style={{
+          width: "280px",
+          minHeight: "100vh",
+          background: "linear-gradient(180deg,#0f172a,#1e293b)",
+          color: "#fff",
+          padding: "12px",
+        }}
+      >
+        {/* Collapse Button */}
+        <div style={{ textAlign: "right" }}>
+          <button
+            className="toggleBtn"
+            onClick={() => setCollapsed(true)}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "#fff",
+              fontSize: "18px",
+              cursor: "pointer",
+            }}
+          >
             <i className="fa fa-arrow-left"></i>
           </button>
         </div>
 
-        <div className="sidebar-header">
-          <i className="fas fa-user-circle"></i>
-          <span className="title">{user.name}</span>
-        </div>
-
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Allotted District</th>
-            </tr>
-          </thead>
-          <tbody>
-            {user.districts.map((district, idx) => (
-              <tr key={idx}>
-                <td>{district}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <button 
-          className="guideline" 
-          style={{ margin: '0 20px 10px 20px', padding: '0', border: 'none', background: 'none' }}
+        {/* Header */}
+        <div
+          style={{
+            textAlign: "center",
+            padding: "16px 0",
+            borderBottom: "1px solid #334155",
+          }}
         >
-          <a 
-            href="/static/assets/Data Entry Supervisor Role & Responsibilities.pdf"
-            target="_blank" 
-            className="guidelineBtn" 
-            style={{
-              display: 'inline-block',
-              padding: '8px 16px',
-              borderRadius: '8px',
-              backgroundColor: '#f0f0f0',
-              color: '#000',
-              fontSize: '14px',
-              textDecoration: 'underline',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
-              transition: 'background-color 0.3s, transform 0.2s'
-            }}
-          >
-            View/Download Guidelines
-          </a>
-        </button>
+          <i
+            className="fas fa-user-shield"
+            style={{ fontSize: "42px", color: "#60a5fa" }}
+          ></i>
+          <h3 style={{ marginTop: "8px" }}>{user.name}</h3>
+        </div>
 
-        <button 
-          className="guideline" 
-          style={{ margin: '0 20px 10px 20px', padding: '0', border: 'none', background: 'none' }}
+        {/* Info Card */}
+        <div
+          style={{
+            background: "#1e293b",
+            borderRadius: "12px",
+            marginTop: "12px",
+            padding: "10px",
+            fontSize: "14px",
+          }}
         >
-          <a 
-            href="/static/assets/Supervisor_demo.mp4"
-            target="_blank" 
-            className="guidelineBtn" 
-            style={{
-              display: 'inline-block',
-              padding: '8px 16px',
-              borderRadius: '8px',
-              backgroundColor: '#f0f0f0',
-              color: '#000',
-              fontSize: '14px',
-              textDecoration: 'underline',
-              boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
-              transition: 'background-color 0.3s, transform 0.2s'
+          <table style={{ width: "100%" }}>
+            <tbody>
+              {user.districts.map((district, idx) => (
+                <tr key={idx}>
+                  <td style={{ color: "#cbd5f5", padding: "6px" }}>
+                    Allotted District
+                  </td>
+                  <td style={{ textAlign: "right", padding: "6px" }}>
+                    {district}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Menu Buttons */}
+        <div style={{ marginTop: "12px" }}>
+          <SidebarBtn
+            label="Dashboard"
+            active={activeItem === "dashboard"}
+            onClick={() => {
+              setActiveItem("dashboard");
+              onDashboardClick();
             }}
-          >
-            Watch Demo Video
-          </a>
-        </button>
+          />
 
-        <div className="dropdown">
-          <button className="dropbtn" onClick={onDashboardClick}>Dashboard</button>
+          <SidebarBtn
+            label="Manage Operator"
+            active={activeItem === "operator"}
+            onClick={() => {
+              setActiveItem("operator");
+              onManageOperatorsClick();
+            }}
+          />
+
+          <SidebarBtn
+            label="Villages Pending for Entry"
+            active={activeItem === "village"}
+            onClick={() => {
+              setActiveItem("village");
+              onVilPendingClick();
+            }}
+          />
+
+          <SidebarBtn
+            label="Pending Register"
+            active={activeItem === "pending"}
+            onClick={() => {
+              setActiveItem("pending");
+              onPendingRegisterClick();
+            }}
+          />
+
+          <SidebarBtn
+            label="Completed Registers"
+            active={activeItem === "completed"}
+            onClick={() => {
+              setActiveItem("completed");
+              onCompletedRegisterClick();
+            }}
+          />
+
+          <SidebarBtn
+            label="Rejected Families"
+            active={activeItem === "rejected"}
+            onClick={() => {
+              setActiveItem("rejected");
+              onRejectedFamiliesClick();
+            }}
+            flicker={rejectedHasFlicker}
+          />
+
+          <SidebarBtn
+            label="PM Reject"
+            active={activeItem === "pm"}
+            onClick={() => {
+              setActiveItem("pm");
+              onRejectedFamiliesClick();
+            }}
+            flicker={rejectedHasFlicker}
+          />
         </div>
 
-        <div className="dropdown">
-          <button className="dropbtn" onClick={onManageOperatorsClick}>
-            Manage Operator
-          </button>
+        {/* Change Password */}
+        <div
+          onClick={onChangePassword}
+          style={{
+            marginTop: "14px",
+            padding: "10px",
+            borderRadius: "10px",
+            background: "#334155",
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          <i className="fas fa-key"></i> Change Password
         </div>
 
-        <div className="dropdown">
-          <button className="dropbtn" onClick={onVilPendingClick}>
-            Villages Pending for Entry
-          </button>
+        {/* Logout */}
+        <div
+          onClick={onLogout}
+          style={{
+            marginTop: "10px",
+            padding: "12px",
+            borderRadius: "12px",
+            background: "#7f1d1d",
+            textAlign: "center",
+            cursor: "pointer",
+          }}
+        >
+          <i className="fas fa-sign-out-alt"></i> Logout
         </div>
-
-        <div className="dropdown">
-          <button className="dropbtn" onClick={onPendingRegisterClick}>
-            Pending Register
-          </button>
-        </div>
-
-        <div className="dropdown">
-          <button className="dropbtn" onClick={onCompletedRegisterClick}>
-            Completed Registers
-          </button>
-        </div>
-
-        <div className="dropdown" style={{ borderBottom: '2px solid black' }}>
-          <button 
-            className="dropbtn" 
-            onClick={onRejectedFamiliesClick}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            <span 
-              id="flicker" 
-              className={rejectedHasFlicker ? '' : 'hidden'}
-              style={{ marginRight: '8px' }}
-            >
-              &nbsp;&nbsp;&nbsp;&nbsp;
-            </span>
-            Rejected Families
-          </button>
-        </div>
-
-        <div className="logout" onClick={onChangePassword} style={{ cursor: 'pointer' }}>
-          <i className="fas fa-user-edit" style={{ marginRight: '10px' }}></i>
-          <span>Change Password</span>
-        </div>
-
-        <a href="#" onClick={onLogout} className="logout" style={{ marginTop: '1em' }}>
-          <i className="icon">
-            <i className="fas fa-sign-out-alt"></i>
-          </i>
-          <span>Logout</span>
-        </a>
       </div>
 
+      {/* Open Button */}
       {collapsed && (
         <button
-          id="openMenu"
-          className="toggleBtn"
           onClick={() => setCollapsed(false)}
           style={{
-            position: 'fixed',
-            left: '10px',
-            top: '10px',
-            zIndex: 1000,
-            background: 'linear-gradient(135deg, #1e293b, #334155)',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            border: 'none',
-            padding: '10px',
-            borderRadius: '4px',
-            color: 'white',
-            cursor: 'pointer'
+            position: "fixed",
+            left: "10px",
+            top: "10px",
+            background: "#1e293b",
+            color: "#fff",
+            border: "none",
+            padding: "10px",
+            borderRadius: "6px",
+            cursor: "pointer",
           }}
         >
           <i className="fa fa-arrow-right"></i>
@@ -175,5 +207,35 @@ const SupervisorSidebar = ({
     </>
   );
 };
+
+const SidebarBtn = ({ label, onClick, flicker, active }) => (
+  <div
+    onClick={onClick}
+    style={{
+      background: active ? "#2563eb" : "#1e293b",
+      color: active ? "#ffffff" : "#e5e7eb",
+      marginTop: "8px",
+      padding: "10px",
+      borderRadius: "10px",
+      cursor: "pointer",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      transition: "0.3s",
+    }}
+  >
+    <span>{label}</span>
+    {flicker && (
+      <span
+        style={{
+          width: "8px",
+          height: "8px",
+          background: "red",
+          borderRadius: "50%",
+        }}
+      ></span>
+    )}
+  </div>
+);
 
 export default SupervisorSidebar;

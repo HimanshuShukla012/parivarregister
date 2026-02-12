@@ -1,139 +1,254 @@
 // src/components/supervisor/RegisterTable.jsx
-import React from 'react';
+import React from "react";
 
-const RegisterTable = ({ data, viewMode, onEdit, onAdd, onDelete, onApprove, onViewPDF }) => {
+const RegisterTable = ({
+  data,
+  viewMode,
+  onEdit,
+  onAdd,
+  onDelete,
+  onApprove,
+  onViewPDF,
+}) => {
   const handleNullDate = (value) => {
-    if (!value) return '';
+    if (!value) return "";
     return value.split("-").reverse().join("-");
   };
 
   const findFamilyMembers = (index) => {
     const familyData = [data[index]];
-    for (let i = index + 1; i < data.length && String(data[i].serialNo) !== '1'; i++) {
+    for (
+      let i = index + 1;
+      i < data.length && String(data[i].serialNo) !== "1";
+      i++
+    ) {
       familyData.push(data[i]);
     }
     return familyData;
   };
 
   return (
-    <table className="main-table" id="gaonTable">
-      <thead id="gaonTableHeader">
-        <tr>
-          <th>क्रम संख्या</th>
-          <th>मकान नम्बर(अंकों में)</th>
-          <th>मकान नम्बर (अक्षरों में)</th>
-          <th>परिवार के प्रमुख का नाम</th>
-          <th>परिवार के सदस्य का नाम</th>
-          <th>पिता या पति का नाम</th>
-          <th>पुरुष या महिला</th>
-          <th>धर्म</th>
-          <th>जाति</th>
-          <th>जन्म तिथि</th>
-          <th>व्यावसाय</th>
-          <th>साक्षर या निरक्षर</th>
-          <th>योग्यता</th>
-          <th>सर्किल छोड़ देने/ मृत्यु का दिनांक</th>
-          <th>विवरण</th>
-          <th>Actions</th>
-          <th>PDF No.</th>
-          <th>From Page No.</th>
-          <th>To Page No.</th>
-          <th>View/Approve</th>
-          {viewMode === 'rejected' && <th>Remark</th>}
-        </tr>
-      </thead>
-      <tbody id="gaonTableBody">
-        {data.length > 0 ? (
-          data.map((row, index) => (
-            <tr key={index}>
-              <td>{row.serialNo || ''}</td>
-              <td>{row.houseNumberNum || ''}</td>
-              <td>{row.houseNumberText || ''}</td>
-              <td>{row.familyHeadName || ''}</td>
-              <td>{row.memberName || ''}</td>
-              <td>{row.fatherOrHusbandName || ''}</td>
-              <td>{row.gender || ''}</td>
-              <td>{row.religion || ''}</td>
-              <td>{row.caste || ''}</td>
-              <td>{handleNullDate(row.dob)}</td>
-              <td>{row.business || ''}</td>
-              <td>{row.literacy || ''}</td>
-              <td>{row.qualification || ''}</td>
-              <td>{handleNullDate(row.leavingDate)}</td>
-              <td>{row.description || ''}</td>
-              <td>
-                {row.status !== 'Approved' && (
-                  <>
-                    {String(row.serialNo) === '1' && (
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: "16px",
+        boxShadow: "0 8px 25px rgba(0,0,0,0.1)",
+        padding: "16px",
+        overflowX: "auto",
+      }}
+    >
+      <table
+        className="main-table"
+        id="gaonTable"
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: "14px",
+        }}
+      >
+        <thead>
+          <tr style={{ background: "#f5f7ff" }}>
+            {[
+              "क्रम संख्या",
+              "मकान नम्बर(अंकों में)",
+              "मकान नम्बर (अक्षरों में)",
+              "परिवार के प्रमुख का नाम",
+              "परिवार के सदस्य का नाम",
+              "पिता या पति का नाम",
+              "पुरुष या महिला",
+              "धर्म",
+              "जाति",
+              "जन्म तिथि",
+              "व्यावसाय",
+              "साक्षर या निरक्षर",
+              "योग्यता",
+              "सर्किल छोड़ देने/ मृत्यु का दिनांक",
+              "विवरण",
+              "Actions",
+              "PDF No.",
+              "From Page No.",
+              "To Page No.",
+              "View/Approve",
+            ].map((h, i) => (
+              <th
+                key={i}
+                style={{
+                  padding: "10px",
+                  textAlign: "left",
+                  color: "#333",
+                  fontWeight: "600",
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                {h}
+              </th>
+            ))}
+            {viewMode === "rejected" && <th>Remark</th>}
+          </tr>
+        </thead>
+
+        <tbody>
+          {data.length > 0 ? (
+            data.map((row, index) => (
+              <tr
+                key={index}
+                style={{
+                  borderBottom: "1px solid #eee",
+                }}
+              >
+                <td>{row.serialNo || ""}</td>
+                <td>{row.houseNumberNum || ""}</td>
+                <td>{row.houseNumberText || ""}</td>
+                <td>{row.familyHeadName || ""}</td>
+                <td>{row.memberName || ""}</td>
+                <td>{row.fatherOrHusbandName || ""}</td>
+                <td>{row.gender || ""}</td>
+                <td>{row.religion || ""}</td>
+                <td>{row.caste || ""}</td>
+                <td>{handleNullDate(row.dob)}</td>
+                <td>{row.business || ""}</td>
+                <td>{row.literacy || ""}</td>
+                <td>{row.qualification || ""}</td>
+                <td>{handleNullDate(row.leavingDate)}</td>
+                <td>{row.description || ""}</td>
+
+                {/* ACTIONS */}
+                <td
+                  style={{
+                    display: "flex",
+                    gap: "6px",
+                    flexWrap: "nowrap",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {row.status !== "Approved" && (
+                    <>
+                      {String(row.serialNo) === "1" && (
+                        <>
+                          <button
+                            onClick={() => onAdd(findFamilyMembers(index))}
+                            style={btnGreen}
+                          >
+                            + Add
+                          </button>
+
+                          <button
+                            onClick={() => onEdit(findFamilyMembers(index))}
+                            style={btnBlue}
+                          >
+                            Edit
+                          </button>
+                        </>
+                      )}
+                      <button
+                        onClick={() =>
+                          onDelete(row.id, row.gaonCode, row.serialNo)
+                        }
+                        style={btnRed}
+                      >
+                        Delete <i class="fas fa-trash"></i>
+                      </button>
+                    </>
+                  )}
+                </td>
+
+                <td>{row.pdfNo || ""}</td>
+                <td>{row.fromPage || ""}</td>
+                <td>{row.toPage || ""}</td>
+
+                <td
+                  style={{
+                    display: "flex",
+                    gap: "6px",
+                    flexWrap: "nowrap",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {String(row.serialNo) === "1" &&
+                    row.pdfNo &&
+                    row.fromPage &&
+                    row.toPage && (
                       <>
-                        <button 
-                          onClick={() => onAdd(findFamilyMembers(index))}
-                          title="Add Member"
+                        <button
+                          onClick={() =>
+                            onViewPDF(
+                              row.pdfNo,
+                              row.fromPage,
+                              row.toPage,
+                              row.gaonCode,
+                            )
+                          }
+                          style={btnGreen}
                         >
-                          <i className="fas fa-plus"></i>
+                          View <i class="fas fa-eye"></i>
                         </button>
-                        &nbsp;
-                        <button 
-                          className="editBtn" 
-                          onClick={() => onEdit(findFamilyMembers(index))}
-                          title="Edit Family"
-                        >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        &nbsp;
+
+                        {row.status !== "Approved" && (
+                          <button
+                            onClick={() => onApprove(row.id, row.gaonCode)}
+                            style={btnPurple}
+                          >
+                            Approve
+                          </button>
+                        )}
                       </>
                     )}
-                    <button 
-                      onClick={() => onDelete(row.id, row.gaonCode, row.serialNo)}
-                      title="Delete Record"
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </>
-                )}
-              </td>
-              <td>{row.pdfNo || ''}</td>
-              <td>{row.fromPage || ''}</td>
-              <td>{row.toPage || ''}</td>
-              <td>
-                {String(row.serialNo) === '1' && row.pdfNo && row.fromPage && row.toPage && (
-                  <>
-                    <button 
-                      onClick={() => onViewPDF(row.pdfNo, row.fromPage, row.toPage, row.gaonCode)}
-                      title="View PDF"
-                    >
-                      <i className="fas fa-eye"></i>
-                    </button>
-                    &nbsp;
-                    {row.status !== 'Approved' && (
-                      <button 
-                        onClick={() => onApprove(row.id, row.gaonCode)}
-                        title="Approve Family"
-                      >
-                        <i className="fas fa-check"></i>
-                      </button>
+
+                  {String(row.serialNo) === "1" &&
+                    (!row.pdfNo || !row.fromPage || !row.toPage) && (
+                      <span style={{ fontSize: "12px", color: "#999" }}>
+                        Add pdf & page no. first!
+                      </span>
                     )}
-                  </>
-                )}
-                {String(row.serialNo) === '1' && (!row.pdfNo || !row.fromPage || !row.toPage) && (
-                  <span style={{ fontSize: '0.85rem', color: '#999' }}>
-                    Add pdf & page no. first!
-                  </span>
-                )}
+                </td>
+
+                {viewMode === "rejected" && <td>{row.remark || ""}</td>}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={viewMode === "rejected" ? 21 : 20}
+                style={{ textAlign: "center", padding: "20px" }}
+              >
+                No Data Available
               </td>
-              {viewMode === 'rejected' && <td>{row.remark || ''}</td>}
             </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan={viewMode === 'rejected' ? 21 : 20} style={{ border: 'none' }}>
-              No Data Available
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
+};
+
+/* BUTTON STYLES */
+const baseBtn = {
+  border: "none",
+  borderRadius: "20px",
+  padding: "6px 14px",
+  fontSize: "13px",
+  cursor: "pointer",
+  color: "#fff",
+};
+
+const btnGreen = {
+  ...baseBtn,
+  background: "#22c55e",
+};
+
+const btnBlue = {
+  ...baseBtn,
+  background: "#6366f1",
+};
+
+const btnRed = {
+  ...baseBtn,
+  background: "#ef4444",
+};
+
+const btnPurple = {
+  ...baseBtn,
+  background: "#8b5cf6",
 };
 
 export default RegisterTable;

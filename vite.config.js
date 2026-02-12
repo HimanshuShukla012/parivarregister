@@ -901,6 +901,18 @@ export default defineConfig({
           });
         },
       },
+      "/getGaonListWithCodeByBlock": {
+        target: "http://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
       "/download_supervisor_excel_report": {
         target: "http://register.kdsgroup.co.in",
         changeOrigin: true,

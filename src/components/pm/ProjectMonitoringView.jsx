@@ -198,6 +198,66 @@ const ProjectMonitoringView = () => {
     setCurrentPages((prev) => ({ ...prev, [tableKey]: newPage }));
   };
 
+  const styles = {
+    card: {
+      background: "rgb(255, 255, 255)",
+      color: "rgb(255, 255, 255)",
+      fontSize: "22px",
+      fontWeight: 600,
+      alignItems: "center",
+      borderRadius: "16px",
+      padding: "16px 20px",
+      boxShadow: "rgba(0, 0, 0, 0.08) 0px 2px 4px",
+      border: "1px solid rgb(229, 231, 235)",
+      width: "100%",
+    },
+    cardHeader: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingBottom: "8px",
+    },
+    cardTitle: {
+      fontSize: "16px",
+      fontWeight: "600",
+      color: "#374151",
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+    },
+    downloadBtn: {
+      background: "rgb(34, 197, 94)",
+      color: "white",
+      padding: "8px 14px",
+      borderRadius: "6px",
+      border: "none",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      gap: "6px",
+      fontSize: "14px",
+      fontWeight: "500",
+    },
+    formRow: {
+      display: "flex",
+      gap: "16px",
+      flexWrap: "wrap",
+    },
+    label: {
+      fontSize: "14px",
+      marginBottom: "4px",
+      display: "block",
+      color: "#374151",
+    },
+    input: {
+      width: "100%",
+      padding: "8px",
+      borderRadius: "6px",
+      border: "1px solid #d1d5db",
+      fontSize: "14px",
+    },
+  };
+
   const renderTable = (tableKey, data, headers, heading, downloadUrl) => {
     if (!data || data.length === 0) return null;
 
@@ -467,9 +527,214 @@ const ProjectMonitoringView = () => {
     );
   }
 
+  {
+    /* ================= REPORTS & DOWNLOADS (YOUR OLD CODE) ================= */
+  }
+  {
+    /* Yahan se tumhara existing Reports & Downloads wala pura code as-it-is rahega */
+  }
+
   return (
     <div style={{ padding: "24px", maxWidth: "1400px", margin: "0 auto" }}>
       {/* Reports Section with Forms */}
+      <section>
+        <div style={{ padding: "20px" }}>
+          <h2
+            style={{
+              textAlign: "center",
+              background: "rgb(255, 255, 255)",
+              padding: "16px 24px",
+              borderRadius: "12px",
+              fontSize: "22px",
+              fontWeight: 600,
+              boxShadow: "rgba(0, 0, 0, 0.08) 0px 2px 6px",
+              marginBottom: "20px",
+            }}
+          >
+            Project Overview
+          </h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "20px",
+              marginBottom: "40px",
+            }}
+          >
+            {[
+              {
+                label: "No. of Registers Collected",
+                value: "?",
+                icon: <i className="fas fa-home"></i>,
+                color: "#6366F1",
+              },
+              {
+                label: "No. of Registers Returned",
+                value: "?",
+                icon: <i className="fas fa-user-friends"></i>,
+                color: "#22C55E",
+              },
+              {
+                label: "No. of Villages Pending for Upload",
+                value: "?",
+                icon: <i className="fas fa-clock"></i>,
+                color: "#6366F1",
+              },
+              {
+                label: "No. of Villages Entry Not Started",
+                value: "?",
+                icon: <i className="fas fa-times-circle"></i>,
+                color: "#22C55E",
+              },
+              {
+                label: "No. of Villages Entry Done",
+                value: "?",
+                icon: <i className="fas fa-home"></i>,
+                color: "#6366F1",
+              },
+              {
+                label: "No. of Villages Verified By Sachiv",
+                value: "?",
+                icon: <i className="fas fa-check-circle"></i>,
+                color: "#22C55E",
+              },
+              {
+                label: "No. of Blocks Verified By ADO",
+                value: "?",
+                icon: <i className="fas fa-shield-alt"></i>,
+                color: "#6366F1",
+              },
+              {
+                label: "No. of Districts Completed",
+                value: "?",
+                icon: <i className="fas fa-home"></i>,
+                color: "#22C55E",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "#fff",
+                  borderRadius: "16px",
+                  padding: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "15px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                }}
+              >
+                <div
+                  style={{
+                    width: "55px",
+                    height: "55px",
+                    borderRadius: "14px",
+                    background: item.color,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "22px",
+                    color: "#fff",
+                  }}
+                >
+                  {item.icon}
+                </div>
+                <div>
+                  <div style={{ fontSize: "14px", color: "#555" }}>
+                    {item.label}
+                  </div>
+                  <div style={{ fontSize: "28px", fontWeight: "700" }}>
+                    {item.value}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <h2
+            style={{
+              textAlign: "center",
+              background: "rgb(255, 255, 255)",
+              padding: "16px 24px",
+              borderRadius: "12px",
+              fontSize: "22px",
+              fontWeight: 600,
+              boxShadow: "rgba(0, 0, 0, 0.08) 0px 2px 6px",
+              marginBottom: "20px",
+            }}
+          >
+            Timeline Management
+          </h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "20px",
+              marginBottom: "40px",
+            }}
+          >
+            {[
+              {
+                label: "No. of Villages Pending for Receiving",
+                value: "?",
+                icon: <i className="fas fa-clock"></i>,
+                color: "#6366F1",
+              },
+              {
+                label: "No. of Villages Pending for Scanning",
+                value: "?",
+                icon: <i className="fas fa-clock"></i>,
+                color: "#22C55E",
+              },
+              {
+                label: "No. of Districts Short on Daily Average",
+                value: "?",
+                icon: <i className="fas fa-chart-line"></i>,
+                color: "#6366F1",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                style={{
+                  background: "#fff",
+                  borderRadius: "16px",
+                  padding: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "15px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                }}
+              >
+                <div
+                  style={{
+                    width: "55px",
+                    height: "55px",
+                    borderRadius: "14px",
+                    background: item.color,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "22px",
+                    color: "#fff",
+                  }}
+                >
+                  {item.icon}
+                </div>
+                <div>
+                  <div style={{ fontSize: "14px", color: "#555" }}>
+                    {item.label}
+                  </div>
+                  <div style={{ fontSize: "28px", fontWeight: "700" }}>
+                    {item.value}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section style={{ marginBottom: "40px" }}>
         <h2
           style={{
@@ -484,139 +749,56 @@ const ProjectMonitoringView = () => {
         <div
           style={{
             display: "flex",
-            alignItems: "start",
-            justifyContent: "start",
+            flexDirection: "column",
             gap: "20px",
+            width: "100%",
           }}
         >
           {/* Data Entries Completed in Range */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              border: "1px solid #e5e7eb",
-            }}
-          >
-            <h4
-              style={{
-                fontSize: "16px",
-                fontWeight: "600",
-                marginBottom: "16px",
-                color: "#374151",
-                borderBottom: "2px solid #ef4444",
-                paddingBottom: "8px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              <FaCalendarAlt /> Data Entries Completed in Range
-            </h4>
-            <div style={{ marginBottom: "12px" }}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  marginBottom: "6px",
-                  color: "#374151",
-                }}
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h4 style={styles.cardTitle}>
+                <FaCalendarAlt /> Data Entries Completed in Range
+              </h4>
+              <button
+                onClick={handleDateRangeDownload}
+                style={styles.downloadBtn}
               >
-                From Date:
-              </label>
-              <input
-                type="date"
-                value={dateRange.from}
-                onChange={(e) =>
-                  setDateRange({ ...dateRange, from: e.target.value })
-                }
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "6px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "14px",
-                }}
-              />
+                <FaDownload /> Download
+              </button>
             </div>
-            <div style={{ marginBottom: "12px" }}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "14px",
-                  marginBottom: "6px",
-                  color: "#374151",
-                }}
-              >
-                To Date:
-              </label>
-              <input
-                type="date"
-                value={dateRange.to}
-                onChange={(e) =>
-                  setDateRange({ ...dateRange, to: e.target.value })
-                }
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  borderRadius: "6px",
-                  border: "1px solid #d1d5db",
-                  fontSize: "14px",
-                }}
-              />
+
+            <div style={styles.formRow}>
+              <div style={{ flex: 1 }}>
+                <label style={styles.label}>From Date</label>
+                <input
+                  type="date"
+                  value={dateRange.from}
+                  onChange={(e) =>
+                    setDateRange({ ...dateRange, from: e.target.value })
+                  }
+                  style={styles.input}
+                />
+              </div>
+
+              <div style={{ flex: 1 }}>
+                <label style={styles.label}>To Date</label>
+                <input
+                  type="date"
+                  value={dateRange.to}
+                  onChange={(e) =>
+                    setDateRange({ ...dateRange, to: e.target.value })
+                  }
+                  style={styles.input}
+                />
+              </div>
             </div>
-            <button
-              onClick={handleDateRangeDownload}
-              style={{
-                width: "100%",
-                background: "#3b82f6",
-                color: "white",
-                padding: "10px 16px",
-                borderRadius: "6px",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
-            >
-              <FaDownload /> Download
-            </button>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "start",
-              justifyContent: "start",
-              gap: "20px",
-            }}
-          >
-            {/* Digitisation District-wise Report */}
-            <div
-              style={{
-                background: "white",
-                borderRadius: "12px",
-                padding: "20px",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                border: "1px solid #e5e7eb",
-              }}
-            >
-              <h4
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  marginBottom: "16px",
-                  color: "#374151",
-                  borderBottom: "2px solid #ef4444",
-                  paddingBottom: "8px",
-                }}
-              >
+          {/* Digitisation District-wise Report */}
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h4 style={styles.cardTitle}>
                 Digitisation District-wise Report
               </h4>
               <button
@@ -625,69 +807,24 @@ const ProjectMonitoringView = () => {
                     "https://register.kdsgroup.co.in/district_overview_excel_api/",
                   )
                 }
-                style={{
-                  width: "100%",
-                  background: "#3b82f6",
-                  color: "white",
-                  padding: "10px 16px",
-                  borderRadius: "6px",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
+                style={styles.downloadBtn}
               >
                 <FaDownload /> Download
               </button>
             </div>
-            {/* Digitisation GP-wise Report */}
-            <div
-              style={{
-                background: "white",
-                borderRadius: "12px",
-                padding: "20px",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                border: "1px solid #e5e7eb",
-                width: "100%",
-              }}
-            >
-              <h4
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  marginBottom: "16px",
-                  color: "#374151",
-                  borderBottom: "2px solid #ef4444",
-                  paddingBottom: "8px",
-                }}
-              >
-                Digitisation GP Report
-              </h4>
+          </div>
+
+          {/* Digitisation GP-wise Report */}
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h4 style={styles.cardTitle}>Digitisation GP Report</h4>
               <button
                 onClick={() =>
                   handleDownloadGPReport(
                     "https://register.kdsgroup.co.in/district_overview_excel_api/",
                   )
                 }
-                style={{
-                  width: "100%",
-                  background: "#3b82f6",
-                  color: "white",
-                  padding: "10px 16px",
-                  borderRadius: "6px",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
+                style={styles.downloadBtn}
               >
                 <FaDownload /> Download
               </button>
@@ -695,112 +832,33 @@ const ProjectMonitoringView = () => {
           </div>
 
           {/* Digitisation Block-wise Report */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              border: "1px solid #e5e7eb",
-            }}
-          >
-            <h4
-              style={{
-                fontSize: "16px",
-                fontWeight: "600",
-                marginBottom: "16px",
-                color: "#374151",
-                borderBottom: "2px solid #ef4444",
-                paddingBottom: "8px",
-              }}
-            >
-              Digitisation Block-wise Report
-            </h4>
-            {/* <select
-              value={selectedZilaForBlock}
-              onChange={(e) => setSelectedZilaForBlock(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px",
-                marginBottom: "12px",
-                borderRadius: "6px",
-                border: "1px solid #d1d5db",
-                fontSize: "14px",
-              }}
-            >
-              <option value="">Select District</option>
-              {zilaList.map((z, i) => (
-                <option key={i} value={z.zila}>
-                  {z.zila}
-                </option>
-              ))}
-            </select> */}
-            <button
-              onClick={handleBlockReportDownload}
-              style={{
-                width: "100%",
-                background: "#3b82f6",
-                color: "white",
-                padding: "10px 16px",
-                borderRadius: "6px",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
-            >
-              <FaDownload /> Download
-            </button>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h4 style={styles.cardTitle}>Digitisation Block-wise Report</h4>
+              <button
+                onClick={handleBlockReportDownload}
+                style={styles.downloadBtn}
+              >
+                <FaDownload /> Download
+              </button>
+            </div>
           </div>
 
           {/* Family Register Digitisation Master Report */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              border: "1px solid #e5e7eb",
-            }}
-          >
-            <h4
-              style={{
-                fontSize: "16px",
-                fontWeight: "600",
-                marginBottom: "16px",
-                color: "#374151",
-                borderBottom: "2px solid #ef4444",
-                paddingBottom: "8px",
-              }}
-            >
-              Family Register Digitisation Master Report
-            </h4>
-            <button
-              onClick={() =>
-                handleDownloadReport("/download_master_digitisation_report")
-              }
-              style={{
-                width: "100%",
-                background: "#3b82f6",
-                color: "white",
-                padding: "10px 16px",
-                borderRadius: "6px",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
-            >
-              <FaDownload /> Download
-            </button>
+          <div style={styles.card}>
+            <div style={styles.cardHeader}>
+              <h4 style={styles.cardTitle}>
+                Family Register Digitisation Master Report
+              </h4>
+              <button
+                onClick={() =>
+                  handleDownloadReport("/download_master_digitisation_report")
+                }
+                style={styles.downloadBtn}
+              >
+                <FaDownload /> Download
+              </button>
+            </div>
           </div>
         </div>
       </section>

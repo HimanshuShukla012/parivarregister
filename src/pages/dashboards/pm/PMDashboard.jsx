@@ -335,7 +335,20 @@ const PMDashboard = () => {
           {/* Project Monitoring */}
           {activeView === "project-monitoring" && (
             <>
-              <h1 className="page-title">Project Monitoring Dashboard</h1>
+              <h1
+                style={{
+                  textAlign: "center",
+                  background: "rgb(255, 255, 255)",
+                  padding: "16px 24px",
+                  borderRadius: "12px",
+                  fontSize: "22px",
+                  fontWeight: 600,
+                  boxShadow: "rgba(0, 0, 0, 0.08) 0px 2px 6px",
+                  marginBottom: "20px",
+                }}
+              >
+                Project Monitoring Dashboard
+              </h1>
               <ProjectMonitoringView />
             </>
           )}

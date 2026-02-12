@@ -1,69 +1,85 @@
 // src/pages/dashboards/supervisor/SupervisorDashboard.jsx
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import supervisorService from '../../../services/supervisorService';
-import SupervisorSidebar from '../../../components/supervisor/SupervisorSidebar';
-import RegisterTable from '../../../components/supervisor/RegisterTable';
-import EditFamilyModal from '../../../components/supervisor/EditFamilyModal';
-import AddRecordModal from '../../../components/supervisor/AddRecordModal';
-import ChangePasswordModal from '../../../components/supervisor/ChangePasswordModal';
-import ManageOperatorModal from '../../../components/supervisor/ManageOperatorModal';
-import AddOperatorModal from '../../../components/supervisor/AddOperatorModal';
-import OperatorMonitoring from '../../../components/supervisor/OperatorMonitoring';
-import DataMonitoring from '../../../components/supervisor/DataMonitoring';
-import MessageModal from '../../../components/supervisor/MessageModal';
-import '../../../assets/styles/pages/supervisor-scoped.css';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import supervisorService from "../../../services/supervisorService";
+import SupervisorSidebar from "../../../components/supervisor/SupervisorSidebar";
+import RegisterTable from "../../../components/supervisor/RegisterTable";
+import EditFamilyModal from "../../../components/supervisor/EditFamilyModal";
+import AddRecordModal from "../../../components/supervisor/AddRecordModal";
+import ChangePasswordModal from "../../../components/supervisor/ChangePasswordModal";
+import ManageOperatorModal from "../../../components/supervisor/ManageOperatorModal";
+import AddOperatorModal from "../../../components/supervisor/AddOperatorModal";
+import OperatorMonitoring from "../../../components/supervisor/OperatorMonitoring";
+import DataMonitoring from "../../../components/supervisor/DataMonitoring";
+import MessageModal from "../../../components/supervisor/MessageModal";
+import "../../../assets/styles/pages/supervisor-scoped.css";
 
 // Block mapping (same as original)
 const BLOCKS = {
-  'DESU121_01': ['Baskhari', 'Ram Nagar'],
-  'DESU121_02': ['Bhiti'],
-  'DESU121_03': ['Katehari'],
-  'DESU129_01': ['Sidhaur'],
-  'DESU129_02': ['Suratganj'],
-  'DESU129_03': ['Harakh'],
-  'DESU136_01': ['Mau'],
-  'DESU136_02': ['Karwi'],
-  'DESU136': ['Karwi', 'Mau'],
-  'DESU136_04': ['Pahari'],
-  'DESU140_01': ['Tarun'],
-  'DESU140_03': ['Bikapur'],
-  'DESU140_04': ['Masodha'],
-  'DESU140_05': ['Haringatanganj', 'Maya Bazar', 'Rudauli', 'Milkipur', 'Pura Bazar'],
-  'DESU149_01': ['Kurara'],
-  'DESU151_01': ['Dakore', 'Kuthaund'],
-  'DESU151_02': ['Nadigaon'],
-  'DESU153_01': ['Chirgaon'],
-  'DESU153_02': ['Moth'],
-  'DESU153_03': ['Babina'],
-  'DESU153_04': ['Gursarai'],
-  'DESU153_05': ['Bamaur'],
-  'DESU161_01': ['Talbehat', 'Birdha'],
-  'DESU161_02': ['Bar'],
-  'DESU161_03': ['Mehroni', 'Mandawara'],
-  'DESU161_04': ['Jakhaura'],
-  'DESU165_01': [],
-  'DESU165_02': ['Jaitpur'],
-  'DESU165_03': ['Charkhari', 'Kabrai', 'Panwari'],
-  'DESU185_01': ['Akhand Nagar'],
-  'DESU185_02': ['Dhanpatganj', 'Bhadaiya', 'Kurebhar'],
-  'DESU185_03': ['Baldirai'],
-  'DESU185_04': ['P.P.Kamaicha', 'Lambhua'],
-  'DESU640_01': ['Shahgarh'],
-  'DESU640_02': ['Jamo', 'Bhadar', 'Tiloi', 'Musafir Khana', 'Jagdishpur', 'Shukul Bazar'],
-  'DESU640_05': ['Bhetua', 'Sangrampur', 'Amethi']
+  DESU121_01: ["Baskhari", "Ram Nagar"],
+  DESU121_02: ["Bhiti"],
+  DESU121_03: ["Katehari"],
+  DESU129_01: ["Sidhaur"],
+  DESU129_02: ["Suratganj"],
+  DESU129_03: ["Harakh"],
+  DESU136_01: ["Mau"],
+  DESU136_02: ["Karwi"],
+  DESU136: ["Karwi", "Mau"],
+  DESU136_04: ["Pahari"],
+  DESU140_01: ["Tarun"],
+  DESU140_03: ["Bikapur"],
+  DESU140_04: ["Masodha"],
+  DESU140_05: [
+    "Haringatanganj",
+    "Maya Bazar",
+    "Rudauli",
+    "Milkipur",
+    "Pura Bazar",
+  ],
+  DESU149_01: ["Kurara"],
+  DESU151_01: ["Dakore", "Kuthaund"],
+  DESU151_02: ["Nadigaon"],
+  DESU153_01: ["Chirgaon"],
+  DESU153_02: ["Moth"],
+  DESU153_03: ["Babina"],
+  DESU153_04: ["Gursarai"],
+  DESU153_05: ["Bamaur"],
+  DESU161_01: ["Talbehat", "Birdha"],
+  DESU161_02: ["Bar"],
+  DESU161_03: ["Mehroni", "Mandawara"],
+  DESU161_04: ["Jakhaura"],
+  DESU165_01: [],
+  DESU165_02: ["Jaitpur"],
+  DESU165_03: ["Charkhari", "Kabrai", "Panwari"],
+  DESU185_01: ["Akhand Nagar"],
+  DESU185_02: ["Dhanpatganj", "Bhadaiya", "Kurebhar"],
+  DESU185_03: ["Baldirai"],
+  DESU185_04: ["P.P.Kamaicha", "Lambhua"],
+  DESU640_01: ["Shahgarh"],
+  DESU640_02: [
+    "Jamo",
+    "Bhadar",
+    "Tiloi",
+    "Musafir Khana",
+    "Jagdishpur",
+    "Shukul Bazar",
+  ],
+  DESU640_05: ["Bhetua", "Sangrampur", "Amethi"],
 };
 
 const SupervisorDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
   const [user, setUser] = useState({
-    loginID: localStorage.getItem('loginID') || '',
-    name: '',
-    districts: []
+    loginID: JSON.parse(localStorage.getItem("loginID")),
+    name: "",
+    districts: [],
   });
 
-  const [viewMode, setViewMode] = useState('pending'); // pending, completed, rejected, dashboard, operators, vilNotStarted
+  console.log(user);
+
+  const [viewMode, setViewMode] = useState("pending"); // pending, completed, rejected, dashboard, operators, vilNotStarted
   const [gaonData, setGaonData] = useState([]);
   const [selectedGaon, setSelectedGaon] = useState(null);
   const [rejectedHasFlicker, setRejectedHasFlicker] = useState(false);
@@ -74,106 +90,114 @@ const SupervisorDashboard = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showManageOperators, setShowManageOperators] = useState(false);
   const [showAddOperator, setShowAddOperator] = useState(false);
-  const [messageModal, setMessageModal] = useState({ show: false, message: '', color: '' });
+  const [messageModal, setMessageModal] = useState({
+    show: false,
+    message: "",
+    color: "",
+  });
 
   const [editFamilyData, setEditFamilyData] = useState(null);
   const [addRecordFamilyData, setAddRecordFamilyData] = useState(null);
 
   // Form states
   const [pendingForm, setPendingForm] = useState({
-    block: '',
-    gaonCode: '',
-    status: '1'
+    block: "",
+    gaonCode: "",
+    status: "1",
   });
-  const [completedForm, setCompletedForm] = useState({ block: '' });
-  const [rejectedForm, setRejectedForm] = useState({ gaonCode: '' });
+  console.log("pendingForm>>", pendingForm);
+
+  const [completedForm, setCompletedForm] = useState({ block: "" });
+  const [rejectedForm, setRejectedForm] = useState({ gaonCode: "" });
 
   // Villages lists
   const [villages, setVillages] = useState([]);
   const [rejectedVillages, setRejectedVillages] = useState([]);
 
   // Get loginID from localStorage IMMEDIATELY - don't wait for state
-const storedLoginID = localStorage.getItem('loginID') || '';
-const loginID = user.loginID || storedLoginID;
-const assignedBlocks = BLOCKS[storedLoginID] || [];
-const assignedDistrict = user.districts[0] || '';
+  const storedLoginID = localStorage.getItem("loginID") || "";
+  const loginID = user.loginID || storedLoginID;
+  const assignedBlocks = BLOCKS[storedLoginID] || ["tarun"];
+  const assignedDistrict = user.districts[0] || "";
 
-useEffect(() => {
-  initDashboard();
+  useEffect(() => {
+    initDashboard();
 
-  const handleUnload = () => {
-    supervisorService.ajaxLogout();
+    const handleUnload = () => {
+      supervisorService.ajaxLogout();
+    };
+
+    window.addEventListener("unload", handleUnload);
+    return () => window.removeEventListener("unload", handleUnload);
+  }, []);
+
+  const initDashboard = async () => {
+    const loginID = JSON.parse(localStorage.getItem("loginID"));
+    if (!loginID) {
+      navigate("/");
+      return;
+    }
+
+    // Set user data
+    setUser({
+      loginID,
+      name: "Supervisor Name",
+      districts: ["Ayodhya"],
+    });
+
+    // Fetch rejected villages using the loginID directly
+    const blocks = BLOCKS[loginID] || [];
+    if (blocks.length > 0) {
+      try {
+        const rejectedList = await supervisorService.getRejectedGaonList(
+          blocks.join(","),
+        );
+        const villageArray = Array.isArray(rejectedList) ? rejectedList : [];
+        setRejectedVillages(villageArray);
+        setRejectedHasFlicker(villageArray.length > 0);
+      } catch (error) {
+        console.error("Error fetching rejected villages:", error);
+        setRejectedVillages([]);
+      }
+    }
   };
 
-  window.addEventListener('unload', handleUnload);
-  return () => window.removeEventListener('unload', handleUnload);
-}, []);
-
-const initDashboard = async () => {
-  const loginID = localStorage.getItem('loginID');
-  if (!loginID) {
-    navigate('/');
-    return;
-  }
-
-  // Set user data
-  setUser({
-    loginID,
-    name: 'Supervisor Name',
-    districts: ['Ambedkar Nagar']
-  });
-
-  // Fetch rejected villages using the loginID directly
-  const blocks = BLOCKS[loginID] || [];
-  if (blocks.length > 0) {
-    try {
-      const rejectedList = await supervisorService.getRejectedGaonList(blocks.join(','));
-      const villageArray = Array.isArray(rejectedList) ? rejectedList : [];
-      setRejectedVillages(villageArray);
-      setRejectedHasFlicker(villageArray.length > 0);
-    } catch (error) {
-      console.error('Error fetching rejected villages:', error);
-      setRejectedVillages([]);
-    }
-  }
-};
-
   const handlePendingRegisterClick = () => {
-  setViewMode('pending');
-  setGaonData([]);
-  setVillages([]);
-  setPendingForm({ block: '', gaonCode: '', status: '1' });
-};
+    setViewMode("pending");
+    setGaonData([]);
+    setVillages([]);
+    setPendingForm({ block: "", gaonCode: "", status: "1" });
+  };
 
   const handleCompletedRegisterClick = () => {
-  setViewMode('completed');
-  setGaonData([]);
-  setCompletedForm({ block: '' });
-};
+    setViewMode("completed");
+    setGaonData([]);
+    setCompletedForm({ block: "" });
+  };
 
   const handleRejectedFamiliesClick = () => {
-    setViewMode('rejected');
+    setViewMode("rejected");
     setGaonData([]);
   };
 
   const handleVilPendingClick = async () => {
-    setViewMode('vilNotStarted');
+    setViewMode("vilNotStarted");
     setLoading(true);
     try {
       const data = await supervisorService.vilNotStartedTblDESU(
         assignedDistrict,
-        assignedBlocks.join(',')
+        assignedBlocks.join(","),
       );
       setGaonData(data);
     } catch (error) {
-      console.error('Error fetching villages pending for entry:', error);
+      console.error("Error fetching villages pending for entry:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDashboardClick = () => {
-    setViewMode('dashboard');
+    setViewMode("dashboard");
     setGaonData([]);
   };
 
@@ -188,13 +212,13 @@ const initDashboard = async () => {
       const data = await supervisorService.getPendingVilSupervisor(
         pendingForm.gaonCode,
         loginID,
-        pendingForm.status
+        pendingForm.status,
       );
       setGaonData(data);
       setSelectedGaon(pendingForm.gaonCode);
     } catch (error) {
-      console.error('Error fetching pending register:', error);
-      alert('Failed to load village data');
+      console.error("Error fetching pending register:", error);
+      alert("Failed to load village data");
     } finally {
       setLoading(false);
     }
@@ -207,41 +231,49 @@ const initDashboard = async () => {
       const data = await supervisorService.getCompletedVilSupervisor(
         loginID,
         assignedDistrict,
-        completedForm.block
+        completedForm.block,
       );
       setGaonData(data);
     } catch (error) {
-      console.error('Error fetching completed registers:', error);
+      console.error("Error fetching completed registers:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleRejectedFormSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  try {
-    const data = await supervisorService.getRejectedFamilies(rejectedForm.gaonCode);
-    // Ensure data is an array
-    const familyArray = Array.isArray(data) ? data : [];
-    // Sort data by family groups (same as original)
-    familyArray.sort((a, b) => {
-      const keyA = (a.houseNumberNum || '') + (a.houseNumberText || '') + (a.familyHeadName || '');
-      const keyB = (b.houseNumberNum || '') + (b.houseNumberText || '') + (b.familyHeadName || '');
-      if (keyA === keyB) {
-        return parseInt(a.serialNo) - parseInt(b.serialNo);
-      }
-      return keyA.localeCompare(keyB);
-    });
-    setGaonData(familyArray);
-    setSelectedGaon(rejectedForm.gaonCode);
-  } catch (error) {
-    console.error('Error fetching rejected families:', error);
-    setGaonData([]);
-  } finally {
-    setLoading(false);
-  }
-};
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const data = await supervisorService.getRejectedFamilies(
+        rejectedForm.gaonCode,
+      );
+      // Ensure data is an array
+      const familyArray = Array.isArray(data) ? data : [];
+      // Sort data by family groups (same as original)
+      familyArray.sort((a, b) => {
+        const keyA =
+          (a.houseNumberNum || "") +
+          (a.houseNumberText || "") +
+          (a.familyHeadName || "");
+        const keyB =
+          (b.houseNumberNum || "") +
+          (b.houseNumberText || "") +
+          (b.familyHeadName || "");
+        if (keyA === keyB) {
+          return parseInt(a.serialNo) - parseInt(b.serialNo);
+        }
+        return keyA.localeCompare(keyB);
+      });
+      setGaonData(familyArray);
+      setSelectedGaon(rejectedForm.gaonCode);
+    } catch (error) {
+      console.error("Error fetching rejected families:", error);
+      setGaonData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEditFamily = (familyData) => {
     setEditFamilyData(familyData);
@@ -254,89 +286,95 @@ const initDashboard = async () => {
   };
 
   const handleDeleteRecord = async (id, gaonCode, serialNo) => {
-    const text = serialNo === 1 
-      ? "Do you want to delete this whole family record?" 
-      : "Do you want to delete this record?";
-    
+    const text =
+      serialNo === 1
+        ? "Do you want to delete this whole family record?"
+        : "Do you want to delete this record?";
+
     if (!window.confirm(text)) return;
 
     try {
-      const result = viewMode === 'rejected'
-        ? await supervisorService.deleteRejectedRecord(id, gaonCode)
-        : await supervisorService.deleteRecord(id, gaonCode);
+      const result =
+        viewMode === "rejected"
+          ? await supervisorService.deleteRejectedRecord(id, gaonCode)
+          : await supervisorService.deleteRecord(id, gaonCode);
 
       if (result.success) {
-        showMessage('Record deleted successfully!', 'green');
+        showMessage("Record deleted successfully!", "green");
         // Refresh data
-        if (viewMode === 'pending') {
+        if (viewMode === "pending") {
           handlePendingFormSubmit({ preventDefault: () => {} });
-        } else if (viewMode === 'rejected') {
+        } else if (viewMode === "rejected") {
           handleRejectedFormSubmit({ preventDefault: () => {} });
         }
       } else {
-        showMessage('Error: ' + result.error, 'red');
+        showMessage("Error: " + result.error, "red");
       }
     } catch (error) {
-      console.error('Error deleting record:', error);
-      showMessage('An unexpected error occurred. Please try again.', 'red');
+      console.error("Error deleting record:", error);
+      showMessage("An unexpected error occurred. Please try again.", "red");
     }
   };
 
   const handleApproveFamily = async (id, gaonCode) => {
-    if (!window.confirm('Do you want to approve this Family?')) return;
+    if (!window.confirm("Do you want to approve this Family?")) return;
 
     try {
-      const result = viewMode === 'rejected'
-        ? await supervisorService.approveRejectedFamilySup(id, gaonCode)
-        : await supervisorService.approveFamilySup(id, gaonCode);
+      const result =
+        viewMode === "rejected"
+          ? await supervisorService.approveRejectedFamilySup(id, gaonCode)
+          : await supervisorService.approveFamilySup(id, gaonCode);
 
       if (result.success) {
-        showMessage('Family approved successfully!', 'green');
+        showMessage("Family approved successfully!", "green");
         // Refresh data
-        if (viewMode === 'pending') {
+        if (viewMode === "pending") {
           handlePendingFormSubmit({ preventDefault: () => {} });
-        } else if (viewMode === 'rejected') {
+        } else if (viewMode === "rejected") {
           handleRejectedFormSubmit({ preventDefault: () => {} });
         }
       } else {
-        showMessage(result.error || 'Failed to approve family', 'red');
+        showMessage(result.error || "Failed to approve family", "red");
       }
     } catch (error) {
-      console.error('Error approving family:', error);
-      showMessage('Failed to approve family', 'red');
+      console.error("Error approving family:", error);
+      showMessage("Failed to approve family", "red");
     }
   };
 
   const handleVerifyRegister = async () => {
-    const tableName = 'g' + selectedGaon;
+    const tableName = "g" + selectedGaon;
     try {
       const result = await supervisorService.supervisorApprove(tableName);
-      if (result.status === 'success') {
-        showMessage('सत्यापित हो गया !', 'green');
+      if (result.status === "success") {
+        showMessage("सत्यापित हो गया !", "green");
         setTimeout(() => window.location.reload(), 2000);
       } else {
-        showMessage(`Error: ${result.error}!`, 'red');
+        showMessage(`Error: ${result.error}!`, "red");
       }
     } catch (error) {
-      console.error('Error verifying register:', error);
-      showMessage('Failed to verify register', 'red');
+      console.error("Error verifying register:", error);
+      showMessage("Failed to verify register", "red");
     }
   };
 
   const handleDeleteDuplicates = async () => {
     if (!selectedGaon) return;
-    
+
     try {
       const result = await supervisorService.deleteDuplicate(selectedGaon);
       if (result.error) {
-        showMessage(`Error: ${result.error}!`, 'red');
+        showMessage(`Error: ${result.error}!`, "red");
       } else {
-        showMessage(`${result.deleted_count} Duplicate Entries Found & Deleted!`, 'green');
+        showMessage(
+          `${result.deleted_count} Duplicate Entries Found & Deleted!`,
+          "green",
+        );
         handlePendingFormSubmit({ preventDefault: () => {} });
       }
     } catch (error) {
-      console.error('Error deleting duplicates:', error);
-      showMessage('Failed to delete duplicates', 'red');
+      console.error("Error deleting duplicates:", error);
+      showMessage("Failed to delete duplicates", "red");
     }
   };
 
@@ -355,19 +393,19 @@ const initDashboard = async () => {
 
   const handleLogout = (e) => {
     e.preventDefault();
-    if (window.confirm('Are you sure you want to logout?')) {
-      localStorage.removeItem('loginID');
-      navigate('/');
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.removeItem("loginID");
+      navigate("/");
     }
   };
 
   if (loading && !gaonData.length) {
     return (
       <div className="supervisor-page">
-        <div id="loading-screen" style={{ display: 'flex' }}>
-        <div className="spinner"></div>
-        <h2>&nbsp;&nbsp;&nbsp;Loading, please wait...</h2>
-      </div>
+        <div id="loading-screen" style={{ display: "flex" }}>
+          <div className="spinner"></div>
+          <h2>&nbsp;&nbsp;&nbsp;Loading, please wait...</h2>
+        </div>
       </div>
     );
   }
@@ -388,45 +426,77 @@ const initDashboard = async () => {
       />
 
       <div className="content" id="content">
-        <div className="main-content">
-          <div className="header" style={{ width: '66%' }}>
+        <div
+          style={{
+            padding: "2rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            background: "#fff",
+            borderRadius: "0",
+            margin: "0",
+            boxShadow: "0 1px 3px #0000001a",
+            borderBottom: "2px solid #e2e8f0",
+          }}
+        >
+          <div className="header" style={{ width: "66%" }}>
             <span className="title" id="registerTitle">
-              {viewMode === 'pending' && 'Pending Register'}
-              {viewMode === 'completed' && 'Completed Registers'}
-              {viewMode === 'rejected' && 'Rejected Families'}
-              {viewMode === 'vilNotStarted' && 'Villages Pending for Entry'}
-              {viewMode === 'dashboard' && 'Dashboard'}
-              {viewMode === 'operators' && 'Manage Operator'}
+              {viewMode === "pending" && "Pending Register"}
+              {viewMode === "completed" && "Completed Registers"}
+              {viewMode === "rejected" && "Rejected Families"}
+              {viewMode === "vilNotStarted" && "Villages Pending for Entry"}
+              {viewMode === "dashboard" && "Dashboard"}
+              {viewMode === "operators" && "Manage Operator"}
             </span>
           </div>
 
           <div className="button">
-            {viewMode === 'pending' && selectedGaon && (
+            {viewMode === "pending" && selectedGaon && (
               <>
-                <button className="download-btn" onClick={handleDownloadRegister}>
-                  <i className="fas fa-download" style={{ marginRight: '10px' }}></i>
+                <button
+                  className="download-btn"
+                  onClick={handleDownloadRegister}
+                >
+                  <i
+                    className="fas fa-download"
+                    style={{ marginRight: "10px" }}
+                  ></i>
                   डाउनलोड रजिस्टर
                 </button>
-                <button className="download-btn" onClick={handleDeleteDuplicates}>
-                  <i className="fas fa-trash" style={{ marginRight: '10px' }}></i>
+                <button className="delete-btn" onClick={handleDeleteDuplicates}>
+                  <i
+                    className="fas fa-trash"
+                    style={{ marginRight: "10px" }}
+                  ></i>
                   डुप्लीकेट हटाये
                 </button>
-                <button 
-                  className="verified-btn" 
+                <button
+                  className="verified-btn"
                   onClick={handleVerifyRegister}
-                  disabled={gaonData.some(row => row.status !== 'Approved')}
+                  disabled={gaonData.some((row) => row.status !== "Approved")}
                 >
-                  <i className="fas fa-check" style={{ marginRight: '10px' }}></i>
+                  <i
+                    className="fas fa-check"
+                    style={{ marginRight: "10px" }}
+                  ></i>
                   सत्यापित करें
                 </button>
               </>
             )}
-            {viewMode === 'vilNotStarted' && gaonData.length > 0 && (
-              <button 
-                className="download-btn" 
-                onClick={() => supervisorService.downloadVilNotStartedTblDESU(assignedDistrict, assignedBlocks.join(','))}
+            {viewMode === "vilNotStarted" && gaonData.length > 0 && (
+              <button
+                className="download-btn"
+                onClick={() =>
+                  supervisorService.downloadVilNotStartedTblDESU(
+                    assignedDistrict,
+                    assignedBlocks.join(","),
+                  )
+                }
               >
-                <i className="fas fa-download" style={{ marginRight: '10px' }}></i>
+                <i
+                  className="fas fa-download"
+                  style={{ marginRight: "10px" }}
+                ></i>
                 Download
               </button>
             )}
@@ -435,132 +505,335 @@ const initDashboard = async () => {
 
         {/* Forms Section */}
         <div className="container main-container">
-          {viewMode === 'pending' && (
-            <form onSubmit={handlePendingFormSubmit} id="getPendingRegForm">
-              <label htmlFor="pendingBlock">ब्लाक <span className="required">*</span></label>
-              <select 
-                name="pendingBlock" 
-                id="pendingBlock"
-                value={pendingForm.block}
-                onChange={async (e) => {
-                  setPendingForm({ ...pendingForm, block: e.target.value });
-                  try {
-                    const villages = await supervisorService.getGaonListWithCodeByBlock(e.target.value);
-                    setVillages(villages);
-                  } catch (error) {
-                    console.error('Error fetching villages:', error);
+          {/* ================= PENDING ================= */}
+          {viewMode === "pending" && (
+            <form
+              onSubmit={handlePendingFormSubmit}
+              id="getPendingRegForm"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr",
+                gap: "12px",
+                width: "100%",
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "16px",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                marginTop: "10px",
+              }}
+            >
+              {/* Block */}
+              <div>
+                <label>
+                  ब्लाक <span style={{ color: "red" }}>*</span>
+                </label>
+                <select
+                  value={pendingForm.block}
+                  onChange={async (e) => {
+                    setPendingForm({ ...pendingForm, block: e.target.value });
+                    try {
+                      const villages =
+                        await supervisorService.getGaonListWithCodeByBlock(
+                          e.target.value,
+                        );
+                      setVillages(villages);
+                    } catch (error) {
+                      console.error("Error fetching villages:", error);
+                    }
+                  }}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "#eef4ff",
+                    outline: "none",
+                    marginTop: "10px",
+                  }}
+                >
+                  <option value="">Select Block</option>
+                  {assignedBlocks.map((block) => (
+                    <option key={block} value={block}>
+                      {block}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Gaon */}
+              <div>
+                <label>
+                  गांव <span style={{ color: "red" }}>*</span>
+                </label>
+                <select
+                  value={pendingForm.gaonCode}
+                  onChange={(e) =>
+                    setPendingForm({ ...pendingForm, gaonCode: e.target.value })
                   }
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "#eef4ff",
+                    outline: "none",
+                    marginTop: "10px",
+                  }}
+                >
+                  <option value="">Select Gaon</option>
+                  {Array.isArray(villages) &&
+                    villages.map((v) => (
+                      <option key={v.gaonCode} value={v.gaonCode}>
+                        {v.gaonCode} - {v.gaon}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* Status */}
+              <div>
+                <label>
+                  Approval status <span style={{ color: "red" }}>*</span>
+                </label>
+                <select
+                  value={pendingForm.status}
+                  onChange={(e) =>
+                    setPendingForm({ ...pendingForm, status: e.target.value })
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "#eef4ff",
+                    outline: "none",
+                    marginTop: "10px",
+                  }}
+                >
+                  <option value="1">All</option>
+                  <option value="3">Remaining for approval</option>
+                  <option value="2">Approved</option>
+                </select>
+              </div>
+
+              {/* Button Center */}
+              <div
+                style={{
+                  gridColumn: "1 / -1",
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "10px",
+                  marginTop: "10px",
                 }}
-                required
               >
-                <option value="">Select Block</option>
-                {assignedBlocks.map(block => (
-                  <option key={block} value={block}>{block}</option>
-                ))}
-              </select>
-
-              <label htmlFor="gaonCode">गांव <span className="required">*</span></label>
-              <select 
-                name="gaonCode" 
-                id="gaonCode"
-                value={pendingForm.gaonCode}
-                onChange={(e) => setPendingForm({ ...pendingForm, gaonCode: e.target.value })}
-                required
-              >
-                <option value="">Select Gaon</option>
-                {villages.map(v => (
-                  <option key={v.gaonCode} value={v.gaonCode}>
-                    {v.gaonCode} - {v.gaon}
-                  </option>
-                ))}
-              </select>
-
-              <label htmlFor="status">Approval status <span className="required">*</span></label>
-              <select 
-                name="status" 
-                id="status"
-                value={pendingForm.status}
-                onChange={(e) => setPendingForm({ ...pendingForm, status: e.target.value })}
-              >
-                <option value="1">All</option>
-                <option value="3">Remaining for approval</option>
-                <option value="2">Approved</option>
-              </select>
-
-              <button type="submit">गांव का डाटा पाएं</button>
+                <div
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  <button
+                    type="submit"
+                    style={{
+                      width: "100%",
+                      padding: "10px 20px",
+                      borderRadius: "25px",
+                      border: "none",
+                      background: "linear-gradient(90deg,#6a75f0,#8a5fd3)",
+                      color: "#fff",
+                      fontSize: "16px",
+                      cursor: "pointer",
+                      // marginTop: "10px",
+                      textAlign: "center",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    गांव का डाटा पाएं
+                  </button>
+                </div>
+              </div>
             </form>
           )}
 
-          {viewMode === 'completed' && (
-            <form onSubmit={handleCompletedFormSubmit} id="getCompletedRegForm">
-              <label htmlFor="compBlock">ब्लाक</label>
-              <select 
-                name="compBlock" 
-                id="compBlock"
-                value={completedForm.block}
-                onChange={(e) => setCompletedForm({ block: e.target.value })}
+          {/* ================= COMPLETED ================= */}
+          {viewMode === "completed" && (
+            <form
+              onSubmit={handleCompletedFormSubmit}
+              id="getCompletedRegForm"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr",
+                gap: "12px",
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "16px",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                width: "100%",
+                marginTop: "10px",
+              }}
+            >
+              <div>
+                <label>ब्लाक</label>
+                <select
+                  value={completedForm.block}
+                  onChange={(e) => setCompletedForm({ block: e.target.value })}
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "#eef4ff",
+                    outline: "none",
+                    marginTop: "10px",
+                  }}
+                >
+                  <option value="">Select Block</option>
+                  {assignedBlocks.map((block) => (
+                    <option key={block} value={block}>
+                      {block}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div
+                style={{
+                  textAlign: "center",
+                }}
               >
-                <option value="">Select Block</option>
-                {assignedBlocks.map(block => (
-                  <option key={block} value={block}>{block}</option>
-                ))}
-              </select>
-              <button type="submit">डाटा पाएं</button>
+                <button
+                  type="submit"
+                  style={{
+                    width: "200px",
+                    padding: "10px 20px",
+                    borderRadius: "25px",
+                    border: "none",
+                    background: "linear-gradient(90deg,#6a75f0,#8a5fd3)",
+                    color: "#fff",
+                    fontSize: "16px",
+                    cursor: "pointer",
+                    marginTop: "25px",
+                    marginLeft: "10px",
+                    textAlign: "center",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  गांव का डाटा पाएं
+                </button>
+              </div>
             </form>
           )}
 
-          {viewMode === 'rejected' && (
-            <form onSubmit={handleRejectedFormSubmit} id="getRejectedFamForm">
-              <label htmlFor="rejectedGC">गांव <span className="required">*</span></label>
-              <select 
-                name="rejectedGC" 
-                id="rejectedGC"
-                value={rejectedForm.gaonCode}
-                onChange={(e) => setRejectedForm({ gaonCode: e.target.value })}
-                required
+          {/* ================= REJECTED ================= */}
+          {viewMode === "rejected" && (
+            <form
+              onSubmit={handleRejectedFormSubmit}
+              id="getRejectedFamForm"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr",
+                gap: "12px",
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "16px",
+                width: "100%",
+                marginTop: "10px",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+              }}
+            >
+              <div>
+                <label>
+                  गांव <span style={{ color: "red" }}>*</span>
+                </label>
+                <select
+                  value={rejectedForm.gaonCode}
+                  onChange={(e) =>
+                    setRejectedForm({ gaonCode: e.target.value })
+                  }
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "#eef4ff",
+                    outline: "none",
+                    marginTop: "10px",
+                  }}
+                >
+                  <option value="">Select Gaon</option>
+                  {rejectedVillages.map((v) => (
+                    <option key={v.gaonCode} value={v.gaonCode}>
+                      {v.gaonCode} - {v.gaon}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div
+                style={{
+                  textAlign: "center",
+                }}
               >
-                <option value="">Select Gaon</option>
-                {rejectedVillages.map(v => (
-                  <option key={v.gaonCode} value={v.gaonCode}>
-                    {v.gaonCode} - {v.gaon}
-                  </option>
-                ))}
-              </select>
-              <button type="submit">गांव का डाटा पाएं</button>
+                <button
+                  type="submit"
+                  style={{
+                    width: "200px",
+                    padding: "10px 20px",
+                    borderRadius: "25px",
+                    border: "none",
+                    background: "linear-gradient(90deg,#6a75f0,#8a5fd3)",
+                    color: "#fff",
+                    fontSize: "16px",
+                    cursor: "pointer",
+                    marginTop: "25px",
+                    marginLeft: "10px",
+                    textAlign: "center",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  गांव का डाटा पाएं
+                </button>
+              </div>
             </form>
           )}
         </div>
 
         {/* Main Content Area */}
-        {viewMode === 'dashboard' && (
+        {viewMode === "dashboard" && (
           <>
-            <OperatorMonitoring 
+            <OperatorMonitoring
               loginID={loginID}
               assignedDistrict={assignedDistrict}
               assignedBlocks={assignedBlocks}
             />
-            <DataMonitoring 
+            <DataMonitoring
               assignedDistrict={assignedDistrict}
               assignedBlocks={assignedBlocks}
             />
           </>
         )}
 
-        {(viewMode === 'pending' || viewMode === 'rejected') && gaonData.length > 0 && (
-          <div className="table-container">
-            <RegisterTable
-              data={gaonData}
-              viewMode={viewMode}
-              onEdit={handleEditFamily}
-              onAdd={handleAddRecord}
-              onDelete={handleDeleteRecord}
-              onApprove={handleApproveFamily}
-              onViewPDF={supervisorService.viewPDFPage}
-            />
-          </div>
-        )}
+        {(viewMode === "pending" || viewMode === "rejected") &&
+          gaonData.length > 0 && (
+            <div className="table-container">
+              <RegisterTable
+                data={gaonData}
+                viewMode={viewMode}
+                onEdit={handleEditFamily}
+                onAdd={handleAddRecord}
+                onDelete={handleDeleteRecord}
+                onApprove={handleApproveFamily}
+                onViewPDF={supervisorService.viewPDFPage}
+              />
+            </div>
+          )}
 
-        {viewMode === 'completed' && gaonData.length > 0 && (
+        {viewMode === "completed" && gaonData.length > 0 && (
           <div className="table-container">
             <table className="main-table" id="gaonTable">
               <thead>
@@ -584,8 +857,8 @@ const initDashboard = async () => {
                     <td>{row.gaon}</td>
                     <td>{row.gaonCode}</td>
                     <td>
-                      <button 
-                        className="editBtn" 
+                      <button
+                        className="download-btn "
                         onClick={() => handleDownloadCompleted(row.gaonCode)}
                       >
                         डाउनलोड रजिस्टर
@@ -598,7 +871,7 @@ const initDashboard = async () => {
           </div>
         )}
 
-        {viewMode === 'vilNotStarted' && gaonData.length > 0 && (
+        {viewMode === "vilNotStarted" && gaonData.length > 0 && (
           <div className="table-container">
             <table className="main-table">
               <thead>
@@ -632,9 +905,9 @@ const initDashboard = async () => {
           onClose={() => setShowEditModal(false)}
           onSave={() => {
             setShowEditModal(false);
-            if (viewMode === 'pending') {
+            if (viewMode === "pending") {
               handlePendingFormSubmit({ preventDefault: () => {} });
-            } else if (viewMode === 'rejected') {
+            } else if (viewMode === "rejected") {
               handleRejectedFormSubmit({ preventDefault: () => {} });
             }
           }}
@@ -648,9 +921,9 @@ const initDashboard = async () => {
           onClose={() => setShowAddRecordModal(false)}
           onSave={() => {
             setShowAddRecordModal(false);
-            if (viewMode === 'pending') {
+            if (viewMode === "pending") {
               handlePendingFormSubmit({ preventDefault: () => {} });
-            } else if (viewMode === 'rejected') {
+            } else if (viewMode === "rejected") {
               handleRejectedFormSubmit({ preventDefault: () => {} });
             }
           }}
@@ -690,7 +963,9 @@ const initDashboard = async () => {
         <MessageModal
           message={messageModal.message}
           color={messageModal.color}
-          onClose={() => setMessageModal({ show: false, message: '', color: '' })}
+          onClose={() =>
+            setMessageModal({ show: false, message: "", color: "" })
+          }
         />
       )}
     </div>

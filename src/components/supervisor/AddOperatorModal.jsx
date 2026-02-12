@@ -1,153 +1,236 @@
 // src/components/supervisor/AddOperatorModal.jsx
-import React, { useState } from 'react';
-import supervisorService from '../../services/supervisorService';
+import React, { useState } from "react";
+import supervisorService from "../../services/supervisorService";
 
 const AddOperatorModal = ({ supervisorID, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    password: '',
-    confirmPassword: '',
-    document: null
+    name: "",
+    password: "",
+    confirmPassword: "",
+    document: null,
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
-    if (file.type !== 'application/pdf') {
-      alert('Only PDF files are allowed.');
-      e.target.value = '';
+    if (file.type !== "application/pdf") {
+      alert("Only PDF files are allowed.");
+      e.target.value = "";
       return;
     }
 
-    // Validate file size (1MB = 1048576 bytes)
     if (file.size > 1048576) {
-      alert('File size exceeds 1MB. Please upload a smaller PDF.');
-      e.target.value = '';
+      alert("File size exceeds 1MB. Please upload a smaller PDF.");
+      e.target.value = "";
       return;
     }
 
-    setFormData(prev => ({ ...prev, document: file }));
+    setFormData((prev) => ({ ...prev, document: file }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Confirm password is not same as the new password!');
+      setError("Confirm password is not same as the new password!");
       return;
     }
 
     if (!formData.document) {
-      setError('Please upload a document (PDF only, max 1MB)');
+      setError("Please upload a document (PDF only, max 1MB)");
       return;
     }
 
     try {
       const data = new FormData();
-      data.append('name', formData.name);
-      data.append('underSupervisor', supervisorID);
-      data.append('password', formData.password);
-      data.append('document', formData.document);
+      data.append("name", formData.name);
+      data.append("underSupervisor", supervisorID);
+      data.append("password", formData.password);
+      data.append("document", formData.document);
 
       const result = await supervisorService.insertNewOperator(data);
 
       if (result.success) {
-        alert('Saved Successfully!');
+        alert("Saved Successfully!");
         onSuccess();
       } else {
-        setError('Error: ' + result.error);
+        setError("Error: " + result.error);
       }
     } catch (error) {
-      console.error('Error adding operator:', error);
-      setError('Failed to add operator. Please try again.');
+      console.error("Error adding operator:", error);
+      setError("Failed to add operator. Please try again.");
     }
   };
 
   return (
     <>
-      <div 
-        className="popup-overlay" 
-        style={{ display: 'block' }}
+      {/* Overlay */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,0.4)",
+          zIndex: 999,
+        }}
         onClick={onClose}
       ></div>
-      
-      <div className="popup" id="addOperatorPopup" style={{ display: 'block' }}>
-        <button className="close-btn" onClick={onClose}>X</button>
-        <h1>Add Operator</h1>
 
-        {error && (
-          <div style={{
-            padding: '10px',
-            marginBottom: '15px',
-            backgroundColor: '#fee',
-            border: '1px solid #fcc',
-            borderRadius: '5px',
-            color: '#c00'
-          }}>
-            {error}
-          </div>
-        )}
+      {/* Modal */}
+      <div
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "450px",
+          background: "#fff",
+          borderRadius: "18px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+          zIndex: 1000,
+          overflow: "hidden",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            background: "linear-gradient(90deg,#6a75f0,#8a5fd3)",
+            padding: "15px 20px",
+            color: "#fff",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <h2 style={{ margin: 0 }}>Add Operator</h2>
+          <button
+            onClick={onClose}
+            style={{
+              background: "rgba(255,255,255,0.3)",
+              border: "none",
+              color: "#fff",
+              fontSize: "18px",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              cursor: "pointer",
+              padding: "10px",
+            }}
+          >
+            ✕
+          </button>
+        </div>
 
-        <form id="addOperatorForm" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="operatorName">
-              Name:<span style={{ color: 'red' }}>*</span>
-            </label>
-            <input
-              type="text"
-              id="operatorName"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              required
-            />
-          </div>
+        {/* Body */}
+        <div style={{ padding: "20px" }}>
+          {error && (
+            <div
+              style={{
+                padding: "10px",
+                marginBottom: "15px",
+                backgroundColor: "#fee",
+                border: "1px solid #fcc",
+                borderRadius: "8px",
+                color: "#c00",
+              }}
+            >
+              {error}
+            </div>
+          )}
 
-          <div>
-            <label htmlFor="password">Enter Password:</label>
-            <input
-              type="password"
-              id="password"
-              value={formData.password}
-              onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: "12px" }}>
+              <label>Name *</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
+                required
+                style={inputStyle}
+              />
+            </div>
 
-          <div>
-            <label htmlFor="confirmPassword">Confirm Password:</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-              required
-            />
-          </div>
+            <div style={{ marginBottom: "12px" }}>
+              <label>Password</label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, password: e.target.value }))
+                }
+                required
+                style={inputStyle}
+              />
+            </div>
 
-          <div>
-            <label htmlFor="docUpload">
-              Document Upload (PDF only):<span style={{ color: 'red' }}>*</span>
-              <br />
-              <small style={{ color: '#888' }}>File size must be less than or equal to 1MB.</small>
-            </label>
-            <input
-              type="file"
-              id="docUpload"
-              accept=".pdf"
-              onChange={handleFileChange}
-              required
-            />
-          </div>
+            <div style={{ marginBottom: "12px" }}>
+              <label>Confirm Password</label>
+              <input
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    confirmPassword: e.target.value,
+                  }))
+                }
+                required
+                style={inputStyle}
+              />
+            </div>
 
-          <button type="submit" id="submitOperator">Submit</button>
-        </form>
+            <div style={{ marginBottom: "12px" }}>
+              <label>Upload Document (PDF, max 1MB) *</label>
+              <input
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                required
+                style={inputStyle}
+              />
+            </div>
+            <div
+              style={{
+                textAlign: "center",
+              }}
+            >
+              <button
+                type="submit"
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "25px",
+                  border: "none",
+                  background: "linear-gradient(90deg,#6a75f0,#8a5fd3)",
+                  color: "#fff",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "10px",
+  borderRadius: "8px",
+  border: "1px solid #ddd",
+  marginTop: "5px",
 };
 
 export default AddOperatorModal;
