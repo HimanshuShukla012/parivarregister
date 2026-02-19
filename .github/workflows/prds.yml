@@ -1,0 +1,33 @@
+name: Build and Deploy Frontend
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install   # assumes package.json is at repo root
+
+      - name: Build project
+        run: npm run build # outputs to dist/ (Vite) or build/ (CRA)
+
+      - name: Deploy to EC2 and Restart Apache
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+          SERVER_HOST: ${{ vars.EC2_HOST }}
+          SERVER_USER: ${{ vars.USERNAME }}
+          DEPLOY_PATH_FRONTEND: ${{ vars.DEPLOY_PATH_FRONTEND }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > key.pem
+          chmod 600 key.pem
+          export SSH_OPTIONS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+          scp $SSH_OPTIONS -i key.pem -r dist/* $SERVER_USER@$SERVER_HOST:$DEPLOY_PATH_FRONTEND
+          ssh $SSH_OPTIONS -i key.pem $SERVER_USER@$SERVER_HOST "sudo systemctl restart apache2"
