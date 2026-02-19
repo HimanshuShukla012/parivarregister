@@ -22,9 +22,9 @@ jobs:
       - name: Deploy to EC2 and Restart Apache
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-          SERVER_HOST: ${{ vars.EC2_HOST }}
-          SERVER_USER: ${{ vars.USERNAME }}
-          DEPLOY_PATH_FRONTEND: ${{ vars.DEPLOY_PATH_FRONTEND }}
+          SERVER_HOST: ${{ secrets.EC2_HOST }}
+          SERVER_USER: ${{ secrets.USERNAME }}
+          DEPLOY_PATH_FRONTEND: ${{ secrets.DEPLOY_PATH_FRONTEND }}
         run: |
           echo "$SSH_PRIVATE_KEY" > key.pem
           chmod 600 key.pem
