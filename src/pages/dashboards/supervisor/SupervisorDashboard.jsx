@@ -116,7 +116,7 @@ const SupervisorDashboard = () => {
     let blocks = [];
     try {
       const res = await fetch(
-        `https://prtest1.kdsgroup.co.in:8000/getSupervisorBlocks/?loginID=${loginID}`,
+        `https://register.kdsgroup.co.in/getSupervisorBlocks/?loginID=${loginID}`,
       );
       const json = await res.json();
       if (json.success && Array.isArray(json.data?.blocks)) {
@@ -189,7 +189,7 @@ const SupervisorDashboard = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `https://prtest1.kdsgroup.co.in:8000/getAssignedRejectedDataBySupervisor/?supervisorId=${loginID}`,
+          `https://register.kdsgroup.co.in/getAssignedRejectedDataBySupervisor/?supervisorId=${loginID}`,
         );
         const json = await res.json();
 
