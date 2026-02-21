@@ -536,13 +536,14 @@
 .sachiv-table-container,
 .table-container {
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
+    height: 60vh;
+    overflow-y: scroll;
     overflow-x: auto;
     border-radius: 12px;
     background: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     position: relative;
+    border-collapse: collapse;
 }
 
 .sachiv-main-table,
@@ -558,6 +559,14 @@
     position: sticky;
     top: 0;
     z-index: 10;
+}
+
+.sachiv-main-table thead th,
+.main-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(135deg, #1e293b, #334155);
 }
 
 .sachiv-main-table th,
