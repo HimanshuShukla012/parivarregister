@@ -6,6 +6,7 @@ const SupervisorSidebar = ({
   onPendingRegisterClick,
   onCompletedRegisterClick,
   onRejectedFamiliesClick,
+  onAssignedFamiliesClick,
   onVilPendingClick,
   onDashboardClick,
   onManageOperatorsClick,
@@ -144,13 +145,13 @@ const SupervisorSidebar = ({
           />
 
           <SidebarBtn
-            label="PM Reject"
-            active={activeItem === "pm"}
+            label="PM Assigned Families"
+            active={activeItem === "assigned"}
             onClick={() => {
-              setActiveItem("pm");
-              onRejectedFamiliesClick();
+              setActiveItem("assigned");
+              onAssignedFamiliesClick();
             }}
-            flicker={rejectedHasFlicker}
+            flicker={false}
           />
         </div>
 

@@ -41,6 +41,11 @@ const Login = () => {
   if (result.user && result.user.name && formData.username.toUpperCase().startsWith("DP")) {
     localStorage.setItem("districtName", result.user.name);
   }
+  if (result.user) {
+    localStorage.setItem("userData", JSON.stringify(result.user));
+  }
+  
+  navigate(result.redirectTo);
   
   navigate(result.redirectTo);
 } else {
@@ -95,6 +100,9 @@ const Login = () => {
   // Store district name for DPRO users
   if (result.user && result.user.name && formData.username.toUpperCase().startsWith("DP")) {
     localStorage.setItem("districtName", result.user.name);
+  }
+  if (result.user) {
+    localStorage.setItem("userData", JSON.stringify(result.user));
   }
   
   navigate(result.redirectTo);

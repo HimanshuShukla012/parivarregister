@@ -18,6 +18,7 @@ const OperatorDashboard = () => {
   const [modalColor, setModalColor] = useState("green");
   const [currentGaonCode, setCurrentGaonCode] = useState(""); // ✅ Shared state for gaonCode
   const [storedLoginId, setStoredLoginId] = useState();
+  const [registerOptions, setRegisterOptions] = useState([]); // ✅ ADD
   console.log("user>>", user);
 
   useEffect(() => {
@@ -167,7 +168,10 @@ const OperatorDashboard = () => {
       {!showPDFMapping ? (
         <section className="container">
           {/* ✅ Pass currentGaonCode to PDFViewer */}
-          <PDFViewer gaonCode={currentGaonCode} />
+          <PDFViewer
+            gaonCode={currentGaonCode}
+            registerOptions={registerOptions}
+          />
 
           {/* ✅ Pass setCurrentGaonCode to FamilyEntryForm */}
           <FamilyEntryForm
@@ -176,6 +180,7 @@ const OperatorDashboard = () => {
             onError={(msg) => showMessage(msg, "red")}
             setLoading={setLoading}
             onGaonCodeChange={setCurrentGaonCode}
+            onRegisterOptionsChange={setRegisterOptions}
           />
         </section>
       ) : (

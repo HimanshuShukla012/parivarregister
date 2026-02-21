@@ -14,59 +14,6 @@ import DataMonitoring from "../../../components/supervisor/DataMonitoring";
 import MessageModal from "../../../components/supervisor/MessageModal";
 import "../../../assets/styles/pages/supervisor-scoped.css";
 
-// Block mapping (same as original)
-const BLOCKS = {
-  DESU121_01: ["Baskhari", "Ram Nagar"],
-  DESU121_02: ["Bhiti"],
-  DESU121_03: ["Katehari"],
-  DESU129_01: ["Sidhaur"],
-  DESU129_02: ["Suratganj"],
-  DESU129_03: ["Harakh"],
-  DESU136_01: ["Mau"],
-  DESU136_02: ["Karwi"],
-  DESU136: ["Karwi", "Mau"],
-  DESU136_04: ["Pahari"],
-  DESU140_01: ["Tarun"],
-  DESU140_03: ["Bikapur"],
-  DESU140_04: ["Masodha"],
-  DESU140_05: [
-    "Haringatanganj",
-    "Maya Bazar",
-    "Rudauli",
-    "Milkipur",
-    "Pura Bazar",
-  ],
-  DESU149_01: ["Kurara"],
-  DESU151_01: ["Dakore", "Kuthaund"],
-  DESU151_02: ["Nadigaon"],
-  DESU153_01: ["Chirgaon"],
-  DESU153_02: ["Moth"],
-  DESU153_03: ["Babina"],
-  DESU153_04: ["Gursarai"],
-  DESU153_05: ["Bamaur"],
-  DESU161_01: ["Talbehat", "Birdha"],
-  DESU161_02: ["Bar"],
-  DESU161_03: ["Mehroni", "Mandawara"],
-  DESU161_04: ["Jakhaura"],
-  DESU165_01: [],
-  DESU165_02: ["Jaitpur"],
-  DESU165_03: ["Charkhari", "Kabrai", "Panwari"],
-  DESU185_01: ["Akhand Nagar"],
-  DESU185_02: ["Dhanpatganj", "Bhadaiya", "Kurebhar"],
-  DESU185_03: ["Baldirai"],
-  DESU185_04: ["P.P.Kamaicha", "Lambhua"],
-  DESU640_01: ["Shahgarh"],
-  DESU640_02: [
-    "Jamo",
-    "Bhadar",
-    "Tiloi",
-    "Musafir Khana",
-    "Jagdishpur",
-    "Shukul Bazar",
-  ],
-  DESU640_05: ["Bhetua", "Sangrampur", "Amethi"],
-};
-
 const SupervisorDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -76,10 +23,16 @@ const SupervisorDashboard = () => {
     name: "",
     districts: [],
   });
+  const [assignedBlocksState, setAssignedBlocksState] = useState([]);
 
   console.log(user);
 
   const [viewMode, setViewMode] = useState("pending"); // pending, completed, rejected, dashboard, operators, vilNotStarted
+
+  const setViewModeWithURL = (mode) => {
+    setViewMode(mode);
+    window.history.pushState({}, "", `/supervisor-de/${mode}`);
+  };
   const [gaonData, setGaonData] = useState([]);
   const [selectedGaon, setSelectedGaon] = useState(null);
   const [rejectedHasFlicker, setRejectedHasFlicker] = useState(false);
@@ -99,6 +52,9 @@ const SupervisorDashboard = () => {
   const [editFamilyData, setEditFamilyData] = useState(null);
   const [addRecordFamilyData, setAddRecordFamilyData] = useState(null);
 
+  // ✅ split view pdf
+  const [selectedPdfUrl, setSelectedPdfUrl] = useState(null);
+
   // Form states
   const [pendingForm, setPendingForm] = useState({
     block: "",
@@ -110,6 +66,15 @@ const SupervisorDashboard = () => {
   const [completedForm, setCompletedForm] = useState({ block: "" });
   const [rejectedForm, setRejectedForm] = useState({ gaonCode: "" });
 
+  // Assigned (PM Assigned) - villages + rows
+  const [assignedForm, setAssignedForm] = useState({ gaonCode: "" });
+  const [assignedVillages, setAssignedVillages] = useState([]);
+  const [assignedAllRows, setAssignedAllRows] = useState([]);
+
+  // Assigned (PM Assigned) - Edit modal
+  const [showAssignedEditModal, setShowAssignedEditModal] = useState(false);
+  const [assignedEditData, setAssignedEditData] = useState(null);
+
   // Villages lists
   const [villages, setVillages] = useState([]);
   const [rejectedVillages, setRejectedVillages] = useState([]);
@@ -117,7 +82,7 @@ const SupervisorDashboard = () => {
   // Get loginID from localStorage IMMEDIATELY - don't wait for state
   const storedLoginID = localStorage.getItem("loginID") || "";
   const loginID = user.loginID || storedLoginID;
-  const assignedBlocks = BLOCKS[storedLoginID] || ["tarun"];
+  const assignedBlocks = assignedBlocksState;
   const assignedDistrict = user.districts[0] || "";
 
   useEffect(() => {
@@ -138,15 +103,31 @@ const SupervisorDashboard = () => {
       return;
     }
 
-    // Set user data
+    // Set user data from localStorage
+    const stored = localStorage.getItem("userData");
+    const userData = stored ? JSON.parse(stored) : {};
     setUser({
       loginID,
-      name: "Supervisor Name",
-      districts: ["Ayodhya"],
+      name: userData.name || loginID,
+      districts: Array.isArray(userData.districts) ? userData.districts : [],
     });
 
-    // Fetch rejected villages using the loginID directly
-    const blocks = BLOCKS[loginID] || [];
+    // Fetch assigned blocks dynamically from API
+    let blocks = [];
+    try {
+      const res = await fetch(
+        `https://prtest1.kdsgroup.co.in:8000/getSupervisorBlocks/?loginID=${loginID}`,
+      );
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data?.blocks)) {
+        blocks = json.data.blocks.map((b) => b.block);
+      }
+    } catch (error) {
+      console.error("Error fetching supervisor blocks:", error);
+    }
+    setAssignedBlocksState(blocks);
+
+    // Fetch rejected villages using the fetched blocks
     if (blocks.length > 0) {
       try {
         const rejectedList = await supervisorService.getRejectedGaonList(
@@ -163,46 +144,136 @@ const SupervisorDashboard = () => {
   };
 
   const handlePendingRegisterClick = () => {
-    setViewMode("pending");
+    setViewModeWithURL("pending");
     setGaonData([]);
     setVillages([]);
     setPendingForm({ block: "", gaonCode: "", status: "1" });
   };
 
   const handleCompletedRegisterClick = () => {
-    setViewMode("completed");
+    setViewModeWithURL("completed");
     setGaonData([]);
     setCompletedForm({ block: "" });
   };
 
-  const handleRejectedFamiliesClick = () => {
-    setViewMode("rejected");
+  const handleRejectedFamiliesClick = async () => {
+    setViewModeWithURL("rejected");
     setGaonData([]);
+    setRejectedForm({ gaonCode: "" });
+
+    setLoading(true);
+    try {
+      const rejectedList = await supervisorService.getRejectedGaonList(
+        assignedBlocks.join(","),
+      );
+
+      setRejectedVillages(Array.isArray(rejectedList) ? rejectedList : []);
+    } catch (error) {
+      console.error("Error fetching rejected villages:", error);
+      setRejectedVillages([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAssignedFamiliesClick = () => {
+    setViewModeWithURL("assigned");
+    setGaonData([]);
+    setSelectedPdfUrl(null);
+    setSelectedGaon(null);
+    setAssignedForm({ gaonCode: "" });
+    setAssignedVillages([]);
+    setAssignedAllRows([]);
+
+    (async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `https://prtest1.kdsgroup.co.in:8000/getAssignedRejectedDataBySupervisor/?supervisorId=${loginID}`,
+        );
+        const json = await res.json();
+
+        if (!json.success) {
+          throw new Error("API returned failure");
+        }
+
+        // json.data.data is an object keyed by gaonCode
+        const rawData = json.data?.data || {};
+
+        // Build village list from keys, skip entries with errors
+        const villages = [];
+        const allRows = [];
+
+        Object.entries(rawData).forEach(([gaonCode, families]) => {
+          if (!Array.isArray(families)) return;
+
+          families.forEach((family) => {
+            const familyInfo = family.familyInfo || {};
+            const members = Array.isArray(family.members) ? family.members : [];
+
+            members.forEach((m) => {
+              allRows.push({
+                gaonCode,
+                ...familyInfo, // houseNumber, familyHeadName, pdfNo, pages
+                ...m, // actual member data (Hindi fields)
+              });
+            });
+          });
+
+          const firstFamily = families[0];
+          const firstMember = firstFamily?.members?.[0] || {};
+
+          villages.push({
+            gaonCode,
+            gaon: firstMember.gaon || firstMember.sabha || gaonCode,
+          });
+        });
+
+        setAssignedAllRows(allRows);
+        setAssignedVillages(villages);
+      } catch (error) {
+        console.error("Error fetching assigned families:", error);
+        setAssignedAllRows([]);
+        setAssignedVillages([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
   };
 
   const handleVilPendingClick = async () => {
-    setViewMode("vilNotStarted");
+    setViewModeWithURL("vilNotStarted");
     setLoading(true);
     try {
-      const data = await supervisorService.vilNotStartedTblDESU(
-        assignedDistrict,
-        assignedBlocks.join(","),
+      const currentDistrict = user.districts[0] || assignedDistrict;
+      const currentBlocks =
+        assignedBlocksState.length > 0 ? assignedBlocksState : assignedBlocks;
+      console.log(
+        "vilNotStarted params:",
+        currentDistrict,
+        currentBlocks.join(","),
       );
-      setGaonData(data);
+      const data = await supervisorService.vilNotStartedTblDESU(
+        currentDistrict,
+        currentBlocks.join(","),
+      );
+      setGaonData(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error fetching villages pending for entry:", error);
+      setGaonData([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDashboardClick = () => {
-    setViewMode("dashboard");
+    setViewModeWithURL("dashboard");
     setGaonData([]);
   };
 
   const handleManageOperatorsClick = () => {
-    setShowManageOperators(true);
+    setViewModeWithURL("operators");
+    setGaonData([]);
   };
 
   const handlePendingFormSubmit = async (e) => {
@@ -241,13 +312,34 @@ const SupervisorDashboard = () => {
     }
   };
 
+  // ✅ Remove invisible unicode chars/spaces and keep only digits for gaonCode
+  const normalizeGaonCode = (v) => String(v ?? "").replace(/[^\d]/g, "");
+
+  // ✅ Build PDF URL for split preview
+  const buildPdfUrl = (row) => {
+    const pdfNo = row?.pdfNo || 1;
+    let gaonCode = normalizeGaonCode(row?.gaonCode);
+    let fromPage = row?.fromPage;
+    let toPage = row?.toPage;
+
+    if (Number(gaonCode) < 1000 && Number(fromPage) > 100000) {
+      const tmp = gaonCode;
+      gaonCode = normalizeGaonCode(fromPage);
+      fromPage = tmp;
+    }
+
+    let url = `https://prds.kdsgroup.co.in/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+    if (fromPage) url += `&fromPage=${fromPage}`;
+    if (toPage) url += `&toPage=${toPage}`;
+    return url;
+  };
+
   const handleRejectedFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const data = await supervisorService.getRejectedFamilies(
-        rejectedForm.gaonCode,
-      );
+      const gaonCode = normalizeGaonCode(rejectedForm.gaonCode);
+      const data = await supervisorService.getRejectedFamilies(gaonCode);
       // Ensure data is an array
       const familyArray = Array.isArray(data) ? data : [];
       // Sort data by family groups (same as original)
@@ -266,12 +358,135 @@ const SupervisorDashboard = () => {
         return keyA.localeCompare(keyB);
       });
       setGaonData(familyArray);
-      setSelectedGaon(rejectedForm.gaonCode);
+      setSelectedGaon(gaonCode);
     } catch (error) {
       console.error("Error fetching rejected families:", error);
       setGaonData([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAssignedFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setSelectedPdfUrl(null);
+
+    try {
+      if (!assignedForm.gaonCode) {
+        setGaonData([]);
+        showMessage("Please select a village", "red");
+        return;
+      }
+
+      const rows = Array.isArray(assignedAllRows) ? assignedAllRows : [];
+      const filtered = rows.filter((r) => r?.gaonCode == assignedForm.gaonCode);
+
+      filtered.sort((a, b) => {
+        const keyA =
+          (a.houseNumberNum || "") +
+          (a.houseNumberText || "") +
+          (a.familyHeadName || "");
+        const keyB =
+          (b.houseNumberNum || "") +
+          (b.houseNumberText || "") +
+          (b.familyHeadName || "");
+        if (keyA === keyB) return parseInt(a.serialNo) - parseInt(b.serialNo);
+        return keyA.localeCompare(keyB);
+      });
+
+      setGaonData(filtered);
+      setSelectedGaon(assignedForm.gaonCode);
+    } catch (error) {
+      console.error("Error fetching assigned families:", error);
+      setGaonData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAssignedEditClick = (row) => {
+    setAssignedEditData({ ...(row || {}) });
+    setShowAssignedEditModal(true);
+  };
+
+  const handleAssignedEditChange = (key, value) => {
+    setAssignedEditData((prev) => ({ ...(prev || {}), [key]: value }));
+  };
+
+  const buildSupervisorUpdateRow = (row) => {
+    const r = row || {};
+    const toNum = (v) =>
+      v === "" || v === null || v === undefined ? null : Number(v);
+    return {
+      id: toNum(r.id),
+      zilaCode: r.zilaCode ?? "",
+      zila: r.zila ?? "",
+      tehsilCode: r.tehsilCode ?? "",
+      tehsil: r.tehsil ?? "",
+      blockCode: r.blockCode ?? "",
+      block: r.block ?? "",
+      sabhaCode: r.sabhaCode ?? "",
+      sabha: r.sabha ?? "",
+      panchayat: r.panchayat ?? "",
+      gaon: r.gaon ?? "",
+      gaonCode: r.gaonCode ?? "",
+      serialNo: toNum(r.serialNo),
+      houseNumberNum: toNum(r.houseNumberNum),
+      houseNumberText: r.houseNumberText ?? "",
+      familyHeadName: r.familyHeadName ?? "",
+      memberName: r.memberName ?? "",
+      fatherOrHusbandName: r.fatherOrHusbandName ?? "",
+      gender: r.gender ?? "",
+      religion: r.religion ?? "",
+      caste: r.caste ?? "",
+      dob: r.dob ?? "",
+      business: r.business ?? "",
+      literacy: r.literacy ?? "",
+      qualification: r.qualification ?? "",
+      leavingDate: r.leavingDate === "" ? null : (r.leavingDate ?? null),
+      description: r.description ?? "",
+      byOperator: r.byOperator ?? "",
+      entryDate: r.entryDate ?? "",
+      pdfNo: toNum(r.pdfNo),
+      fromPage: toNum(r.fromPage),
+      toPage: toNum(r.toPage),
+      status: r.status ?? "",
+      remark: r.remark ?? "",
+    };
+  };
+
+  const handleAssignedEditSave = async () => {
+    if (!assignedEditData) return;
+    try {
+      const original =
+        (Array.isArray(gaonData) ? gaonData : []).find(
+          (r) => String(r?.id) === String(assignedEditData?.id),
+        ) || {};
+      const mergedRow = { ...original, ...assignedEditData };
+      const cleanGaonCode = normalizeGaonCode(
+        mergedRow.gaonCode || assignedForm.gaonCode || "",
+      );
+      const payload = {
+        supervisorId: loginID,
+        gaonCode: cleanGaonCode,
+        updates: [
+          buildSupervisorUpdateRow({
+            ...mergedRow,
+            gaonCode: cleanGaonCode,
+            status: loginID,
+          }),
+        ],
+      };
+      await supervisorService.supervisoRejectedUpdate(payload);
+      showMessage("Updated Successfully ✅", "green");
+      setShowAssignedEditModal(false);
+      if (viewMode === "assigned" && assignedForm.gaonCode) {
+        handleAssignedFormSubmit({ preventDefault: () => {} });
+      }
+    } catch (error) {
+      console.error("Update Error:", error);
+      showMessage("Update Failed ❌", "red");
     }
   };
 
@@ -417,6 +632,7 @@ const SupervisorDashboard = () => {
         onPendingRegisterClick={handlePendingRegisterClick}
         onCompletedRegisterClick={handleCompletedRegisterClick}
         onRejectedFamiliesClick={handleRejectedFamiliesClick}
+        onAssignedFamiliesClick={handleAssignedFamiliesClick}
         onVilPendingClick={handleVilPendingClick}
         onDashboardClick={handleDashboardClick}
         onManageOperatorsClick={handleManageOperatorsClick}
@@ -444,6 +660,7 @@ const SupervisorDashboard = () => {
               {viewMode === "pending" && "Pending Register"}
               {viewMode === "completed" && "Completed Registers"}
               {viewMode === "rejected" && "Rejected Families"}
+              {viewMode === "assigned" && "Assigned Families"}
               {viewMode === "vilNotStarted" && "Villages Pending for Entry"}
               {viewMode === "dashboard" && "Dashboard"}
               {viewMode === "operators" && "Manage Operator"}
@@ -801,9 +1018,218 @@ const SupervisorDashboard = () => {
               </div>
             </form>
           )}
+
+          {/* ================= ASSIGNED ================= */}
+          {viewMode === "assigned" && (
+            <form
+              onSubmit={handleAssignedFormSubmit}
+              id="getAssignedFamForm"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 200px",
+                gap: "12px",
+                alignItems: "end",
+                background: "#fff",
+                padding: "20px",
+                borderRadius: "16px",
+                width: "100%",
+                marginTop: "10px",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+              }}
+            >
+              <div>
+                <label>
+                  गांव <span style={{ color: "red" }}>*</span>
+                </label>
+                <select
+                  value={assignedForm.gaonCode}
+                  onChange={(e) =>
+                    setAssignedForm({ gaonCode: e.target.value })
+                  }
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "10px",
+                    border: "none",
+                    background: "#eef4ff",
+                    outline: "none",
+                    marginTop: "10px",
+                  }}
+                >
+                  <option value="">Select Gaon</option>
+                  {assignedVillages.map((v) => (
+                    <option key={v.gaonCode} value={v.gaonCode}>
+                      {v.gaonCode} - {v.gaon}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                style={{
+                  width: "200px",
+                  padding: "10px 20px",
+                  borderRadius: "25px",
+                  border: "none",
+                  background: "linear-gradient(90deg,#6a75f0,#8a5fd3)",
+                  color: "#fff",
+                  fontSize: "16px",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                गांव का डाटा पाएं
+              </button>
+            </form>
+          )}
+
+          {/* ✅ ASSIGNED SPLIT VIEW (TABLE LEFT, PDF RIGHT) */}
+          {viewMode === "assigned" && gaonData.length > 0 && (
+            <div style={{ display: "flex", gap: "12px", width: "100%" }}>
+              <div style={{ width: selectedPdfUrl ? "50%" : "100%" }}>
+                <div className="table-container">
+                  <table className="main-table">
+                    <thead>
+                      <tr>
+                        <th>गाँव</th>
+                        <th>गाँव कोड</th>
+                        <th>परिवार प्रमुख</th>
+                        <th>मकान नं.</th>
+                        <th>सदस्य क्रमांक</th>
+                        <th>सदस्य नाम</th>
+                        <th>पिता/पति</th>
+                        <th>लिंग</th>
+                        <th>DOB</th>
+                        <th>Remark</th>
+                        <th>PDF</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {gaonData.map((row, idx) => (
+                        <tr key={row.id || idx}>
+                          <td>{row.gaon || row.sabha || row.gaonCode}</td>
+                          <td>{row.gaonCode}</td>
+                          <td>{row.familyHeadName}</td>
+                          <td>
+                            {row.houseNumberNum ?? ""}
+                            {row.houseNumberText
+                              ? ` ${row.houseNumberText}`
+                              : ""}
+                          </td>
+                          <td>{row.serialNo}</td>
+                          <td>{row.memberName}</td>
+                          <td>{row.fatherOrHusbandName}</td>
+                          <td>{row.gender}</td>
+                          <td>{row.dob ? row.dob.split("T")[0] : ""}</td>
+                          <td>{row.remark}</td>
+                          <td>
+                            {row.pdfNo
+                              ? `${row.pdfNo} (${row.fromPage}-${row.toPage})`
+                              : ""}
+                          </td>
+                          <td>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                              <button
+                                type="button"
+                                className="download-btn"
+                                onClick={() =>
+                                  setSelectedPdfUrl(buildPdfUrl(row))
+                                }
+                                disabled={!row.gaonCode}
+                                style={{ padding: "6px 10px" }}
+                              >
+                                View
+                              </button>
+                              <button
+                                type="button"
+                                className="download-btn"
+                                onClick={() => handleAssignedEditClick(row)}
+                                style={{ padding: "6px 10px" }}
+                              >
+                                Edit
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {selectedPdfUrl && (
+                <div
+                  style={{
+                    width: "50%",
+                    background: "#fff",
+                    borderRadius: "12px",
+                    boxShadow: "0 8px 25px rgba(0,0,0,0.12)",
+                    padding: "12px",
+                    height: "calc(100vh - 260px)",
+                    position: "sticky",
+                    top: "110px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "10px",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <b>PDF Preview</b>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
+                        type="button"
+                        className="download-btn"
+                        onClick={() => window.open(selectedPdfUrl, "_blank")}
+                        style={{ padding: "6px 10px" }}
+                      >
+                        Open
+                      </button>
+                      <button
+                        type="button"
+                        className="download-btn"
+                        onClick={() => setSelectedPdfUrl(null)}
+                        style={{ padding: "6px 10px" }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                  <iframe
+                    src={selectedPdfUrl}
+                    title="PDF Preview"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "10px",
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Main Content Area */}
+        {viewMode === "operators" && (
+          <ManageOperatorModal
+            loginID={loginID}
+            inline={true}
+            onClose={() => setViewModeWithURL("pending")}
+            onAddOperator={() => setShowAddOperator(true)}
+          />
+        )}
         {viewMode === "dashboard" && (
           <>
             <OperatorMonitoring
@@ -828,7 +1254,10 @@ const SupervisorDashboard = () => {
                 onAdd={handleAddRecord}
                 onDelete={handleDeleteRecord}
                 onApprove={handleApproveFamily}
-                onViewPDF={supervisorService.viewPDFPage}
+                onViewPDF={(pdfNo, fromPage, toPage, gaonCode) => {
+                  const url = `https://parivarregister.kdsgroup.co.in/app/getPDFPage/?pdfNo=${pdfNo}&fromPage=${fromPage}&toPage=${toPage}&gaonCode=${gaonCode}`;
+                  window.open(url, "_blank");
+                }}
               />
             </div>
           )}
@@ -937,13 +1366,12 @@ const SupervisorDashboard = () => {
         />
       )}
 
-      {showManageOperators && (
-        <ManageOperatorModal
-          loginID={loginID}
-          onClose={() => setShowManageOperators(false)}
-          onAddOperator={() => {
-            setShowManageOperators(false);
-            setShowAddOperator(true);
+      {showAddOperator && (
+        <AddOperatorModal
+          supervisorID={loginID}
+          onClose={() => setShowAddOperator(false)}
+          onSuccess={() => {
+            setShowAddOperator(false);
           }}
         />
       )}
@@ -957,6 +1385,151 @@ const SupervisorDashboard = () => {
             setShowManageOperators(true);
           }}
         />
+      )}
+
+      {showAssignedEditModal && assignedEditData && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.45)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+          }}
+          onClick={() => setShowAssignedEditModal(false)}
+        >
+          <div
+            style={{
+              width: "min(950px, 98vw)",
+              maxHeight: "85vh",
+              overflow: "auto",
+              background: "#fff",
+              borderRadius: "16px",
+              padding: "18px",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "12px",
+                marginBottom: "12px",
+              }}
+            >
+              <h3 style={{ margin: 0 }}>
+                Edit Assigned Family (Gaon: {assignedEditData.gaon || ""} -
+                {assignedEditData.gaonCode || ""})
+              </h3>
+              <button
+                type="button"
+                className="download-btn"
+                onClick={() => setShowAssignedEditModal(false)}
+              >
+                Close
+              </button>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                gap: "12px",
+              }}
+            >
+              {Object.keys(assignedEditData).map((key) => {
+                const value = assignedEditData[key];
+                const readOnlyKeys = ["id", "gaonCode"];
+                const isReadOnly = readOnlyKeys.includes(key);
+                const isLongText = ["description", "remark"].includes(key);
+                const isNumber =
+                  typeof value === "number" ||
+                  [
+                    "serialNo",
+                    "houseNumberNum",
+                    "pdfNo",
+                    "fromPage",
+                    "toPage",
+                  ].includes(key);
+                const isDate = ["dob", "entryDate", "leavingDate"].includes(
+                  key,
+                );
+
+                return (
+                  <div key={key}>
+                    <label style={{ fontSize: "12px", color: "#333" }}>
+                      {key}
+                    </label>
+                    {isLongText ? (
+                      <textarea
+                        value={value ?? ""}
+                        readOnly={isReadOnly}
+                        onChange={(e) =>
+                          handleAssignedEditChange(key, e.target.value)
+                        }
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "10px",
+                          border: "1px solid #e5e7eb",
+                          marginTop: "6px",
+                          minHeight: "70px",
+                        }}
+                      />
+                    ) : (
+                      <input
+                        type={isDate ? "date" : isNumber ? "number" : "text"}
+                        value={value ?? ""}
+                        readOnly={isReadOnly}
+                        onChange={(e) =>
+                          handleAssignedEditChange(
+                            key,
+                            isNumber ? Number(e.target.value) : e.target.value,
+                          )
+                        }
+                        style={{
+                          width: "100%",
+                          padding: "10px",
+                          borderRadius: "10px",
+                          border: "1px solid #e5e7eb",
+                          marginTop: "6px",
+                        }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+                marginTop: "14px",
+              }}
+            >
+              <button
+                type="button"
+                className="download-btn"
+                onClick={() => setShowAssignedEditModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="download-btn"
+                onClick={handleAssignedEditSave}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {messageModal.show && (

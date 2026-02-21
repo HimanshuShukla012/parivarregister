@@ -170,14 +170,16 @@ const RegisterTable = ({
                     row.toPage && (
                       <>
                         <button
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             onViewPDF(
                               row.pdfNo,
                               row.fromPage,
                               row.toPage,
                               row.gaonCode,
-                            )
-                          }
+                            );
+                          }}
                           style={btnGreen}
                         >
                           View <i class="fas fa-eye"></i>

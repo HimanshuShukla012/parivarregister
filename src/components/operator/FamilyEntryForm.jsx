@@ -11,6 +11,7 @@ const FamilyEntryForm = ({
   onError,
   setLoading,
   onGaonCodeChange,
+  onRegisterOptionsChange,
 }) => {
   const [familyMembers, setFamilyMembers] = useState([1]);
 
@@ -82,8 +83,18 @@ const FamilyEntryForm = ({
     }
 
     try {
-      const params = new URLSearchParams({ gaonCode: formData.gaonCode });
+      // const params = new URLSearchParams({ gaonCode: formData.gaonCode });
+      // const response = await api.get(`/gaon/?${params.toString()}`);
+      const operatorIdRaw = userId || localStorage.getItem("loginID") || "";
+      const operatorId = String(operatorIdRaw).replace(/^"|"$/g, "");
+
+      const params = new URLSearchParams({
+        gaonCode: formData.gaonCode,
+        operatorID: operatorId, // ✅ backend expects operatorID
+      });
+
       const response = await api.get(`/gaon/?${params.toString()}`);
+
       const data = response.data;
 
       setFormData((prev) => ({
@@ -105,6 +116,9 @@ const FamilyEntryForm = ({
         options.push(i);
       }
       setPdfOptions(options);
+      if (onRegisterOptionsChange) {
+        onRegisterOptionsChange(options); // ✅ left register dropdown ko bhi same list
+      }
 
       if (onGaonCodeChange) {
         onGaonCodeChange(formData.gaonCode);
@@ -135,6 +149,9 @@ const FamilyEntryForm = ({
         gaon: "",
       }));
       setPdfOptions([]);
+      if (onRegisterOptionsChange) {
+        onRegisterOptionsChange([]); // ✅ reset left side also
+      }
 
       if (onGaonCodeChange) {
         onGaonCodeChange("");

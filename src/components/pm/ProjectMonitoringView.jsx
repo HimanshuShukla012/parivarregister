@@ -123,7 +123,7 @@ const ProjectMonitoringView = () => {
     //   return;
     // }
     handleDownloadReport(
-      `https://register.kdsgroup.co.in/download_gp_wise_report/`,
+      `https://prtest1.kdsgroup.co.in:8000/download_gp_wise_report/`,
     );
   };
 
@@ -133,7 +133,7 @@ const ProjectMonitoringView = () => {
     //   return;
     // }
     handleDownloadReport(
-      `https://register.kdsgroup.co.in/download_block_wise_report/`,
+      `https://prtest1.kdsgroup.co.in:8000/download_block_wise_report/`,
     );
   };
 
@@ -557,63 +557,51 @@ const ProjectMonitoringView = () => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
+              gridTemplateColumns: "repeat(3, 1fr)",
               gap: "20px",
               marginBottom: "40px",
             }}
           >
             {[
               {
-                label: "No. of Registers Collected",
-                value: "?",
-                icon: <i className="fas fa-home"></i>,
-                color: "#6366F1",
-              },
-              {
-                label: "No. of Registers Returned",
-                value: "?",
-                icon: <i className="fas fa-user-friends"></i>,
-                color: "#22C55E",
-              },
-              {
-                label: "No. of Villages Pending for Upload",
-                value: "?",
-                icon: <i className="fas fa-clock"></i>,
-                color: "#6366F1",
-              },
-              {
                 label: "No. of Villages Entry Not Started",
-                value: "?",
+                value: cards?.noOfVillagesNotStarted ?? "?",
+
                 icon: <i className="fas fa-times-circle"></i>,
                 color: "#22C55E",
               },
               {
                 label: "No. of Villages Entry Done",
-                value: "?",
+                value: cards?.noOfVillagesSupervisorApproved ?? "?",
+
                 icon: <i className="fas fa-home"></i>,
                 color: "#6366F1",
               },
               {
                 label: "No. of Villages Verified By Sachiv",
-                value: "?",
+                value: cards?.noOfVillagesSachivApproved ?? "?",
+
                 icon: <i className="fas fa-check-circle"></i>,
                 color: "#22C55E",
               },
               {
                 label: "No. of Blocks Verified By ADO",
-                value: "?",
+                value: cards?.noOfBlocksADOApproved ?? "?",
+
                 icon: <i className="fas fa-shield-alt"></i>,
                 color: "#6366F1",
               },
               {
                 label: "No. of Districts Completed",
-                value: "?",
+                value: cards?.noOfDistrictsCompleted ?? "?",
+
                 icon: <i className="fas fa-home"></i>,
                 color: "#22C55E",
               },
             ].map((item, i) => (
               <div
                 key={i}
+                onClick={item.onClick || undefined}
                 style={{
                   background: "#fff",
                   borderRadius: "16px",
@@ -622,6 +610,7 @@ const ProjectMonitoringView = () => {
                   alignItems: "center",
                   gap: "15px",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                  cursor: item.onClick ? "pointer" : "default",
                 }}
               >
                 <div
@@ -669,7 +658,7 @@ const ProjectMonitoringView = () => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
+              gridTemplateColumns: "repeat(2, 1fr)",
               gap: "20px",
               marginBottom: "40px",
             }}
@@ -677,25 +666,24 @@ const ProjectMonitoringView = () => {
             {[
               {
                 label: "No. of Villages Pending for Receiving",
-                value: "?",
+                value: cards?.noOfVilReceivePending ?? "?",
                 icon: <i className="fas fa-clock"></i>,
                 color: "#6366F1",
               },
               {
                 label: "No. of Villages Pending for Scanning",
-                value: "?",
+                value: cards?.noOfVilScanPending ?? "?",
                 icon: <i className="fas fa-clock"></i>,
                 color: "#22C55E",
-              },
-              {
-                label: "No. of Districts Short on Daily Average",
-                value: "?",
-                icon: <i className="fas fa-chart-line"></i>,
-                color: "#6366F1",
+                onClick: () =>
+                  handleDownloadReport(
+                    "https://prtest1.kdsgroup.co.in:8000/downloadVilScanPendingTbl/",
+                  ),
               },
             ].map((item, i) => (
               <div
                 key={i}
+                onClick={item.onClick || undefined}
                 style={{
                   background: "#fff",
                   borderRadius: "16px",
@@ -704,6 +692,7 @@ const ProjectMonitoringView = () => {
                   alignItems: "center",
                   gap: "15px",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                  cursor: item.onClick ? "pointer" : "default",
                 }}
               >
                 <div
@@ -804,7 +793,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadReport(
-                    "https://register.kdsgroup.co.in/district_overview_excel_api/",
+                    "https://prtest1.kdsgroup.co.in:8000/district_overview_excel_api/",
                   )
                 }
                 style={styles.downloadBtn}
@@ -821,7 +810,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadGPReport(
-                    "https://register.kdsgroup.co.in/district_overview_excel_api/",
+                    "https://prtest1.kdsgroup.co.in:8000/district_overview_excel_api/",
                   )
                 }
                 style={styles.downloadBtn}
@@ -852,7 +841,7 @@ const ProjectMonitoringView = () => {
               </h4>
               <button
                 onClick={() =>
-                  handleDownloadReport("/download_master_digitisation_report")
+                  handleDownloadReport("/export_village_detailed_report")
                 }
                 style={styles.downloadBtn}
               >

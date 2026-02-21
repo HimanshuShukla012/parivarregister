@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "", // Use empty string to make relative URLs work correctly in both dev and prod
+  baseURL: "https://prtest1.kdsgroup.co.in:8000/", // Use empty string to make relative URLs work correctly in both dev and prod
   headers: {
     "Content-Type": "application/json",
   },
@@ -83,7 +83,7 @@ api.interceptors.request.use(
   (error) => {
     console.error("❌ Request interceptor error:", error);
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor
@@ -98,7 +98,7 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error(
-      `❌ API Error: ${error.config?.url} - ${error.response?.status}`
+      `❌ API Error: ${error.config?.url} - ${error.response?.status}`,
     );
 
     if (error.response?.status === 401) {
@@ -115,7 +115,7 @@ api.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

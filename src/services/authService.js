@@ -90,7 +90,7 @@ export const authService = {
 
   logout: async () => {
     try {
-      await fetch("http://register.kdsgroup.co.in/logout/", {
+      await fetch("https://prtest1.kdsgroup.co.in:8000//logout/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

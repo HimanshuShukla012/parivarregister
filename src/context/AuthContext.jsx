@@ -36,9 +36,10 @@ export const AuthProvider = ({ children }) => {
         console.log("💾 AuthContext: Set new user state:", newUser);
 
         return {
-          success: true,
-          redirectTo: authService.getDashboardRoute(data.user.loginID),
-        };
+  success: true,
+  redirectTo: authService.getDashboardRoute(data.user.loginID),
+  user: data.user,
+};
       } else {
         console.log("❌ AuthContext: Login failed -", data.error);
         return {
