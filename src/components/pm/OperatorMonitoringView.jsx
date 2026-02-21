@@ -179,13 +179,13 @@ const OperatorMonitoringView = ({ zilaList }) => {
       title: 'Total No. of Operators',
       value: cards?.totalOperatorCount || 0,
       icon: <FaFolderOpen />,
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      gradient: '#fff'
     },
     {
       title: 'Total Live Operators',
       value: cards?.liveOPCount || 0,
       icon: <FaArrowUp />,
-      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+      gradient: '#fff'
     }
   ];
 
