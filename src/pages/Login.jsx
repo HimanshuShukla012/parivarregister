@@ -65,6 +65,7 @@ const Login = () => {
 
   const handleForceLogout = async () => {
     setLoading(true);
+    setShowForceLogout(false);
     setError("");
 
     try {
