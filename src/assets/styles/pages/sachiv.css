@@ -144,6 +144,7 @@
 
 .sachiv-data-table td {
     color: rgba(255, 255, 255, 0.9);
+    background: transparent;
 }
 
 .sachiv-data-table tr:last-child td {
@@ -559,7 +560,7 @@
 .main-table th {
     padding: 1rem 1.25rem;
     text-align: center;
-    color: rgb(10, 0, 0);
+    color: #ffffff;
     font-weight: 600;
     font-size: 0.875rem;
     text-transform: uppercase;

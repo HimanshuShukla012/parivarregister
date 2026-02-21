@@ -29,42 +29,42 @@
 # getZila - Critical endpoint
 [[redirects]]
   from = "/getZila/"
-  to = "https://prtest1.kdsgroup.co.in:8000getZila/"
+  to = "https://register.kdsgroup.co.in/getZila/"
   status = 200
   force = true
 
 # adminProjectMonitoringCards
 [[redirects]]
   from = "/adminProjectMonitoringCards/"
-  to = "https://prtest1.kdsgroup.co.in:8000adminProjectMonitoringCards/"
+  to = "https://register.kdsgroup.co.in/adminProjectMonitoringCards/"
   status = 200
   force = true
 
 # adminProjectMonitoringTbls
 [[redirects]]
   from = "/adminProjectMonitoringTbls/"
-  to = "https://prtest1.kdsgroup.co.in:8000adminProjectMonitoringTbls/"
+  to = "https://register.kdsgroup.co.in/adminProjectMonitoringTbls/"
   status = 200
   force = true
 
 # district_overview_api
 [[redirects]]
   from = "/district_overview_api/"
-  to = "https://prtest1.kdsgroup.co.in:8000district_overview_api/"
+  to = "https://register.kdsgroup.co.in/district_overview_api/"
   status = 200
   force = true
 
 # district_target_report_api
 [[redirects]]
   from = "/district_target_report_api/"
-  to = "https://prtest1.kdsgroup.co.in:8000district_target_report_api/"
+  to = "https://register.kdsgroup.co.in/district_target_report_api/"
   status = 200
   force = true
 
 # verification_status_api
 [[redirects]]
   from = "/verification_status_api/"
-  to = "https://prtest1.kdsgroup.co.in:8000verification_status_api/"
+  to = "https://register.kdsgroup.co.in/verification_status_api/"
   status = 200
   force = true
 
@@ -72,41 +72,41 @@
 # district_data_by_login
 [[redirects]]
   from = "/district_data_by_login/"
-  to = "https://prtest1.kdsgroup.co.in:8000district_data_by_login/"
+  to = "https://register.kdsgroup.co.in/district_data_by_login/"
   status = 200
   force = true
 
 # csrf
 [[redirects]]
   from = "/csrf/"
-  to = "https://prtest1.kdsgroup.co.in:8000csrf/"
+  to = "https://register.kdsgroup.co.in/csrf/"
   status = 200
   force = true
 
 # adminOpMonitoringCards
 [[redirects]]
   from = "/adminOpMonitoringCards/"
-  to = "https://prtest1.kdsgroup.co.in:8000adminOpMonitoringCards/"
+  to = "https://register.kdsgroup.co.in/adminOpMonitoringCards/"
   status = 200
   force = true
 
   [[redirects]]
   from = "/district_overview_excel_api/"
-  to = "https://prtest1.kdsgroup.co.in:8000district_overview_excel_api/"
+  to = "https://register.kdsgroup.co.in/district_overview_excel_api/"
   status = 200
   force = true
 
 # adminDataMonitoringCards
 [[redirects]]
   from = "/adminDataMonitoringCards/"
-  to = "https://prtest1.kdsgroup.co.in:8000adminDataMonitoringCards/"
+  to = "https://register.kdsgroup.co.in/adminDataMonitoringCards/"
   status = 200
   force = true
 
 # opDailyEntryCount
 [[redirects]]
   from = "/opDailyEntryCount/"
-  to = "https://prtest1.kdsgroup.co.in:8000opDailyEntryCount/"
+  to = "https://register.kdsgroup.co.in/opDailyEntryCount/"
   status = 200
   force = true
 
@@ -134,414 +134,414 @@
 # District endpoint
 [[redirects]]
   from = "/district/*"
-  to = "https://prtest1.kdsgroup.co.in:8000district/:splat"
+  to = "https://register.kdsgroup.co.in/district/:splat"
   status = 200
   force = true
 
 
 [[redirects]]
   from = "/district_data_by_login/*"
-  to = "https://prtest1.kdsgroup.co.in:8000district_data_by_login/:splat"
+  to = "https://register.kdsgroup.co.in/district_data_by_login/:splat"
   status = 200
   force = true
 
 # Gaon endpoints
 [[redirects]]
   from = "/gaon/*"
-  to = "https://prtest1.kdsgroup.co.in:8000gaon/:splat"
+  to = "https://register.kdsgroup.co.in/gaon/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getGaonBySabha/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getGaonBySabha/:splat"
+  to = "https://register.kdsgroup.co.in/getGaonBySabha/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getGaonData/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getGaonData/:splat"
+  to = "https://register.kdsgroup.co.in/getGaonData/:splat"
   status = 200
   force = true
 
 # Block and Village endpoints
 [[redirects]]
   from = "/getBlockByZila/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getBlockByZila/:splat"
+  to = "https://register.kdsgroup.co.in/getBlockByZila/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getApprovedGaonListWithCodeByBlock/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getApprovedGaonListWithCodeByBlock/:splat"
+  to = "https://register.kdsgroup.co.in/getApprovedGaonListWithCodeByBlock/:splat"
   status = 200
   force = true
 
 # Sachiv endpoints
 [[redirects]]
   from = "/sachivApprove/*"
-  to = "https://prtest1.kdsgroup.co.in:8000sachivApprove/:splat"
+  to = "https://register.kdsgroup.co.in/sachivApprove/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/update-and-insert/*"
-  to = "https://prtest1.kdsgroup.co.in:8000update-and-insert/:splat"
+  to = "https://register.kdsgroup.co.in/update-and-insert/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/approveFamilySachiv/*"
-  to = "https://prtest1.kdsgroup.co.in:8000approveFamilySachiv/:splat"
+  to = "https://register.kdsgroup.co.in/approveFamilySachiv/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/rejectFamilySachiv/*"
-  to = "https://prtest1.kdsgroup.co.in:8000rejectFamilySachiv/:splat"
+  to = "https://register.kdsgroup.co.in/rejectFamilySachiv/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadGaonSachiv/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadGaonSachiv/:splat"
+  to = "https://register.kdsgroup.co.in/downloadGaonSachiv/:splat"
   status = 200
   force = true
 
 # Operator endpoints
 [[redirects]]
   from = "/insertFamilyMember/*"
-  to = "https://prtest1.kdsgroup.co.in:8000insertFamilyMember/:splat"
+  to = "https://register.kdsgroup.co.in/insertFamilyMember/:splat"
   status = 200
   force = true
 
 # Auth endpoints
 [[redirects]]
   from = "/resetPassword/*"
-  to = "https://prtest1.kdsgroup.co.in:8000resetPassword/:splat"
+  to = "https://register.kdsgroup.co.in/resetPassword/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/ajax_logout/*"
-  to = "https://prtest1.kdsgroup.co.in:8000ajax_logout/:splat"
+  to = "https://register.kdsgroup.co.in/ajax_logout/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/logout/*"
-  to = "https://prtest1.kdsgroup.co.in:8000logout/:splat"
+  to = "https://register.kdsgroup.co.in/logout/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/force_logout/*"
-  to = "https://prtest1.kdsgroup.co.in:8000force_logout/:splat"
+  to = "https://register.kdsgroup.co.in/force_logout/:splat"
   status = 200
   force = true
 
 # HQ Dashboard endpoints
 [[redirects]]
   from = "/district_download_api/*"
-  to = "https://prtest1.kdsgroup.co.in:8000district_download_api/:splat"
+  to = "https://register.kdsgroup.co.in/district_download_api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/district_report_api/*"
-  to = "https://prtest1.kdsgroup.co.in:8000district_report_api/:splat"
+  to = "https://register.kdsgroup.co.in/district_report_api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/download_district_report_api/*"
-  to = "https://prtest1.kdsgroup.co.in:8000download_district_report_api/:splat"
+  to = "https://register.kdsgroup.co.in/download_district_report_api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/download_block_target_report_api/*"
-  to = "https://prtest1.kdsgroup.co.in:8000download_block_target_report_api/:splat"
+  to = "https://register.kdsgroup.co.in/download_block_target_report_api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/block_target_report_api/*"
-  to = "https://prtest1.kdsgroup.co.in:8000block_target_report_api/:splat"
+  to = "https://register.kdsgroup.co.in/block_target_report_api/:splat"
   status = 200
   force = true
 
   [[redirects]]
   from = "/tehsil_gp_target_report_api_/*"
-  to = "https://prtest1.kdsgroup.co.in:8000tehsil_gp_target_report_api_/:splat"
+  to = "https://register.kdsgroup.co.in/tehsil_gp_target_report_api_/:splat"
   status = 200
   force = true
 
   [[redirects]]
   from = "/pending_gp_verification_report_api/*"
-  to = "https://prtest1.kdsgroup.co.in:8000pending_gp_verification_report_api/:splat"
+  to = "https://register.kdsgroup.co.in/pending_gp_verification_report_api/:splat"
   status = 200
   force = true
 
   [[redirects]]
   from = "/gp_wise_detail_report_api/*"
-  to = "https://prtest1.kdsgroup.co.in:8000gp_wise_detail_report_api/:splat"
+  to = "https://register.kdsgroup.co.in/gp_wise_detail_report_api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/block_target_report_download/*"
-  to = "https://prtest1.kdsgroup.co.in:8000block_target_report_download/:splat"
+  to = "https://register.kdsgroup.co.in/block_target_report_download/:splat"
   status = 200
   force = true
 
 # Project Monitoring endpoints
 [[redirects]]
   from = "/digitisationStatusTbl/*"
-  to = "https://prtest1.kdsgroup.co.in:8000digitisationStatusTbl/:splat"
+  to = "https://register.kdsgroup.co.in/digitisationStatusTbl/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/digitisationStatusTblByZila/*"
-  to = "https://prtest1.kdsgroup.co.in:8000digitisationStatusTblByZila/:splat"
+  to = "https://register.kdsgroup.co.in/digitisationStatusTblByZila/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadEntryDoneInRange/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadEntryDoneInRange/:splat"
+  to = "https://register.kdsgroup.co.in/downloadEntryDoneInRange/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadTakeoverHandoverSummary/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadTakeoverHandoverSummary/:splat"
+  to = "https://register.kdsgroup.co.in/downloadTakeoverHandoverSummary/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/export_village_detailed_report/*"
-  to = "https://prtest1.kdsgroup.co.in:8000export_village_detailed_report/:splat"
+  to = "https://register.kdsgroup.co.in/export_village_detailed_report/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadDistrictReport/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadDistrictReport/:splat"
+  to = "https://register.kdsgroup.co.in/downloadDistrictReport/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadBlockReport/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadBlockReport/:splat"
+  to = "https://register.kdsgroup.co.in/downloadBlockReport/:splat"
   status = 200
   force = true
 
 # Operator Monitoring endpoints
 [[redirects]]
   from = "/get_operator_family_counts_monthly/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_operator_family_counts_monthly/:splat"
+  to = "https://register.kdsgroup.co.in/get_operator_family_counts_monthly/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_operator_family_counts_today/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_operator_family_counts_today/:splat"
+  to = "https://register.kdsgroup.co.in/get_operator_family_counts_today/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getOperatorsByZila/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getOperatorsByZila/:splat"
+  to = "https://register.kdsgroup.co.in/getOperatorsByZila/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_operator_monthly_entries_summary/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_operator_monthly_entries_summary/:splat"
+  to = "https://register.kdsgroup.co.in/get_operator_monthly_entries_summary/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/download_operator_family_counts_monthly/*"
-  to = "https://prtest1.kdsgroup.co.in:8000download_operator_family_counts_monthly/:splat"
+  to = "https://register.kdsgroup.co.in/download_operator_family_counts_monthly/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/download_operator_family_counts_today/*"
-  to = "https://prtest1.kdsgroup.co.in:8000download_operator_family_counts_today/:splat"
+  to = "https://register.kdsgroup.co.in/download_operator_family_counts_today/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/download_operator_monthly_entries_summary/*"
-  to = "https://prtest1.kdsgroup.co.in:8000download_operator_monthly_entries_summary/:splat"
+  to = "https://register.kdsgroup.co.in/download_operator_monthly_entries_summary/:splat"
   status = 200
   force = true
 
 # Data Monitoring endpoints
 [[redirects]]
   from = "/pDFOverviewTbl/*"
-  to = "https://prtest1.kdsgroup.co.in:8000pDFOverviewTbl/:splat"
+  to = "https://register.kdsgroup.co.in/pDFOverviewTbl/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/blockFamilyCount/*"
-  to = "https://prtest1.kdsgroup.co.in:8000blockFamilyCount/:splat"
+  to = "https://register.kdsgroup.co.in/blockFamilyCount/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/vilFamilyCount/*"
-  to = "https://prtest1.kdsgroup.co.in:8000vilFamilyCount/:splat"
+  to = "https://register.kdsgroup.co.in/vilFamilyCount/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_supervisor_family_counts_today/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_supervisor_family_counts_today/:splat"
+  to = "https://register.kdsgroup.co.in/get_supervisor_family_counts_today/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getSupsByZila/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getSupsByZila/:splat"
+  to = "https://register.kdsgroup.co.in/getSupsByZila/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_supervisor_monthly_entries_summary/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_supervisor_monthly_entries_summary/:splat"
+  to = "https://register.kdsgroup.co.in/get_supervisor_monthly_entries_summary/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadDistFamilyCount/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadDistFamilyCount/:splat"
+  to = "https://register.kdsgroup.co.in/downloadDistFamilyCount/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadBlockFamilyCount/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadBlockFamilyCount/:splat"
+  to = "https://register.kdsgroup.co.in/downloadBlockFamilyCount/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadVilFamilyCount/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadVilFamilyCount/:splat"
+  to = "https://register.kdsgroup.co.in/downloadVilFamilyCount/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/download_supervisor_family_counts_today/*"
-  to = "https://prtest1.kdsgroup.co.in:8000download_supervisor_family_counts_today/:splat"
+  to = "https://register.kdsgroup.co.in/download_supervisor_family_counts_today/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/download_supervisor_monthly_entries_summary/*"
-  to = "https://prtest1.kdsgroup.co.in:8000download_supervisor_monthly_entries_summary/:splat"
+  to = "https://register.kdsgroup.co.in/download_supervisor_monthly_entries_summary/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/download_supervisor_excel_report/*"
-  to = "https://prtest1.kdsgroup.co.in:8000download_supervisor_excel_report/:splat"
+  to = "https://register.kdsgroup.co.in/download_supervisor_excel_report/:splat"
   status = 200
   force = true
 
   [[redirects]]
   from = "/getGaonListWithCodeByBlock/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getGaonListWithCodeByBlock/:splat"
+  to = "https://register.kdsgroup.co.in/getGaonListWithCodeByBlock/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadDigitisationStatusTblByZila/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadDigitisationStatusTblByZila/:splat"
+  to = "https://register.kdsgroup.co.in/downloadDigitisationStatusTblByZila/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_gaon_family_counts/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_gaon_family_counts/:splat"
+  to = "https://register.kdsgroup.co.in/get_gaon_family_counts/:splat"
   status = 200
   force = true
 
 # PM Approval/Rollback endpoints
 [[redirects]]
   from = "/getRejectedGaonList_/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getRejectedGaonList_/:splat"
+  to = "https://register.kdsgroup.co.in/getRejectedGaonList_/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getRejectedByGaonCode/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getRejectedByGaonCode/:splat"
+  to = "https://register.kdsgroup.co.in/getRejectedByGaonCode/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_supervisors_desu/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_supervisors_desu/:splat"
+  to = "https://register.kdsgroup.co.in/get_supervisors_desu/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/assignSupervisorToRejectedFamilies/*"
-  to = "https://prtest1.kdsgroup.co.in:8000assignSupervisorToRejectedFamilies/:splat"
+  to = "https://register.kdsgroup.co.in/assignSupervisorToRejectedFamilies/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getAssignedRejectedDataBySupervisor/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getAssignedRejectedDataBySupervisor/:splat"
+  to = "https://register.kdsgroup.co.in/getAssignedRejectedDataBySupervisor/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_updated_rejected_families/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_updated_rejected_families/:splat"
+  to = "https://register.kdsgroup.co.in/get_updated_rejected_families/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_updated_rejected_gaon/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_updated_rejected_gaon/:splat"
+  to = "https://register.kdsgroup.co.in/get_updated_rejected_gaon/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/bulk-approve-rejected-families/*"
-  to = "https://prtest1.kdsgroup.co.in:8000bulk-approve-rejected-families/:splat"
+  to = "https://register.kdsgroup.co.in/bulk-approve-rejected-families/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/approve-rejected-family/*"
-  to = "https://prtest1.kdsgroup.co.in:8000approve-rejected-family/:splat"
+  to = "https://register.kdsgroup.co.in/approve-rejected-family/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_approved_gaon_codes/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_approved_gaon_codes/:splat"
+  to = "https://register.kdsgroup.co.in/get_approved_gaon_codes/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/get_all_approved_by_pm_data/*"
-  to = "https://prtest1.kdsgroup.co.in:8000get_all_approved_by_pm_data/:splat"
+  to = "https://register.kdsgroup.co.in/get_all_approved_by_pm_data/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/login/"
-  to = "https://prtest1.kdsgroup.co.in:8000login/"
+  to = "https://register.kdsgroup.co.in/login/"
   status = 200
   force = true
 
@@ -550,7 +550,7 @@
 # General API catch-all (must be last)
 [[redirects]]
   from = "/api/*"
-  to = "https://prtest1.kdsgroup.co.in:8000api/:splat"
+  to = "https://register.kdsgroup.co.in/api/:splat"
   status = 200
   force = true
 
@@ -563,126 +563,126 @@
 # Supervisor-specific endpoints
 [[redirects]]
   from = "/getPendingVilSupervisor/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getPendingVilSupervisor/:splat"
+  to = "https://register.kdsgroup.co.in/getPendingVilSupervisor/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getCompletedVilSupervisor/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getCompletedVilSupervisor/:splat"
+  to = "https://register.kdsgroup.co.in/getCompletedVilSupervisor/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getRejectedFamilies/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getRejectedFamilies/:splat"
+  to = "https://register.kdsgroup.co.in/getRejectedFamilies/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getRejectedGaonList/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getRejectedGaonList/:splat"
+  to = "https://register.kdsgroup.co.in/getRejectedGaonList/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/supervisorUpdate/*"
-  to = "https://prtest1.kdsgroup.co.in:8000supervisorUpdate/:splat"
+  to = "https://register.kdsgroup.co.in/supervisorUpdate/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/supervisorRejectedUpdate/*"
-  to = "https://prtest1.kdsgroup.co.in:8000supervisorRejectedUpdate/:splat"
+  to = "https://register.kdsgroup.co.in/supervisorRejectedUpdate/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/supervisorApprove/*"
-  to = "https://prtest1.kdsgroup.co.in:8000supervisorApprove/:splat"
+  to = "https://register.kdsgroup.co.in/supervisorApprove/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/approveFamilySup/*"
-  to = "https://prtest1.kdsgroup.co.in:8000approveFamilySup/:splat"
+  to = "https://register.kdsgroup.co.in/approveFamilySup/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/approveRejectedFamilySup/*"
-  to = "https://prtest1.kdsgroup.co.in:8000approveRejectedFamilySup/:splat"
+  to = "https://register.kdsgroup.co.in/approveRejectedFamilySup/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/deleteRecord/*"
-  to = "https://prtest1.kdsgroup.co.in:8000deleteRecord/:splat"
+  to = "https://register.kdsgroup.co.in/deleteRecord/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/deleteRejectedRecord/*"
-  to = "https://prtest1.kdsgroup.co.in:8000deleteRejectedRecord/:splat"
+  to = "https://register.kdsgroup.co.in/deleteRejectedRecord/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/addRecordAfter/*"
-  to = "https://prtest1.kdsgroup.co.in:8000addRecordAfter/:splat"
+  to = "https://register.kdsgroup.co.in/addRecordAfter/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/addRejectedRecordAfter/*"
-  to = "https://prtest1.kdsgroup.co.in:8000addRejectedRecordAfter/:splat"
+  to = "https://register.kdsgroup.co.in/addRejectedRecordAfter/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/deleteDuplicate/*"
-  to = "https://prtest1.kdsgroup.co.in:8000deleteDuplicate/:splat"
+  to = "https://register.kdsgroup.co.in/deleteDuplicate/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadPendingGaonExcel/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadPendingGaonExcel/:splat"
+  to = "https://register.kdsgroup.co.in/downloadPendingGaonExcel/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadGaonSupervisor/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadGaonSupervisor/:splat"
+  to = "https://register.kdsgroup.co.in/downloadGaonSupervisor/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/getOperators/*"
-  to = "https://prtest1.kdsgroup.co.in:8000getOperators/:splat"
+  to = "https://register.kdsgroup.co.in/getOperators/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/insertNewOperator/*"
-  to = "https://prtest1.kdsgroup.co.in:8000insertNewOperator/:splat"
+  to = "https://register.kdsgroup.co.in/insertNewOperator/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/deleteOperator/*"
-  to = "https://prtest1.kdsgroup.co.in:8000deleteOperator/:splat"
+  to = "https://register.kdsgroup.co.in/deleteOperator/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/vilNotStartedTblDESU/*"
-  to = "https://prtest1.kdsgroup.co.in:8000vilNotStartedTblDESU/:splat"
+  to = "https://register.kdsgroup.co.in/vilNotStartedTblDESU/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/downloadVilNotStartedTblDESU/*"
-  to = "https://prtest1.kdsgroup.co.in:8000downloadVilNotStartedTblDESU/:splat"
+  to = "https://register.kdsgroup.co.in/downloadVilNotStartedTblDESU/:splat"
   status = 200
   force = true

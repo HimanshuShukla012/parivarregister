@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://prtest1.kdsgroup.co.in:8000/", // Use empty string to make relative URLs work correctly in both dev and prod
+  baseURL: "https://register.kdsgroup.co.in//", // Use empty string to make relative URLs work correctly in both dev and prod
   headers: {
     "Content-Type": "application/json",
   },

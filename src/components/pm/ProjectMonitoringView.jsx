@@ -123,7 +123,7 @@ const ProjectMonitoringView = () => {
     //   return;
     // }
     handleDownloadReport(
-      `https://prtest1.kdsgroup.co.in:8000/download_gp_wise_report/`,
+      `https://register.kdsgroup.co.in//download_gp_wise_report/`,
     );
   };
 
@@ -133,7 +133,7 @@ const ProjectMonitoringView = () => {
     //   return;
     // }
     handleDownloadReport(
-      `https://prtest1.kdsgroup.co.in:8000/download_block_wise_report/`,
+      `https://register.kdsgroup.co.in//download_block_wise_report/`,
     );
   };
 
@@ -570,7 +570,7 @@ const ProjectMonitoringView = () => {
                 color: "#22C55E",
                 onClick: () =>
                   handleDownloadReport(
-                    "https://prtest1.kdsgroup.co.in:8000/downloadVilScanPendingTbl/",
+                    "https://register.kdsgroup.co.in//downloadVilScanPendingTbl/",
                   ),
               },
               {
@@ -721,7 +721,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadReport(
-                    "https://prtest1.kdsgroup.co.in:8000/district_overview_excel_api/",
+                    "https://register.kdsgroup.co.in//district_overview_excel_api/",
                   )
                 }
                 style={styles.downloadBtn}
@@ -738,7 +738,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadGPReport(
-                    "https://prtest1.kdsgroup.co.in:8000/district_overview_excel_api/",
+                    "https://register.kdsgroup.co.in//district_overview_excel_api/",
                   )
                 }
                 style={styles.downloadBtn}
