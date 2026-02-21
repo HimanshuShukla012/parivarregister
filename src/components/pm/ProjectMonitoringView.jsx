@@ -564,6 +564,16 @@ const ProjectMonitoringView = () => {
           >
             {[
               {
+                label: "No. of Villages Pending for Scanning",
+                value: cards?.noOfVilScanPending ?? "?",
+                icon: <i className="fas fa-clock"></i>,
+                color: "#22C55E",
+                onClick: () =>
+                  handleDownloadReport(
+                    "https://register.kdsgroup.co.in//downloadVilScanPendingTbl/",
+                  ),
+              },
+              {
                 label: "No. of Villages Entry Not Started",
                 value: cards?.noOfVillagesNotStarted ?? "?",
 
@@ -640,87 +650,6 @@ const ProjectMonitoringView = () => {
             ))}
           </div>
 
-          <h2
-            style={{
-              textAlign: "center",
-              background: "rgb(255, 255, 255)",
-              padding: "16px 24px",
-              borderRadius: "12px",
-              fontSize: "22px",
-              fontWeight: 600,
-              boxShadow: "rgba(0, 0, 0, 0.08) 0px 2px 6px",
-              marginBottom: "20px",
-            }}
-          >
-            Timeline Management
-          </h2>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "20px",
-              marginBottom: "40px",
-            }}
-          >
-            {[
-              {
-                label: "No. of Villages Pending for Receiving",
-                value: cards?.noOfVilReceivePending ?? "?",
-                icon: <i className="fas fa-clock"></i>,
-                color: "#6366F1",
-              },
-              {
-                label: "No. of Villages Pending for Scanning",
-                value: cards?.noOfVilScanPending ?? "?",
-                icon: <i className="fas fa-clock"></i>,
-                color: "#22C55E",
-                onClick: () =>
-                  handleDownloadReport(
-                    "https://register.kdsgroup.co.in//downloadVilScanPendingTbl/",
-                  ),
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                onClick={item.onClick || undefined}
-                style={{
-                  background: "#fff",
-                  borderRadius: "16px",
-                  padding: "20px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "15px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                  cursor: item.onClick ? "pointer" : "default",
-                }}
-              >
-                <div
-                  style={{
-                    width: "55px",
-                    height: "55px",
-                    borderRadius: "14px",
-                    background: item.color,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "22px",
-                    color: "#fff",
-                  }}
-                >
-                  {item.icon}
-                </div>
-                <div>
-                  <div style={{ fontSize: "14px", color: "#555" }}>
-                    {item.label}
-                  </div>
-                  <div style={{ fontSize: "28px", fontWeight: "700" }}>
-                    {item.value}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
