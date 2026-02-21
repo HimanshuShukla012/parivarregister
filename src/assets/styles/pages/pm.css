@@ -20,10 +20,18 @@
   width: 260px;
   background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
   color: white;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* sidebar itself won't scroll */
   transition: transform 0.3s ease;
   z-index: 1000;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.pm-sidebar .sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 90px; /* logout ke liye space */
 }
 
 .pm-sidebar.hidden {
@@ -141,13 +149,11 @@
 
 /* Logout Button */
 .logout {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  margin-top: auto;
   padding: 1rem;
   background: rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .logout a {
@@ -988,4 +994,160 @@
 
 .text-slate-400 {
   color: #94a3b8;
+}
+/* ==============================
+   RAW DATA UI (PM Dashboard)
+   ============================== */
+
+.pm-rawdata-wrapper {
+  padding: 0 2rem 2rem 2rem;
+}
+
+.pm-rawdata-filterbar {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+.pm-rawdata-field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.pm-rawdata-field label {
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.pm-rawdata-field select {
+  min-width: 220px;
+  height: 36px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0 10px;
+  outline: none;
+  background: #fff;
+}
+
+.pm-rawdata-goanbtn {
+  height: 36px;
+  padding: 0 18px;
+  border: 1px solid #f59e0b;
+  background: #fde68a;
+  border-radius: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pm-rawdata-search {
+  margin-top: 14px;
+}
+
+.pm-rawdata-search input {
+  width: 320px;
+  height: 40px;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  padding: 0 14px;
+  outline: none;
+  background: #fff;
+}
+
+/* responsive */
+@media (max-width: 1024px) {
+  .pm-rawdata-filterbar {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .pm-rawdata-field {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .pm-rawdata-field select {
+    min-width: 0;
+    width: 70%;
+  }
+
+  .pm-rawdata-goanbtn {
+    width: 100%;
+  }
+
+  .pm-rawdata-search input {
+    width: 100%;
+  }
+}
+.pm-rawdata-tablewrap {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+.pm-rawdata-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.pm-rawdata-table th,
+.pm-rawdata-table td {
+  border: 1px solid #000;
+  padding: 20px 34px; /* âœ… spacing increase */
+  vertical-align: middle;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.pm-rawdata-table th {
+  background: #f7d75a;
+  font-weight: 700;
+  font-size: 18px; /* âœ… header bigger like old UI */
+  padding: 18px 14px;
+}
+/* District column wrap like legacy UI (Ambedkar Nagar 2 lines) */
+.pm-rawdata-table td:nth-child(1) {
+  white-space: normal;
+  min-width: 120px;
+  word-break: break-word;
+}
+.pm-rawdata-viewbtn {
+  background: #f7d75a;
+  border: 2px solid #000;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+/* ===== Raw Data Table Border + Spacing ===== */
+
+table {
+  width: 100%;
+  border-collapse: collapse !important;
+}
+
+table th,
+table td {
+  padding: 10px 14px !important;
+  border: 1px solid #030303; /* Light grey border */
+  line-height: 1.6;
+}
+
+table th {
+  background-color: #e6c96a; /* Same header tone */
+  text-align: center;
+  font-weight: 600;
+}
+
+table td {
+  background-color: #ffffff;
 }

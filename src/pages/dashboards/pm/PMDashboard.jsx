@@ -13,6 +13,7 @@ import OperatorMonitoringView from "../../../components/pm/OperatorMonitoringVie
 import DataMonitoringView from "../../../components/pm/DataMonitoringView";
 import PMApprovalRollback from "../../../components/pm/ApprovalRollback";
 import "../../../assets/styles/pages/pm.css";
+import pmService from "../../../services/pmService";
 
 const PMDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -31,6 +32,13 @@ const PMDashboard = () => {
   const [showBlockReport, setShowBlockReport] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [dashboardDropdownOpen, setDashboardDropdownOpen] = useState(false);
+  const [rawSelectedZila, setRawSelectedZila] = useState("");
+const [rawBlockList, setRawBlockList] = useState([]);
+const [rawSelectedBlock, setRawSelectedBlock] = useState("");
+const [rawGaonList, setRawGaonList] = useState([]);
+const [rawSelectedGaonCode, setRawSelectedGaonCode] = useState("");
+const [rawTableData, setRawTableData] = useState([]);
+const [rawLoading, setRawLoading] = useState(false);
 
   const collapseMenu = () => {
     setSidebarCollapsed(true);
@@ -54,35 +62,41 @@ const PMDashboard = () => {
   }, []);
 
   const initDashboard = async () => {
-    setLoading(true);
+  setLoading(true);
+  try {
     try {
-      const [zilas, overview, report, verification] = await Promise.all([
-        hqService.getZilaList(),
+      const zilas = await pmService.getZilaList();
+      setZilaList(zilas);
+    } catch (e) {
+      console.error("❌ zilaList load failed:", e);
+      setZilaList([]);
+    }
+
+    try {
+      const [overview, report, verification] = await Promise.all([
         hqService.getDistrictOverview(),
         hqService.getDistrictReport(),
         hqService.getVerificationStatus(),
       ]);
-
-      setZilaList(zilas);
-
       const reportMap = new Map(report.map((r) => [r.district, r]));
       const mergedOverview = overview.map((district) => ({
         ...district,
-        data_entry_done:
-          reportMap.get(district.district)?.families_data_entry_done || 0,
+        data_entry_done: reportMap.get(district.district)?.families_data_entry_done || 0,
         sachiv_verified: reportMap.get(district.district)?.sachiv_verified || 0,
       }));
-
       setDistrictOverview(mergedOverview);
       setDistrictReport(report);
       setVerificationStatus(verification);
-    } catch (error) {
-      console.error("Error initializing dashboard:", error);
-      alert("Failed to load dashboard data");
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      console.error("⚠️ Other dashboard APIs failed:", e);
     }
-  };
+  } catch (error) {
+    console.error("Error initializing dashboard:", error);
+    alert("Failed to load dashboard data");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDistrictClick = async (districtCode) => {
     try {
@@ -126,6 +140,87 @@ const PMDashboard = () => {
     setShowBlockReport(false);
   };
 
+  const handleRawZilaChange = async (zilaName) => {
+  setRawSelectedZila(zilaName);
+  setRawSelectedBlock("");
+  setRawSelectedGaonCode("");
+  setRawBlockList([]);
+  setRawGaonList([]);
+  setRawTableData([]);
+  if (!zilaName) return;
+  setRawLoading(true);
+  try {
+    const blocksRes = await pmService.getBlocksByZila(zilaName);
+    const blocks = Array.isArray(blocksRes)
+      ? blocksRes.map((b) => (typeof b === "string" ? b : b?.block || b?.name)).filter(Boolean)
+      : [];
+    setRawBlockList(blocks);
+  } catch (e) {
+    console.error("❌ getBlocksByZila failed:", e);
+    setRawBlockList([]);
+  } finally {
+    setRawLoading(false);
+  }
+};
+
+const handleRawBlockChange = async (blockName) => {
+  setRawSelectedBlock(blockName);
+  setRawSelectedGaonCode("");
+  setRawGaonList([]);
+  setRawTableData([]);
+  if (!blockName) return;
+  setRawLoading(true);
+  try {
+    const gaonRes = await pmService.getApprovedGaonsByBlock(blockName);
+    const gaons = Array.isArray(gaonRes)
+      ? gaonRes.map((g) => ({
+          name: g?.gaon || g?.village || g?.gaonName || g?.name,
+          code: g?.gaonCode || g?.gaon_code || g?.code || g?.villageCode || g?.village_code,
+        })).filter((x) => x.name && x.code)
+      : [];
+    setRawGaonList(gaons);
+  } catch (e) {
+    console.error("❌ getApprovedGaonsByBlock failed:", e);
+    setRawGaonList([]);
+  } finally {
+    setRawLoading(false);
+  }
+};
+
+const handleRawGaonChange = (gaonCode) => {
+  setRawSelectedGaonCode(gaonCode);
+  setRawTableData([]);
+};
+
+const handleRawGaonPayen = async () => {
+  if (!rawSelectedGaonCode) { alert("कृपया गाँव चुनें"); return; }
+  setRawLoading(true);
+  try {
+    const data = await pmService.getGaonDataByCode(rawSelectedGaonCode);
+    setRawTableData(Array.isArray(data) ? data : []);
+  } catch (e) {
+    console.error("❌ getGaonDataByCode failed:", e);
+    alert("डेटा लोड नहीं हुआ");
+    setRawTableData([]);
+  } finally {
+    setRawLoading(false);
+  }
+};
+
+const getVal = (row, keys) => {
+  for (const k of keys) {
+    if (row && row[k] !== undefined && row[k] !== null && row[k] !== "") return row[k];
+  }
+  return "";
+};
+
+const handleViewPdf = (row) => {
+  const gaonCode = getVal(row, ["gaonCode", "gaon_code", "villageCode", "village_code"]) || rawSelectedGaonCode;
+  const fromPage = Number(getVal(row, ["fromPage", "from_page", "pageNo"])) || 1;
+  if (!gaonCode) { alert("Gaon code missing hai."); return; }
+  window.open(pmService.getPDFPageUrl({ pdfNo: 1, gaonCode, fromPage, toPage: fromPage }), "_blank");
+};
+  
   const handleLogout = (e) => {
     e.preventDefault();
     if (window.confirm("Are you sure you want to logout?")) {
@@ -433,8 +528,97 @@ const PMDashboard = () => {
           )}
 
           {/* Raw Data */}
+          {/* Raw Data */}
           {activeView === "raw-data" && (
-            <div className="page-title">Raw Data - Coming Soon</div>
+            <div className="pm-rawdata-wrapper">
+              <div className="page-title">Raw Data</div>
+              <div className="pm-rawdata-filterbar">
+                <div className="pm-rawdata-field">
+                  <label>जिला *</label>
+                  <select value={rawSelectedZila} onChange={(e) => handleRawZilaChange(e.target.value)}>
+                    <option value="">Select Zila</option>
+                    {Array.isArray(zilaList) && zilaList.map((item, idx) => {
+                      const zilaName = typeof item === "string" ? item : item?.zila;
+                      if (!zilaName) return null;
+                      return <option key={zilaName || idx} value={zilaName}>{zilaName}</option>;
+                    })}
+                  </select>
+                </div>
+                <div className="pm-rawdata-field">
+                  <label>ब्लाक *</label>
+                  <select value={rawSelectedBlock} onChange={(e) => handleRawBlockChange(e.target.value)} disabled={!rawSelectedZila}>
+                    <option value="">{rawSelectedZila ? "Select Block" : "Select Zila First"}</option>
+                    {rawBlockList.map((b) => <option key={b} value={b}>{b}</option>)}
+                  </select>
+                </div>
+                <div className="pm-rawdata-field">
+                  <label>गाँव *</label>
+                  <select value={rawSelectedGaonCode} onChange={(e) => handleRawGaonChange(e.target.value)} disabled={!rawSelectedBlock}>
+                    <option value="">{rawSelectedBlock ? "Select Gaon" : "Select Block First"}</option>
+                    {rawGaonList.map((g) => <option key={g.code} value={g.code}>{g.name}</option>)}
+                  </select>
+                </div>
+                <button className="pm-rawdata-goanbtn" type="button" onClick={handleRawGaonPayen} disabled={rawLoading}>
+                  गाँव पाएँ
+                </button>
+              </div>
+              <div className="pm-rawdata-search">
+                <input type="text" placeholder="Search..." />
+              </div>
+              {rawLoading && <div style={{ padding: "10px", fontWeight: "600" }}>Loading...</div>}
+              {!rawLoading && Array.isArray(rawTableData) && rawTableData.length > 0 && (
+                <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "450px", marginTop: "10px", border: "1px solid #cfcfcf" }}>
+                  <table className="table table-bordered" style={{ width: "100%" }}>
+                    <thead style={{ background: "#f7d96b" }}>
+                      <tr>
+                        <th>जिला</th><th>तहसील</th><th>ब्लाक</th><th>गाँव सभा</th>
+                        <th>गाँव कोड</th><th>गाँव</th><th>न्याय पंचायत</th><th>क्रम संख्या</th>
+                        <th>मकान नम्बर(अंकों में)</th><th>मकान नम्बर (अक्षरों में)</th>
+                        <th>परिवार के प्रमुख का नाम</th><th>परिवार के सदस्य का नाम</th>
+                        <th>पिता या पति का नाम</th><th>पुरुष या महिला</th><th>धर्म</th>
+                        <th>जाति</th><th>जन्म तिथि</th><th>व्यावसाय</th>
+                        <th>साक्षर या निरक्षर</th><th>योग्यता</th>
+                        <th>सर्किल छोड़ देने/ मृत्यु का दिनांक</th><th>विवरण</th><th>Action(s)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rawTableData.map((row, idx) => (
+                        <tr key={row?.id || idx}>
+                          <td>{getVal(row, ["zila", "district", "zilaName"])}</td>
+                          <td>{getVal(row, ["tehsil", "tehsilName"])}</td>
+                          <td>{getVal(row, ["block", "blockName"])}</td>
+                          <td>{getVal(row, ["sabha", "gaonSabha", "sabhaName"])}</td>
+                          <td>{getVal(row, ["gaonCode", "gaon_code", "villageCode", "village_code"])}</td>
+                          <td>{getVal(row, ["gaon", "village", "gaonName", "villageName"])}</td>
+                          <td>{getVal(row, ["nyayPanchayat", "nyay_panchayat", "nyay_panchayat_name"])}</td>
+                          <td>{getVal(row, ["serialNo", "serial_no", "memberSequence"])}</td>
+                          <td>{getVal(row, ["houseNumberNum", "house_number_num"])}</td>
+                          <td>{getVal(row, ["houseNumberText", "house_number_text"])}</td>
+                          <td>{getVal(row, ["familyHeadName", "family_head_name"])}</td>
+                          <td>{getVal(row, ["memberName", "member_name"])}</td>
+                          <td>{getVal(row, ["fatherOrHusbandName", "fatherOrHusband", "father_husband_name"])}</td>
+                          <td>{getVal(row, ["gender"])}</td>
+                          <td>{getVal(row, ["religion"])}</td>
+                          <td>{getVal(row, ["caste"])}</td>
+                          <td>{getVal(row, ["dob", "dateOfBirth"])}</td>
+                          <td>{getVal(row, ["business", "occupation"])}</td>
+                          <td>{getVal(row, ["literacy", "isLiterate"])}</td>
+                          <td>{getVal(row, ["qualification"])}</td>
+                          <td>{getVal(row, ["leavingDate", "leaving_date", "deathDate", "death_date"])}</td>
+                          <td>{getVal(row, ["desc", "description"])}</td>
+                          <td style={{ textAlign: "center" }}>
+                            <button type="button" onClick={() => handleViewPdf(row)}
+                              style={{ padding: "4px 10px", border: "1px solid #000", background: "#f7d96b", cursor: "pointer" }}>
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

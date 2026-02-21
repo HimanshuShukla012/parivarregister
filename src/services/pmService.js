@@ -1,3 +1,5 @@
+//EXISTING
+
 // src/services/pmService.js
 import api from './api';
 
@@ -97,16 +99,53 @@ const pmService = {
     }
   },
 
+  // ✅ Get Zila List (API: /getZila/)
+getZilaList: async () => {
+  try {
+    const response = await api.get("/getZila/");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching zila list:", error);
+    throw error;
+  }
+},
+
   // Get Blocks by Zila
   getBlocksByZila: async (zila) => {
-    try {
-      const response = await api.get(`/getBlockByZila/?zila=${zila}`);
+  try {
+    const response = await api.get(`/getBlockByZila/?zila=${encodeURIComponent(zila)}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching blocks:', error);
       throw error;
     }
   },
+
+  // ✅ Gaon list by block
+getApprovedGaonsByBlock: async (blockName) => {
+  try {
+    const response = await api.get(
+      `/getApprovedGaonListWithCodeByBlock/?block=${encodeURIComponent(blockName)}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching gaon list:", error);
+    throw error;
+  }
+},
+
+// ✅ Gaon Data by gaon_code
+getGaonDataByCode: async (gaonCode) => {
+  try {
+    const response = await api.get(
+      `/getGaonData/?gaon_code=${encodeURIComponent(gaonCode)}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching gaon data:", error);
+    throw error;
+  }
+},
 
   // PDF Overview Table
   getPDFOverviewTable: async (zila, block = '') => {
@@ -245,7 +284,12 @@ const response = await api.get(`/vilFamilyCount/?zila=${zila}&block=${block}`);
 
   downloadGaonFamilyCounts: () => {
     window.location.href = '/get_gaon_family_counts';
-  }
+  },
+
+  getPDFPageUrl: ({ pdfNo = 1, gaonCode, fromPage, toPage }) => {
+  return `https://parivarregister.kdsgroup.co.in/app/getPDFPage/?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
+}
+
 };
 
 export default pmService;
