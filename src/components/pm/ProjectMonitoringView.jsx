@@ -768,16 +768,16 @@ const ProjectMonitoringView = () => {
                 Family Register Digitisation Master Report
               </h4>
               <button
-  onClick={() =>
-    window.open(
-      "http://register.kdsgroup.co.in/export_village_detailed_report/",
-      "_blank"
-    )
-  }
-  style={styles.downloadBtn}
->
-  <FaDownload /> Download
-</button>
+                onClick={() =>
+                  window.open(
+                    "https://register.kdsgroup.co.in/export_village_detailed_report/",
+                    "_blank",
+                  )
+                }
+                style={styles.downloadBtn}
+              >
+                <FaDownload /> Download
+              </button>
             </div>
           </div>
         </div>

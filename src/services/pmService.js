@@ -288,8 +288,8 @@ const response = await api.get(`/vilFamilyCount/?zila=${zila}&block=${block}`);
   
 
   getPDFPageUrl: ({ pdfNo = 1, gaonCode, fromPage, toPage }) => {
-    return `https://parivarregister.kdsgroup.co.in/app/getPDFPage/?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
-  },
+  return `/getPDFPage/?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
+},
 
   // Alias used by LiveDataEntriesView
   getGaonListWithCodeByBlock: async (blockName) => {
@@ -326,7 +326,7 @@ const response = await api.get(`/vilFamilyCount/?zila=${zila}&block=${block}`);
 
   downloadRegisterPDF: async ({ gaonCode, registerNo }) => {
   const response = await api.get(
-    `https://parivarregister.kdsgroup.co.in/app/getRegisterPDF/?gaonCode=${gaonCode}&registerNo=${registerNo}`,
+    `/getRegisterPDF/?gaonCode=${gaonCode}&registerNo=${registerNo}`,
     { responseType: "blob" }
   );
 

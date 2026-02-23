@@ -119,7 +119,7 @@
 
 [[redirects]]
   from = "/getRegisterPDF/*"
-  to = "http://parivarregister.kdsgroup.co.in/app/getRegisterPDF/:splat"
+  to = "https://parivarregister.kdsgroup.co.in/app/getRegisterPDF/:splat"
   status = 200
   force = true
 
@@ -551,6 +551,13 @@
 [[redirects]]
   from = "/api/*"
   to = "https://register.kdsgroup.co.in/api/:splat"
+  status = 200
+  force = true
+
+
+[[redirects]]
+  from = "/noOfReg/*"
+  to = "https://register.kdsgroup.co.in/noOfReg/:splat"
   status = 200
   force = true
 
