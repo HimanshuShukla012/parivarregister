@@ -1,6 +1,10 @@
+// NEW DEVELOPMENT FOR RAW DATA
+
+
 // src/pages/dashboards/pm/PMDashboard.jsx
 import { useState, useEffect } from "react";
 import hqService from "../../../services/hqService";
+import pmService from "../../../services/pmService";
 import DistrictOverviewCards from "../../../components/hq/DistrictOverviewCards";
 import DistrictDetailsView from "../../../components/hq/DistrictDetailsView";
 import DistrictReportTable from "../../../components/hq/DistrictReportTable";
@@ -13,7 +17,7 @@ import OperatorMonitoringView from "../../../components/pm/OperatorMonitoringVie
 import DataMonitoringView from "../../../components/pm/DataMonitoringView";
 import PMApprovalRollback from "../../../components/pm/ApprovalRollback";
 import "../../../assets/styles/pages/pm.css";
-import pmService from "../../../services/pmService";
+import LiveDataEntriesView from "../../../components/pm/LiveDataEntriesView";
 
 const PMDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -32,13 +36,15 @@ const PMDashboard = () => {
   const [showBlockReport, setShowBlockReport] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [dashboardDropdownOpen, setDashboardDropdownOpen] = useState(false);
+
+  // ✅ Raw Data states
   const [rawSelectedZila, setRawSelectedZila] = useState("");
-const [rawBlockList, setRawBlockList] = useState([]);
-const [rawSelectedBlock, setRawSelectedBlock] = useState("");
-const [rawGaonList, setRawGaonList] = useState([]);
-const [rawSelectedGaonCode, setRawSelectedGaonCode] = useState("");
-const [rawTableData, setRawTableData] = useState([]);
-const [rawLoading, setRawLoading] = useState(false);
+  const [rawBlockList, setRawBlockList] = useState([]);
+  const [rawSelectedBlock, setRawSelectedBlock] = useState("");
+  const [rawGaonList, setRawGaonList] = useState([]);
+  const [rawSelectedGaonCode, setRawSelectedGaonCode] = useState("");
+  const [rawTableData, setRawTableData] = useState([]);
+  const [rawLoading, setRawLoading] = useState(false);
 
   const collapseMenu = () => {
     setSidebarCollapsed(true);
@@ -61,42 +67,50 @@ const [rawLoading, setRawLoading] = useState(false);
     initDashboard();
   }, []);
 
+  // ✅ FIX: Zila list should NOT depend on other APIs (Promise.all fail issue)
   const initDashboard = async () => {
-  setLoading(true);
-  try {
+    setLoading(true);
     try {
-      const zilas = await pmService.getZilaList();
-      setZilaList(zilas);
-    } catch (e) {
-      console.error("❌ zilaList load failed:", e);
-      setZilaList([]);
-    }
+      // ✅ Always try loading zila list separately
+      try {
+        const zilas = await pmService.getZilaList();
+        setZilaList(zilas);
+        console.log("✅ zilaList API response:", zilas);
+      } catch (e) {
+        console.error("❌ zilaList load failed:", e);
+        setZilaList([]);
+      }
 
-    try {
-      const [overview, report, verification] = await Promise.all([
-        hqService.getDistrictOverview(),
-        hqService.getDistrictReport(),
-        hqService.getVerificationStatus(),
-      ]);
-      const reportMap = new Map(report.map((r) => [r.district, r]));
-      const mergedOverview = overview.map((district) => ({
-        ...district,
-        data_entry_done: reportMap.get(district.district)?.families_data_entry_done || 0,
-        sachiv_verified: reportMap.get(district.district)?.sachiv_verified || 0,
-      }));
-      setDistrictOverview(mergedOverview);
-      setDistrictReport(report);
-      setVerificationStatus(verification);
-    } catch (e) {
-      console.error("⚠️ Other dashboard APIs failed:", e);
+      // ✅ Keep existing dashboard data calls (safe)
+      try {
+        const [overview, report, verification] = await Promise.all([
+          hqService.getDistrictOverview(),
+          hqService.getDistrictReport(),
+          hqService.getVerificationStatus(),
+        ]);
+
+        const reportMap = new Map(report.map((r) => [r.district, r]));
+        const mergedOverview = overview.map((district) => ({
+          ...district,
+          data_entry_done:
+            reportMap.get(district.district)?.families_data_entry_done || 0,
+          sachiv_verified:
+            reportMap.get(district.district)?.sachiv_verified || 0,
+        }));
+
+        setDistrictOverview(mergedOverview);
+        setDistrictReport(report);
+        setVerificationStatus(verification);
+      } catch (e) {
+        console.error("⚠️ Other dashboard APIs failed:", e);
+      }
+    } catch (error) {
+      console.error("Error initializing dashboard:", error);
+      alert("Failed to load dashboard data");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error initializing dashboard:", error);
-    alert("Failed to load dashboard data");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleDistrictClick = async (districtCode) => {
     try {
@@ -140,87 +154,6 @@ const [rawLoading, setRawLoading] = useState(false);
     setShowBlockReport(false);
   };
 
-  const handleRawZilaChange = async (zilaName) => {
-  setRawSelectedZila(zilaName);
-  setRawSelectedBlock("");
-  setRawSelectedGaonCode("");
-  setRawBlockList([]);
-  setRawGaonList([]);
-  setRawTableData([]);
-  if (!zilaName) return;
-  setRawLoading(true);
-  try {
-    const blocksRes = await pmService.getBlocksByZila(zilaName);
-    const blocks = Array.isArray(blocksRes)
-      ? blocksRes.map((b) => (typeof b === "string" ? b : b?.block || b?.name)).filter(Boolean)
-      : [];
-    setRawBlockList(blocks);
-  } catch (e) {
-    console.error("❌ getBlocksByZila failed:", e);
-    setRawBlockList([]);
-  } finally {
-    setRawLoading(false);
-  }
-};
-
-const handleRawBlockChange = async (blockName) => {
-  setRawSelectedBlock(blockName);
-  setRawSelectedGaonCode("");
-  setRawGaonList([]);
-  setRawTableData([]);
-  if (!blockName) return;
-  setRawLoading(true);
-  try {
-    const gaonRes = await pmService.getApprovedGaonsByBlock(blockName);
-    const gaons = Array.isArray(gaonRes)
-      ? gaonRes.map((g) => ({
-          name: g?.gaon || g?.village || g?.gaonName || g?.name,
-          code: g?.gaonCode || g?.gaon_code || g?.code || g?.villageCode || g?.village_code,
-        })).filter((x) => x.name && x.code)
-      : [];
-    setRawGaonList(gaons);
-  } catch (e) {
-    console.error("❌ getApprovedGaonsByBlock failed:", e);
-    setRawGaonList([]);
-  } finally {
-    setRawLoading(false);
-  }
-};
-
-const handleRawGaonChange = (gaonCode) => {
-  setRawSelectedGaonCode(gaonCode);
-  setRawTableData([]);
-};
-
-const handleRawGaonPayen = async () => {
-  if (!rawSelectedGaonCode) { alert("कृपया गाँव चुनें"); return; }
-  setRawLoading(true);
-  try {
-    const data = await pmService.getGaonDataByCode(rawSelectedGaonCode);
-    setRawTableData(Array.isArray(data) ? data : []);
-  } catch (e) {
-    console.error("❌ getGaonDataByCode failed:", e);
-    alert("डेटा लोड नहीं हुआ");
-    setRawTableData([]);
-  } finally {
-    setRawLoading(false);
-  }
-};
-
-const getVal = (row, keys) => {
-  for (const k of keys) {
-    if (row && row[k] !== undefined && row[k] !== null && row[k] !== "") return row[k];
-  }
-  return "";
-};
-
-const handleViewPdf = (row) => {
-  const gaonCode = getVal(row, ["gaonCode", "gaon_code", "villageCode", "village_code"]) || rawSelectedGaonCode;
-  const fromPage = Number(getVal(row, ["fromPage", "from_page", "pageNo"])) || 1;
-  if (!gaonCode) { alert("Gaon code missing hai."); return; }
-  window.open(pmService.getPDFPageUrl({ pdfNo: 1, gaonCode, fromPage, toPage: fromPage }), "_blank");
-};
-  
   const handleLogout = (e) => {
     e.preventDefault();
     if (window.confirm("Are you sure you want to logout?")) {
@@ -228,6 +161,130 @@ const handleViewPdf = (row) => {
     }
   };
 
+  // ✅ Raw Data handlers (Zila -> Block -> Gaon -> Table)
+  const handleRawZilaChange = async (zilaName) => {
+    setRawSelectedZila(zilaName);
+    setRawSelectedBlock("");
+    setRawSelectedGaonCode("");
+    setRawBlockList([]);
+    setRawGaonList([]);
+    setRawTableData([]);
+
+    if (!zilaName) return;
+
+    setRawLoading(true);
+    try {
+      const blocksRes = await pmService.getBlocksByZila(zilaName);
+
+      const blocks = Array.isArray(blocksRes)
+        ? blocksRes
+            .map((b) => (typeof b === "string" ? b : b?.block || b?.name))
+            .filter(Boolean)
+        : [];
+
+      setRawBlockList(blocks);
+    } catch (e) {
+      console.error("❌ getBlocksByZila failed:", e);
+      setRawBlockList([]);
+    } finally {
+      setRawLoading(false);
+    }
+  };
+
+  const handleRawBlockChange = async (blockName) => {
+    setRawSelectedBlock(blockName);
+    setRawSelectedGaonCode("");
+    setRawGaonList([]);
+    setRawTableData([]);
+
+    if (!blockName) return;
+
+    setRawLoading(true);
+    try {
+      const gaonRes = await pmService.getApprovedGaonsByBlock(blockName);
+
+      const gaons = Array.isArray(gaonRes)
+        ? gaonRes
+            .map((g) => ({
+              name: g?.gaon || g?.village || g?.gaonName || g?.name,
+              code:
+                g?.gaonCode ||
+                g?.gaon_code ||
+                g?.code ||
+                g?.villageCode ||
+                g?.village_code,
+            }))
+            .filter((x) => x.name && x.code)
+        : [];
+
+      setRawGaonList(gaons);
+    } catch (e) {
+      console.error("❌ getApprovedGaonsByBlock failed:", e);
+      setRawGaonList([]);
+    } finally {
+      setRawLoading(false);
+    }
+  };
+
+  const handleRawGaonChange = (gaonCode) => {
+    setRawSelectedGaonCode(gaonCode);
+    setRawTableData([]);
+  };
+
+  const handleRawGaonPayen = async () => {
+    if (!rawSelectedGaonCode) {
+      alert("कृपया गाँव चुनें");
+      return;
+    }
+
+    setRawLoading(true);
+    try {
+      const data = await pmService.getGaonDataByCode(rawSelectedGaonCode);
+      setRawTableData(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error("❌ getGaonDataByCode failed:", e);
+      alert("डेटा लोड नहीं हुआ");
+      setRawTableData([]);
+    } finally {
+      setRawLoading(false);
+    }
+  };
+
+  const getVal = (row, keys) => {
+    for (const k of keys) {
+      if (row && row[k] !== undefined && row[k] !== null && row[k] !== "") {
+        return row[k];
+      }
+    }
+    return "";
+  };
+
+  const handleViewPdf = (row) => {
+    const pdfNo = 1;
+
+    const gaonCode =
+      getVal(row, ["gaonCode", "gaon_code", "villageCode", "village_code"]) ||
+      rawSelectedGaonCode;
+
+    const fromPage =
+      Number(getVal(row, ["fromPage", "from_page", "pageNo"])) || 1;
+
+    const toPage = fromPage;
+
+    if (!gaonCode) {
+      alert("Gaon code missing hai.");
+      return;
+    }
+
+    const url = pmService.getPDFPageUrl({
+      pdfNo,
+      gaonCode,
+      fromPage,
+      toPage,
+    });
+
+    window.open(url, "_blank");
+  };
   if (loading) {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center z-50">
@@ -269,113 +326,114 @@ const handleViewPdf = (row) => {
           <span className="title">Project Monitoring</span>
         </div>
 
-        {/* Dashboards Dropdown */}
-        <div className="dropdown">
-          <button
-            className="dropbtn"
-            id="dashboardBtn"
-            onClick={toggleDashboardDropdown}
-          >
-            Dashboards ▼
-          </button>
-          <div
-            className={`dropdown-content ${
-              dashboardDropdownOpen ? "show" : ""
-            }`}
-            id="dashboardDropdown"
-          >
+        {/* ✅ NEW: Scrollable area for sidebar menu (Logout stays fixed at bottom) */}
+        <div className="sidebar-scroll">
+          {/* Dashboards Dropdown */}
+          <div className="dropdown">
             <button
-              className={`dropbtn1 ${
-                activeView === "project-monitoring" ? "active" : ""
-              }`}
-              onClick={() => {
-                setActiveView("project-monitoring");
-                setActive("project-monitoring");
-              }}
+              className="dropbtn"
+              id="dashboardBtn"
+              onClick={toggleDashboardDropdown}
             >
-              Project Monitoring
+              Dashboards ▼
             </button>
-            <button
-              className={`dropbtn1 ${
-                activeView === "operator-monitoring" ? "active" : ""
+            <div
+              className={`dropdown-content ${
+                dashboardDropdownOpen ? "show" : ""
               }`}
-              onClick={() => {
-                setActiveView("operator-monitoring");
-                setActive("operator-monitoring");
-              }}
+              id="dashboardDropdown"
             >
-              Operator Monitoring
-            </button>
+              <button
+                className={`dropbtn1 ${
+                  activeView === "project-monitoring" ? "active" : ""
+                }`}
+                onClick={() => {
+                  setActiveView("project-monitoring");
+                  setActive("project-monitoring");
+                }}
+              >
+                Project Monitoring
+              </button>
+              <button
+                className={`dropbtn1 ${
+                  activeView === "operator-monitoring" ? "active" : ""
+                }`}
+                onClick={() => {
+                  setActiveView("operator-monitoring");
+                  setActive("operator-monitoring");
+                }}
+              >
+                Operator Monitoring
+              </button>
+              <button
+                className={`dropbtn1 ${
+                  activeView === "data-monitoring" ? "active" : ""
+                }`}
+                onClick={() => {
+                  setActiveView("data-monitoring");
+                  setActive("data-monitoring");
+                }}
+              >
+                Data Monitoring & Management
+              </button>
+            </div>
+          </div>
+
+          {/* HQ Dashboard */}
+          <div className="dropdown">
             <button
-              className={`dropbtn1 ${
-                activeView === "data-monitoring" ? "active" : ""
+              className={`dropbtn ${
+                activeView === "hq-dashboard" ? "active" : ""
               }`}
-              onClick={() => {
-                setActiveView("data-monitoring");
-                setActive("data-monitoring");
-              }}
+              onClick={() => setActiveView("hq-dashboard")}
             >
-              Data Monitoring & Management
+              HQ Dashboard
             </button>
           </div>
-        </div>
 
-        {/* HQ Dashboard */}
-        <div className="dropdown">
-          <button
-            className={`dropbtn ${
-              activeView === "hq-dashboard" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("hq-dashboard")}
-          >
-            HQ Dashboard
-          </button>
-        </div>
+          {/* Sachiv Validation - NEW ADDITION */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${
+                activeView === "sachiv-validation" ? "active" : ""
+              }`}
+              onClick={() => setActiveView("sachiv-validation")}
+            >
+              Sachiv Validation
+            </button>
+          </div>
 
-        {/* Sachiv Validation - NEW ADDITION */}
-        <div className="dropdown">
-          <button
-            className={`dropbtn ${
-              activeView === "sachiv-validation" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("sachiv-validation")}
-          >
-            Sachiv Validation
-          </button>
-        </div>
+          {/* Approval Status */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${
+                activeView === "approval-status" ? "active" : ""
+              }`}
+              onClick={() => setActiveView("approval-status")}
+            >
+              Approval Status
+            </button>
+          </div>
 
-        {/* Approval Status */}
-        <div className="dropdown">
-          <button
-            className={`dropbtn ${
-              activeView === "approval-status" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("approval-status")}
-          >
-            Approval Status
-          </button>
-        </div>
+          {/* Live Data Entries */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${activeView === "live-entries" ? "active" : ""}`}
+              onClick={() => setActiveView("live-entries")}
+            >
+              Live Data Entries
+            </button>
+          </div>
 
-        {/* Live Data Entries */}
-        <div className="dropdown">
-          <button
-            className={`dropbtn ${
-              activeView === "live-entries" ? "active" : ""
-            }`}
-            onClick={() => setActiveView("live-entries")}
-          >
-            Live Data Entries
-          </button>
-        </div>
-
-        {/* Raw Data */}
-        <div className="dropdown">
-          <button
-            className={`dropbtn ${activeView === "raw-data" ? "active" : ""}`}
-            onClick={() => setActiveView("raw-data")}
-          >
-            Raw Data
-          </button>
+          {/* Raw Data */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${activeView === "raw-data" ? "active" : ""}`}
+              onClick={() => setActiveView("raw-data")}
+            >
+              Raw Data
+            </button>
+          </div>
         </div>
 
         {/* Logout */}
@@ -523,101 +581,247 @@ const handleViewPdf = (row) => {
           )}
 
           {/* Live Entries */}
-          {activeView === "live-entries" && (
-            <div className="page-title">Live Data Entries - Coming Soon</div>
-          )}
+          {activeView === "live-entries" && <LiveDataEntriesView />}
 
-          {/* Raw Data */}
           {/* Raw Data */}
           {activeView === "raw-data" && (
             <div className="pm-rawdata-wrapper">
+              {/* Page Title same style */}
               <div className="page-title">Raw Data</div>
+
+              {/* Filter Bar */}
               <div className="pm-rawdata-filterbar">
                 <div className="pm-rawdata-field">
                   <label>जिला *</label>
-                  <select value={rawSelectedZila} onChange={(e) => handleRawZilaChange(e.target.value)}>
+                  <select
+                    value={rawSelectedZila}
+                    onChange={(e) => handleRawZilaChange(e.target.value)}
+                  >
                     <option value="">Select Zila</option>
-                    {Array.isArray(zilaList) && zilaList.map((item, idx) => {
-                      const zilaName = typeof item === "string" ? item : item?.zila;
-                      if (!zilaName) return null;
-                      return <option key={zilaName || idx} value={zilaName}>{zilaName}</option>;
-                    })}
+
+                    {Array.isArray(zilaList) &&
+                      zilaList.map((item, idx) => {
+                        const zilaName =
+                          typeof item === "string" ? item : item?.zila;
+
+                        if (!zilaName) return null;
+
+                        return (
+                          <option key={zilaName || idx} value={zilaName}>
+                            {zilaName}
+                          </option>
+                        );
+                      })}
                   </select>
                 </div>
+
                 <div className="pm-rawdata-field">
                   <label>ब्लाक *</label>
-                  <select value={rawSelectedBlock} onChange={(e) => handleRawBlockChange(e.target.value)} disabled={!rawSelectedZila}>
-                    <option value="">{rawSelectedZila ? "Select Block" : "Select Zila First"}</option>
-                    {rawBlockList.map((b) => <option key={b} value={b}>{b}</option>)}
+                  <select
+                    value={rawSelectedBlock}
+                    onChange={(e) => handleRawBlockChange(e.target.value)}
+                    disabled={!rawSelectedZila}
+                  >
+                    <option value="">
+                      {rawSelectedZila ? "Select Block" : "Select Zila First"}
+                    </option>
+                    {rawBlockList.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
                   </select>
                 </div>
+
                 <div className="pm-rawdata-field">
                   <label>गाँव *</label>
-                  <select value={rawSelectedGaonCode} onChange={(e) => handleRawGaonChange(e.target.value)} disabled={!rawSelectedBlock}>
-                    <option value="">{rawSelectedBlock ? "Select Gaon" : "Select Block First"}</option>
-                    {rawGaonList.map((g) => <option key={g.code} value={g.code}>{g.name}</option>)}
+                  <select
+                    value={rawSelectedGaonCode}
+                    onChange={(e) => handleRawGaonChange(e.target.value)}
+                    disabled={!rawSelectedBlock}
+                  >
+                    <option value="">
+                      {rawSelectedBlock ? "Select Gaon" : "Select Block First"}
+                    </option>
+                    {rawGaonList.map((g) => (
+                      <option key={g.code} value={g.code}>
+                        {g.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
-                <button className="pm-rawdata-goanbtn" type="button" onClick={handleRawGaonPayen} disabled={rawLoading}>
+
+                <button
+                  className="pm-rawdata-goanbtn"
+                  type="button"
+                  onClick={handleRawGaonPayen}
+                  disabled={rawLoading}
+                >
                   गाँव पाएँ
                 </button>
               </div>
+
+              {/* Search */}
               <div className="pm-rawdata-search">
                 <input type="text" placeholder="Search..." />
               </div>
-              {rawLoading && <div style={{ padding: "10px", fontWeight: "600" }}>Loading...</div>}
-              {!rawLoading && Array.isArray(rawTableData) && rawTableData.length > 0 && (
-                <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "450px", marginTop: "10px", border: "1px solid #cfcfcf" }}>
-                  <table className="table table-bordered" style={{ width: "100%" }}>
-                    <thead style={{ background: "#f7d96b" }}>
-                      <tr>
-                        <th>जिला</th><th>तहसील</th><th>ब्लाक</th><th>गाँव सभा</th>
-                        <th>गाँव कोड</th><th>गाँव</th><th>न्याय पंचायत</th><th>क्रम संख्या</th>
-                        <th>मकान नम्बर(अंकों में)</th><th>मकान नम्बर (अक्षरों में)</th>
-                        <th>परिवार के प्रमुख का नाम</th><th>परिवार के सदस्य का नाम</th>
-                        <th>पिता या पति का नाम</th><th>पुरुष या महिला</th><th>धर्म</th>
-                        <th>जाति</th><th>जन्म तिथि</th><th>व्यावसाय</th>
-                        <th>साक्षर या निरक्षर</th><th>योग्यता</th>
-                        <th>सर्किल छोड़ देने/ मृत्यु का दिनांक</th><th>विवरण</th><th>Action(s)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rawTableData.map((row, idx) => (
-                        <tr key={row?.id || idx}>
-                          <td>{getVal(row, ["zila", "district", "zilaName"])}</td>
-                          <td>{getVal(row, ["tehsil", "tehsilName"])}</td>
-                          <td>{getVal(row, ["block", "blockName"])}</td>
-                          <td>{getVal(row, ["sabha", "gaonSabha", "sabhaName"])}</td>
-                          <td>{getVal(row, ["gaonCode", "gaon_code", "villageCode", "village_code"])}</td>
-                          <td>{getVal(row, ["gaon", "village", "gaonName", "villageName"])}</td>
-                          <td>{getVal(row, ["nyayPanchayat", "nyay_panchayat", "nyay_panchayat_name"])}</td>
-                          <td>{getVal(row, ["serialNo", "serial_no", "memberSequence"])}</td>
-                          <td>{getVal(row, ["houseNumberNum", "house_number_num"])}</td>
-                          <td>{getVal(row, ["houseNumberText", "house_number_text"])}</td>
-                          <td>{getVal(row, ["familyHeadName", "family_head_name"])}</td>
-                          <td>{getVal(row, ["memberName", "member_name"])}</td>
-                          <td>{getVal(row, ["fatherOrHusbandName", "fatherOrHusband", "father_husband_name"])}</td>
-                          <td>{getVal(row, ["gender"])}</td>
-                          <td>{getVal(row, ["religion"])}</td>
-                          <td>{getVal(row, ["caste"])}</td>
-                          <td>{getVal(row, ["dob", "dateOfBirth"])}</td>
-                          <td>{getVal(row, ["business", "occupation"])}</td>
-                          <td>{getVal(row, ["literacy", "isLiterate"])}</td>
-                          <td>{getVal(row, ["qualification"])}</td>
-                          <td>{getVal(row, ["leavingDate", "leaving_date", "deathDate", "death_date"])}</td>
-                          <td>{getVal(row, ["desc", "description"])}</td>
-                          <td style={{ textAlign: "center" }}>
-                            <button type="button" onClick={() => handleViewPdf(row)}
-                              style={{ padding: "4px 10px", border: "1px solid #000", background: "#f7d96b", cursor: "pointer" }}>
-                              View
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+
+              {/* ✅ Table */}
+              {rawLoading && (
+                <div style={{ padding: "10px", fontWeight: "600" }}>
+                  Loading...
                 </div>
               )}
+
+              {!rawLoading &&
+                Array.isArray(rawTableData) &&
+                rawTableData.length > 0 && (
+                  <div
+                    style={{
+                      overflowX: "auto",
+                      overflowY: "auto",
+                      maxHeight: "450px", // ✅ Y scroll height
+                      marginTop: "10px",
+                      border: "1px solid #cfcfcf",
+                    }}
+                  >
+                    <table
+                      className="table table-bordered"
+                      style={{ width: "100%" }}
+                    >
+                      <thead style={{ background: "#f7d96b" }}>
+                        <tr>
+                          <th>जिला</th>
+                          <th>तहसील</th>
+                          <th>ब्लाक</th>
+                          <th>गाँव सभा</th>
+                          <th>गाँव कोड</th>
+                          <th>गाँव</th>
+                          <th>न्याय पंचायत</th>
+                          <th>क्रम संख्या</th>
+                          <th>मकान नम्बर(अंकों में)</th>
+                          <th>मकान नम्बर (अक्षरों में)</th>
+                          <th>परिवार के प्रमुख का नाम</th>
+                          <th>परिवार के सदस्य का नाम</th>
+                          <th>पिता या पति का नाम</th>
+                          <th>पुरुष या महिला</th>
+                          <th>धर्म</th>
+                          <th>जाति</th>
+                          <th>जन्म तिथि</th>
+                          <th>व्यावसाय</th>
+                          <th>साक्षर या निरक्षर</th>
+                          <th>योग्यता</th>
+                          <th>सर्किल छोड़ देने/ मृत्यु का दिनांक</th>
+                          <th>विवरण</th>
+                          <th>Action(s)</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {rawTableData.map((row, idx) => (
+                          <tr key={row?.id || idx}>
+                            <td>
+                              {getVal(row, ["zila", "district", "zilaName"])}
+                            </td>
+                            <td>{getVal(row, ["tehsil", "tehsilName"])}</td>
+                            <td>{getVal(row, ["block", "blockName"])}</td>
+                            <td>
+                              {getVal(row, ["sabha", "gaonSabha", "sabhaName"])}
+                            </td>
+                            <td>
+                              {getVal(row, [
+                                "gaonCode",
+                                "gaon_code",
+                                "villageCode",
+                                "village_code",
+                              ])}
+                            </td>
+                            <td>
+                              {getVal(row, [
+                                "gaon",
+                                "village",
+                                "gaonName",
+                                "villageName",
+                              ])}
+                            </td>
+                            <td>
+                              {getVal(row, [
+                                "nyayPanchayat",
+                                "nyay_panchayat",
+                                "nyay_panchayat_name",
+                              ])}
+                            </td>
+                            <td>
+                              {getVal(row, [
+                                "serialNo",
+                                "serial_no",
+                                "memberSequence",
+                              ])}
+                            </td>
+                            <td>
+                              {getVal(row, [
+                                "houseNumberNum",
+                                "house_number_num",
+                              ])}
+                            </td>
+                            <td>
+                              {getVal(row, [
+                                "houseNumberText",
+                                "house_number_text",
+                              ])}
+                            </td>
+                            <td>
+                              {getVal(row, [
+                                "familyHeadName",
+                                "family_head_name",
+                              ])}
+                            </td>
+                            <td>
+                              {getVal(row, ["memberName", "member_name"])}
+                            </td>
+                            <td>
+                              {getVal(row, [
+                                "fatherOrHusbandName",
+                                "fatherOrHusband",
+                                "father_husband_name",
+                              ])}
+                            </td>
+                            <td>{getVal(row, ["gender"])}</td>
+                            <td>{getVal(row, ["religion"])}</td>
+                            <td>{getVal(row, ["caste"])}</td>
+                            <td>{getVal(row, ["dob", "dateOfBirth"])}</td>
+                            <td>{getVal(row, ["business", "occupation"])}</td>
+                            <td>{getVal(row, ["literacy", "isLiterate"])}</td>
+                            <td>{getVal(row, ["qualification"])}</td>
+                            <td>
+                              {getVal(row, [
+                                "leavingDate",
+                                "leaving_date",
+                                "deathDate",
+                                "death_date",
+                              ])}
+                            </td>
+                            <td>{getVal(row, ["desc", "description"])}</td>
+                            <td style={{ textAlign: "center" }}>
+                              <button
+                                type="button"
+                                onClick={() => handleViewPdf(row)}
+                                style={{
+                                  padding: "4px 10px",
+                                  border: "1px solid #000",
+                                  background: "#f7d96b",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                View
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
             </div>
           )}
         </div>

@@ -1150,3 +1150,366 @@ table th {
 table td {
   background-color: #ffffff;
 }
+
+
+/* =========================
+   PM - Live Data Entries
+   ========================= */
+.pm-liveentries-wrapper {
+  padding: 10px 12px 18px;
+}
+
+.pm-rawlike-titlewrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 6px 0 14px;
+}
+
+.pm-rawlike-title {
+  font-size: 44px;
+  font-weight: 800;
+  color: #5b2bbd;
+  line-height: 1.1;
+}
+
+.pm-rawlike-underline {
+  width: 140px;
+  height: 4px;
+  background: #5b2bbd;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.pm-liveentries-filterbar {
+  background: #fff;
+  border: 1px solid #d7dbe2;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pm-liveentries-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pm-liveentries-field label {
+  font-weight: 800;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.pm-liveentries-field select {
+  min-width: 260px;
+  height: 42px;
+  border: 1px solid #cfd5df;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #fff;
+}
+
+.pm-liveentries-btn {
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 22px;
+  background: #ffd58a;
+  border: 1px solid #d7a84f;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pm-liveentries-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pm-liveentries-btn.secondary {
+  background: #ffe5b3;
+}
+
+.pm-liveentries-search {
+  margin: 14px 0 10px;
+}
+
+.pm-liveentries-search input {
+  width: 360px;
+  max-width: 100%;
+  height: 44px;
+  border: 2px solid #cfd5df;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 16px;
+}
+
+.pm-liveentries-body {
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.pm-liveentries-registerCard,
+.pm-liveentries-tableCard {
+  background: #fff;
+  border: 2px solid #1c1c1c;
+  border-radius: 0;
+  padding: 14px;
+}
+
+.pm-liveentries-registerCard {
+  flex: 0 0 520px;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pm-liveentries-cardTitle {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.pm-liveentries-registerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pm-liveentries-registerRow label {
+  font-size: 18px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pm-liveentries-registerRow select {
+  flex: 1 1 260px;
+  height: 40px;
+  border: 1px solid #aab2bf;
+  border-radius: 6px;
+  padding: 0 10px;
+  background: #fff;
+}
+
+.pm-liveentries-pdfWrap {
+  margin-top: 12px;
+  border: 1px solid #cfd5df;
+  height: 520px;
+  overflow: auto; /* y/x scroll inside pdf */
+}
+
+.pm-liveentries-pdfFrame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.pm-liveentries-tableCard {
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.pm-liveentries-tableScroll {
+  width: 100%;
+  max-height: 600px;
+  overflow: auto; /* BOTH x and y */
+  border: 1px solid #1c1c1c;
+}
+
+.pm-liveentries-table {
+  border-collapse: collapse;
+  width: max-content; /* enables horizontal scroll */
+  min-width: 100%;
+}
+
+.pm-liveentries-table th,
+.pm-liveentries-table td {
+  border: 2px solid #1c1c1c;
+  padding: 14px 18px;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.pm-liveentries-table th {
+  background: #dcebff;
+  font-weight: 900;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.pm-liveentries-viewBtn {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid #2c2c2c;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.pm-liveentries-empty {
+  text-align: center;
+  padding: 30px 10px;
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .pm-liveentries-body {
+    flex-direction: column;
+  }
+  .pm-liveentries-registerCard {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+  .pm-rawlike-title {
+    font-size: 36px;
+  }
+}
+
+/* ====== Extra: PDF upload preview + both-axis scroll (Live Data Entries) ====== */
+
+.pm-liveentries-tableScroll {
+  overflow: auto;
+  max-height: 420px;
+}
+
+/* ===== Live Data Entries: PDF upload preview + both-axis scroll ===== */
+.pm-liveentries-uploadBar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 12px 0 12px;
+}
+.pm-liveentries-uploadLabel {
+  font-weight: 600;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.pm-liveentries-uploadLabel input[type="file"] {
+  max-width: 260px;
+}
+.pm-liveentries-pdfWrap {
+  padding: 12px;
+  height: 420px;
+  overflow: auto;
+}
+.pm-liveentries-pdfName {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.pm-liveentries-pdfFrame {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000;
+  border-radius: 4px;
+}
+
+/* Ensure both blocks can scroll if content overflows */
+.pm-liveentries-registerCard {
+  overflow: auto;
+}
+.pm-liveentries-tableCard {
+  overflow: hidden;
+}
+.pm-liveentries-tableScroll {
+  overflow: auto;
+  max-height: 420px;
+}
+
+/* --- Live Data Entries: Choose file on LEFT + close button --- */
+.pm-liveentries-uploadBarLeft {
+  margin-top: 12px;
+}
+
+.pm-liveentries-closePdfBtn {
+  border: 1px solid #c9c9c9;
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.pm-liveentries-closePdfBtn:hover {
+  background: #f2f2f2;
+}
+
+/* ===== Live Data Entries tweaks ===== */
+
+/* Make table scroll both X and Y */
+.pm-liveentries-tableScroll {
+  max-height: 330px; /* keep same visual height */
+  overflow: auto; /* X + Y scroll */
+}
+
+/* Left card: choose file row */
+.pm-liveentries-fileRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.pm-liveentries-fileRow label {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pm-liveentries-fileRow input[type="file"] {
+  width: 100%;
+  max-width: 360px;
+}
+
+.pm-liveentries-fileLabel {
+  font-weight: 700;
+}
+
+.pm-liveentries-clearFileBtn {
+  padding: 8px 12px;
+  border: 1px solid #c9c9c9;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.pm-liveentries-clearFileBtn:hover {
+  background: #f3f3f3;
+}
+
+/* Right card: PDF preview */
+.pm-liveentries-pdfBox {
+  width: 100%;
+  height: 330px;
+  overflow: hidden;
+}
+
+.pm-liveentries-pdfFrame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* âœ… Prevent right table from stretching when left PDF grows */
+.pm-liveentries-body {
+  align-items: flex-start; /* was stretching due to default */
+}
+
+/* âœ… Ensure table card doesn't take full stretched height */
+.pm-liveentries-tableCard {
+  align-self: flex-start;
+  height: fit-content;
+}
+
+/* (Optional) If your table wrapper has fixed height, keep it stable */
+.pm-liveentries-tableScroll {
+  max-height: 600px; /* adjust if needed */
+  overflow: auto;
+}
