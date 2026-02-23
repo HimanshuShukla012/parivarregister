@@ -78,7 +78,7 @@ export default defineConfig({
       },
 
       // Get Register PDF
-      "/getRegisterPDF": {
+      "/getRegisterPDF/": {
         target: "http://parivarregister.kdsgroup.co.in/app",
         changeOrigin: true,
         secure: false,

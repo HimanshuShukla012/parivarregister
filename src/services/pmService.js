@@ -285,10 +285,66 @@ const response = await api.get(`/vilFamilyCount/?zila=${zila}&block=${block}`);
   downloadGaonFamilyCounts: () => {
     window.location.href = '/get_gaon_family_counts';
   },
+  
 
   getPDFPageUrl: ({ pdfNo = 1, gaonCode, fromPage, toPage }) => {
-  return `https://parivarregister.kdsgroup.co.in/app/getPDFPage/?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
-}
+    return `https://parivarregister.kdsgroup.co.in/app/getPDFPage/?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
+  },
+
+  // Alias used by LiveDataEntriesView
+  getGaonListWithCodeByBlock: async (blockName) => {
+    try {
+      const response = await api.get(
+        `/getApprovedGaonListWithCodeByBlock/?block=${encodeURIComponent(blockName)}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching gaon list:', error);
+      throw error;
+    }
+  },
+
+  // Alias used by some views
+  getGaonData: async (gaonCode) => {
+    try {
+      const response = await api.get(
+        `/getGaonData/?gaon_code=${encodeURIComponent(gaonCode)}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching gaon data:', error);
+      throw error;
+    }
+  },
+
+  getNoOfRegByGaonCode: async (gaonCode) => {
+    const res = await api.get(
+      `/noOfReg/?gaonCode=${encodeURIComponent(gaonCode)}`
+    );
+    return res?.data ?? res;
+  },
+
+  downloadRegisterPDF: async ({ gaonCode, registerNo }) => {
+  const response = await api.get(
+    `https://parivarregister.kdsgroup.co.in/app/getRegisterPDF/?gaonCode=${gaonCode}&registerNo=${registerNo}`,
+    { responseType: "blob" }
+  );
+
+  const blob = new Blob([response.data], { type: "application/pdf" });
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `register_${gaonCode}_${registerNo}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  window.URL.revokeObjectURL(url);
+  return true;
+},
+
+
 
 };
 
