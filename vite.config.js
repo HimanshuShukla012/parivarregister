@@ -1,3 +1,5 @@
+//EXISTING
+
 // vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -22,6 +24,33 @@ export default defineConfig({
           });
         },
       },
+
+      "/getGaon": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying getGaon:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+"/getGaon/": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying getGaon/:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
 
       // ========== MISSING ENDPOINTS - ADDED BELOW ==========
 
@@ -913,6 +942,22 @@ export default defineConfig({
           });
         },
       },
+
+
+      "/getPendingVil": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+
+
       "/download_supervisor_excel_report": {
         target: "https://register.kdsgroup.co.in",
         changeOrigin: true,

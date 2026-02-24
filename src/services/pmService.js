@@ -3,6 +3,10 @@
 // src/services/pmService.js
 import api from './api';
 
+
+const BASE_URL = "https://parivarregister.kdsgroup.co.in";
+
+
 const pmService = {
   // Project Monitoring Cards
   getProjectMonitoringCards: async () => {
@@ -324,6 +328,25 @@ const response = await api.get(`/vilFamilyCount/?zila=${zila}&block=${block}`);
     return res?.data ?? res;
   },
 
+  getApprovedGaonListWithCodeByBlock: async (block) => {
+  const res = await api.get(
+    `/getApprovedGaonListWithCodeByBlock/?block=${encodeURIComponent(block)}`,
+  );
+  return res?.data || [];
+},
+
+getGaonApprovalStatusByZilaBlock: async (zila, block) => {
+  try {
+    const response = await api.get(
+      `/getGaon/?zila=${encodeURIComponent(zila)}&block=${encodeURIComponent(block)}&_=${Date.now()}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching approval status gaon list:", error);
+    throw error;
+  }
+},
+
   downloadRegisterPDF: async ({ gaonCode, registerNo }) => {
   const response = await api.get(
     `/getRegisterPDF/?gaonCode=${gaonCode}&registerNo=${registerNo}`,
@@ -342,6 +365,10 @@ const response = await api.get(`/vilFamilyCount/?zila=${zila}&block=${block}`);
 
   window.URL.revokeObjectURL(url);
   return true;
+},
+
+getRegisterPDFUrl: ({ gaonCode, registerNo }) => {
+  return `${BASE_URL}/app/getRegisterPDF/?gaonCode=${gaonCode}&registerNo=${registerNo}`;
 },
 
 

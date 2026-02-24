@@ -18,6 +18,7 @@ import DataMonitoringView from "../../../components/pm/DataMonitoringView";
 import PMApprovalRollback from "../../../components/pm/ApprovalRollback";
 import "../../../assets/styles/pages/pm.css";
 import LiveDataEntriesView from "../../../components/pm/LiveDataEntriesView";
+import ApprovalStatusView from "../../../components/sachiv/ApprovalStatusView";
 
 const PMDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -576,9 +577,9 @@ const PMDashboard = () => {
           )}
 
           {/* Approval Status */}
-          {activeView === "approval-status" && (
-            <div className="page-title">Approval Status - Coming Soon</div>
-          )}
+{activeView === "approval-status" && (
+  <ApprovalStatusView zilaList={zilaList} />
+)}
 
           {/* Live Entries */}
           {activeView === "live-entries" && <LiveDataEntriesView />}

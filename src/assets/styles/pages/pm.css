@@ -1513,3 +1513,143 @@ table td {
   max-height: 600px; /* adjust if needed */
   overflow: auto;
 }
+
+/* ========================================
+   Approval Status - table + download button + scroll
+   ======================================== */
+
+.pm-approval-topbar {
+  position: relative;
+  padding-top: 6px;
+}
+
+.pm-approval-topbar h1 {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 600;
+  color: #5b21b6;
+  margin: 10px 0 16px;
+  position: relative;
+}
+
+.pm-approval-topbar h1::after {
+  content: "";
+  display: block;
+  width: 160px;
+  height: 5px;
+  margin: 10px auto 0;
+  border-radius: 4px;
+  background: #7c3aed;
+}
+
+.pm-approval-download-btn {
+  position: absolute;
+  right: 0;
+  top: 6px;
+  padding: 10px 16px;
+  border-radius: 22px;
+  border: 2px solid #111827;
+  background: #54f38e;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pm-approval-download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pm-approval-searchrow {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  justify-content: space-between;
+}
+
+.pm-approval-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.pm-approval-legend-title {
+  font-size: 22px;
+}
+
+.pm-approval-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+}
+
+.pm-approval-chip .box {
+  width: 22px;
+  height: 18px;
+  display: inline-block;
+}
+
+.pm-approval-chip.verified .box {
+  background: #7ee05a;
+}
+
+.pm-approval-chip.pending .box {
+  background: #c9ecf3;
+}
+
+.pm-approval-tablewrap {
+  margin-top: 10px;
+  border: 2px solid #111827;
+  background: #fff;
+  max-height: 380px;
+  overflow: auto;
+  position: relative;
+}
+
+.pm-approval-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1100px;
+}
+
+.pm-approval-table th,
+.pm-approval-table td {
+  border: 2px solid #111827;
+  padding: 12px 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.pm-approval-table th {
+  background: #ceebf4;
+  font-size: 22px;
+  font-weight: 900;
+
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.pm-approval-statuscell {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pm-approval-badge {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.pm-approval-badge.verified {
+  background: #7ee05a;
+}
+
+.pm-approval-badge.pending {
+  background: #ff4d4d;
+  color: #fff;
+}

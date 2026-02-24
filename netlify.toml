@@ -138,6 +138,18 @@
   status = 200
   force = true
 
+[[redirects]]
+  from = "/getGaon/*"
+  to = "https://register.kdsgroup.co.in/getGaon/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getGaon/"
+  to = "https://register.kdsgroup.co.in/getGaon/"
+  status = 200
+  force = true
+
 
 [[redirects]]
   from = "/district_data_by_login/*"
@@ -457,6 +469,13 @@
   [[redirects]]
   from = "/getGaonListWithCodeByBlock/*"
   to = "https://register.kdsgroup.co.in/getGaonListWithCodeByBlock/:splat"
+  status = 200
+  force = true
+
+
+  [[redirects]]
+  from = "/getPendingVil/*"
+  to = "https://register.kdsgroup.co.in/getPendingVil/:splat"
   status = 200
   force = true
 
