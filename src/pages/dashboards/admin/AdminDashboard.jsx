@@ -1,7 +1,4 @@
-// NEW DEVELOPMENT FOR RAW DATA
-
-
-// src/pages/dashboards/pm/PMDashboard.jsx
+// src/pages/dashboards/admin/AdminDashboard.jsx
 import { useState, useEffect } from "react";
 import hqService from "../../../services/hqService";
 import pmService from "../../../services/pmService";
@@ -16,12 +13,15 @@ import ProjectMonitoringView from "../../../components/pm/ProjectMonitoringView"
 import OperatorMonitoringView from "../../../components/pm/OperatorMonitoringView";
 import DataMonitoringView from "../../../components/pm/DataMonitoringView";
 import PMApprovalRollback from "../../../components/pm/ApprovalRollback";
-import "../../../assets/styles/pages/pm.css";
+import "../../../assets/styles/pages/pm.css"; // reuse same CSS
 import LiveDataEntriesView from "../../../components/pm/LiveDataEntriesView";
 import ApprovalStatusView from "../../../components/pm/ApprovalStatusView";
+import BulkPdfUpload from "../../../components/admin/BulkPdfUpload";
+import SystemDashboard from "../../../components/admin/AdminLogs";
 import ManageSupervisorView from "../../../components/pm/ManageSupervisorView";
+import ApprovedDataView from "../../../components/admin/ApprovedDataView";
 
-const PMDashboard = () => {
+const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("project-monitoring");
   const [zilaList, setZilaList] = useState([]);
@@ -39,7 +39,7 @@ const PMDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [dashboardDropdownOpen, setDashboardDropdownOpen] = useState(false);
 
-  // ✅ Raw Data states
+  // Raw Data states
   const [rawSelectedZila, setRawSelectedZila] = useState("");
   const [rawBlockList, setRawBlockList] = useState([]);
   const [rawSelectedBlock, setRawSelectedBlock] = useState("");
@@ -48,17 +48,11 @@ const PMDashboard = () => {
   const [rawTableData, setRawTableData] = useState([]);
   const [rawLoading, setRawLoading] = useState(false);
 
-  const collapseMenu = () => {
-    setSidebarCollapsed(true);
-  };
+  const collapseMenu = () => setSidebarCollapsed(true);
+  const openMenu = () => setSidebarCollapsed(false);
 
-  const openMenu = () => {
-    setSidebarCollapsed(false);
-  };
-
-  const toggleDashboardDropdown = () => {
+  const toggleDashboardDropdown = () =>
     setDashboardDropdownOpen(!dashboardDropdownOpen);
-  };
 
   const setActive = (view) => {
     setActiveView(view);
@@ -69,11 +63,9 @@ const PMDashboard = () => {
     initDashboard();
   }, []);
 
-  // ✅ FIX: Zila list should NOT depend on other APIs (Promise.all fail issue)
   const initDashboard = async () => {
     setLoading(true);
     try {
-      // ✅ Always try loading zila list separately
       try {
         const zilas = await pmService.getZilaList();
         setZilaList(zilas);
@@ -83,7 +75,6 @@ const PMDashboard = () => {
         setZilaList([]);
       }
 
-      // ✅ Keep existing dashboard data calls (safe)
       try {
         const [overview, report, verification] = await Promise.all([
           hqService.getDistrictOverview(),
@@ -117,9 +108,7 @@ const PMDashboard = () => {
   const handleDistrictClick = async (districtCode) => {
     try {
       const details = await hqService.getDistrictDetails(districtCode);
-      if (!details.zilaCode) {
-        details.zilaCode = districtCode;
-      }
+      if (!details.zilaCode) details.zilaCode = districtCode;
       setDistrictDetails(details);
       setSelectedDistrict(districtCode);
     } catch (error) {
@@ -163,7 +152,7 @@ const PMDashboard = () => {
     }
   };
 
-  // ✅ Raw Data handlers (Zila -> Block -> Gaon -> Table)
+  // Raw Data handlers
   const handleRawZilaChange = async (zilaName) => {
     setRawSelectedZila(zilaName);
     setRawSelectedBlock("");
@@ -177,13 +166,11 @@ const PMDashboard = () => {
     setRawLoading(true);
     try {
       const blocksRes = await pmService.getBlocksByZila(zilaName);
-
       const blocks = Array.isArray(blocksRes)
         ? blocksRes
             .map((b) => (typeof b === "string" ? b : b?.block || b?.name))
             .filter(Boolean)
         : [];
-
       setRawBlockList(blocks);
     } catch (e) {
       console.error("❌ getBlocksByZila failed:", e);
@@ -204,7 +191,6 @@ const PMDashboard = () => {
     setRawLoading(true);
     try {
       const gaonRes = await pmService.getApprovedGaonsByBlock(blockName);
-
       const gaons = Array.isArray(gaonRes)
         ? gaonRes
             .map((g) => ({
@@ -218,7 +204,6 @@ const PMDashboard = () => {
             }))
             .filter((x) => x.name && x.code)
         : [];
-
       setRawGaonList(gaons);
     } catch (e) {
       console.error("❌ getApprovedGaonsByBlock failed:", e);
@@ -238,7 +223,6 @@ const PMDashboard = () => {
       alert("कृपया गाँव चुनें");
       return;
     }
-
     setRawLoading(true);
     try {
       const data = await pmService.getGaonDataByCode(rawSelectedGaonCode);
@@ -263,14 +247,11 @@ const PMDashboard = () => {
 
   const handleViewPdf = (row) => {
     const pdfNo = 1;
-
     const gaonCode =
       getVal(row, ["gaonCode", "gaon_code", "villageCode", "village_code"]) ||
       rawSelectedGaonCode;
-
     const fromPage =
       Number(getVal(row, ["fromPage", "from_page", "pageNo"])) || 1;
-
     const toPage = fromPage;
 
     if (!gaonCode) {
@@ -278,15 +259,10 @@ const PMDashboard = () => {
       return;
     }
 
-    const url = pmService.getPDFPageUrl({
-      pdfNo,
-      gaonCode,
-      fromPage,
-      toPage,
-    });
-
+    const url = pmService.getPDFPageUrl({ pdfNo, gaonCode, fromPage, toPage });
     window.open(url, "_blank");
   };
+
   if (loading) {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center z-50">
@@ -324,11 +300,10 @@ const PMDashboard = () => {
         </div>
 
         <div className="sidebar-header">
-          <i className="fas fa-user-circle"></i>
-          <span className="title">Project Monitoring</span>
+          <i className="fas fa-user-shield"></i>
+          <span className="title">Admin Panel</span>
         </div>
 
-        {/* ✅ NEW: Scrollable area for sidebar menu (Logout stays fixed at bottom) */}
         <div className="sidebar-scroll">
           {/* Dashboards Dropdown */}
           <div className="dropdown">
@@ -349,10 +324,7 @@ const PMDashboard = () => {
                 className={`dropbtn1 ${
                   activeView === "project-monitoring" ? "active" : ""
                 }`}
-                onClick={() => {
-                  setActiveView("project-monitoring");
-                  setActive("project-monitoring");
-                }}
+                onClick={() => setActive("project-monitoring")}
               >
                 Project Monitoring
               </button>
@@ -360,10 +332,7 @@ const PMDashboard = () => {
                 className={`dropbtn1 ${
                   activeView === "operator-monitoring" ? "active" : ""
                 }`}
-                onClick={() => {
-                  setActiveView("operator-monitoring");
-                  setActive("operator-monitoring");
-                }}
+                onClick={() => setActive("operator-monitoring")}
               >
                 Operator Monitoring
               </button>
@@ -371,10 +340,7 @@ const PMDashboard = () => {
                 className={`dropbtn1 ${
                   activeView === "data-monitoring" ? "active" : ""
                 }`}
-                onClick={() => {
-                  setActiveView("data-monitoring");
-                  setActive("data-monitoring");
-                }}
+                onClick={() => setActive("data-monitoring")}
               >
                 Data Monitoring & Management
               </button>
@@ -393,7 +359,7 @@ const PMDashboard = () => {
             </button>
           </div>
 
-          {/* Sachiv Validation - NEW ADDITION */}
+          {/* Sachiv Validation */}
           <div className="dropdown">
             <button
               className={`dropbtn ${
@@ -417,10 +383,24 @@ const PMDashboard = () => {
             </button>
           </div>
 
+          {/* Approved Data */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${
+                activeView === "approved-data" ? "active" : ""
+              }`}
+              onClick={() => setActiveView("approved-data")}
+            >
+              Approved Data
+            </button>
+          </div>
+
           {/* Live Data Entries */}
           <div className="dropdown">
             <button
-              className={`dropbtn ${activeView === "live-entries" ? "active" : ""}`}
+              className={`dropbtn ${
+                activeView === "live-entries" ? "active" : ""
+              }`}
               onClick={() => setActiveView("live-entries")}
             >
               Live Data Entries
@@ -430,7 +410,9 @@ const PMDashboard = () => {
           {/* Raw Data */}
           <div className="dropdown">
             <button
-              className={`dropbtn ${activeView === "raw-data" ? "active" : ""}`}
+              className={`dropbtn ${
+                activeView === "raw-data" ? "active" : ""
+              }`}
               onClick={() => setActiveView("raw-data")}
             >
               Raw Data
@@ -446,6 +428,30 @@ const PMDashboard = () => {
               onClick={() => setActiveView("manage-supervisor")}
             >
               Manage Supervisor
+            </button>
+          </div>
+
+          {/* Bulk Upload */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${
+                activeView === "bulk-upload" ? "active" : ""
+              }`}
+              onClick={() => setActiveView("bulk-upload")}
+            >
+              Bulk Upload
+            </button>
+          </div>
+
+          {/* Server Logs */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${
+                activeView === "server-logs" ? "active" : ""
+              }`}
+              onClick={() => setActiveView("server-logs")}
+            >
+              Server Logs
             </button>
           </div>
 
@@ -537,7 +543,7 @@ const PMDashboard = () => {
             </>
           )}
 
-          {/* Sachiv Validation - NEW SECTION */}
+          {/* Sachiv Validation */}
           {activeView === "sachiv-validation" && (
             <>
               <h1 className="page-title">Data Approvals & Rollback</h1>
@@ -591,9 +597,13 @@ const PMDashboard = () => {
           )}
 
           {/* Approval Status */}
-{activeView === "approval-status" && (
-  <ApprovalStatusView zilaList={zilaList} />
-)}
+          {activeView === "approval-status" && (
+            <ApprovalStatusView zilaList={zilaList} />
+          )}
+          {/* Approvevd Data */}
+          {activeView === "approved-data" && (
+            <ApprovedDataView />
+          )}
 
           {/* Live Entries */}
           {activeView === "live-entries" && <LiveDataEntriesView />}
@@ -601,7 +611,6 @@ const PMDashboard = () => {
           {/* Raw Data */}
           {activeView === "raw-data" && (
             <div className="pm-rawdata-wrapper">
-              {/* Page Title same style */}
               <div className="page-title">Raw Data</div>
 
               {/* Filter Bar */}
@@ -613,14 +622,11 @@ const PMDashboard = () => {
                     onChange={(e) => handleRawZilaChange(e.target.value)}
                   >
                     <option value="">Select Zila</option>
-
                     {Array.isArray(zilaList) &&
                       zilaList.map((item, idx) => {
                         const zilaName =
                           typeof item === "string" ? item : item?.zila;
-
                         if (!zilaName) return null;
-
                         return (
                           <option key={zilaName || idx} value={zilaName}>
                             {zilaName}
@@ -681,7 +687,6 @@ const PMDashboard = () => {
                 <input type="text" placeholder="Search..." />
               </div>
 
-              {/* ✅ Table */}
               {rawLoading && (
                 <div style={{ padding: "10px", fontWeight: "600" }}>
                   Loading...
@@ -695,7 +700,7 @@ const PMDashboard = () => {
                     style={{
                       overflowX: "auto",
                       overflowY: "auto",
-                      maxHeight: "450px", // ✅ Y scroll height
+                      maxHeight: "450px",
                       marginTop: "10px",
                       border: "1px solid #cfcfcf",
                     }}
@@ -731,7 +736,6 @@ const PMDashboard = () => {
                           <th>Action(s)</th>
                         </tr>
                       </thead>
-
                       <tbody>
                         {rawTableData.map((row, idx) => (
                           <tr key={row?.id || idx}>
@@ -839,14 +843,23 @@ const PMDashboard = () => {
                 )}
             </div>
           )}
+
           {activeView === "manage-supervisor" && (
   <ManageSupervisorView />
 )}
-
+{activeView === "bulk-upload" && (
+  <>
+    <h1 className="page-title">Bulk PDF Upload</h1>
+    <BulkPdfUpload />
+  </>
+)}
+{activeView === "server-logs" && (
+   <SystemDashboard />
+)}
         </div>
       </div>
     </div>
   );
 };
 
-export default PMDashboard;
+export default AdminDashboard;

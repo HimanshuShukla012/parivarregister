@@ -147,24 +147,26 @@ export const authService = {
   },
 
   getDashboardRoute: (loginID) => {
-    if (!loginID) return "/";
+  if (!loginID) return "/";
 
-    const firstTwo = loginID.substring(0, 2).toUpperCase();
-    const firstFour = loginID.substring(0, 4).toUpperCase();
+  // ✅ Check exact matches FIRST
+  if (loginID.toLowerCase() === "admin") return "/admin/dashboard";
+  if (loginID.toLowerCase() === "pm") return "/pm/dashboard";
 
-    if (firstTwo === "OP") return "/operator/dashboard";
-    if (firstTwo === "SA") return "/sachiv/dashboard";
-    if (firstTwo === "AD") return "/ado/dashboard";
-    if (firstTwo === "HQ") return "/hq/dashboard";
-    if (firstTwo === "DP") return "/dpro/dashboard";
-    if (firstTwo === "DD") return "/dd/dashboard";
-    if (firstTwo === "TL") return "/tl/dashboard";
-    if (firstTwo === "DI") return "/director/dashboard";
-    if (firstFour === "SCSU") return "/supervisor-sc/dashboard";
-    if (firstFour === "DESU") return "/supervisor-de/dashboard";
-    if (loginID.toLowerCase() === "admin") return "/admin/dashboard";
-    if (loginID.toLowerCase() === "pm") return "/pm/dashboard";
+  const firstTwo = loginID.substring(0, 2).toUpperCase();
+  const firstFour = loginID.substring(0, 4).toUpperCase();
 
-    return "/";
-  },
+  if (firstFour === "SCSU") return "/supervisor-sc/dashboard";
+  if (firstFour === "DESU") return "/supervisor-de/dashboard";
+  if (firstTwo === "OP") return "/operator/dashboard";
+  if (firstTwo === "SA") return "/sachiv/dashboard";
+  if (firstTwo === "AD") return "/ado/dashboard";
+  if (firstTwo === "HQ") return "/hq/dashboard";
+  if (firstTwo === "DP") return "/dpro/dashboard";
+  if (firstTwo === "DD") return "/dd/dashboard";
+  if (firstTwo === "TL") return "/tl/dashboard";
+  if (firstTwo === "DI") return "/director/dashboard";
+
+  return "/";
+},
 };

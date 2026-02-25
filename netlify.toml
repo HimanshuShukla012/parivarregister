@@ -580,6 +580,74 @@
   status = 200
   force = true
 
+[[redirects]]
+  from = "/uploadChunkBulk/"
+  to = "https://register.kdsgroup.co.in/uploadChunkBulk/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/uploadChunkBulk/*"
+  to = "https://register.kdsgroup.co.in/uploadChunkBulk/:splat"
+  status = 200
+  force = true
+
+
+
+[[redirects]]
+  from = "/insertNewSupervisor/"
+  to = "https://register.kdsgroup.co.in/insertNewSupervisor/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/insertNewSupervisor/*"
+  to = "https://register.kdsgroup.co.in/insertNewSupervisor/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_zila_blocks/"
+  to = "https://register.kdsgroup.co.in/get_zila_blocks/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_zila_blocks/*"
+  to = "https://register.kdsgroup.co.in/get_zila_blocks/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/add_block_to_supervisor/"
+  to = "https://register.kdsgroup.co.in/add_block_to_supervisor/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/add_block_to_supervisor/*"
+  to = "https://register.kdsgroup.co.in/add_block_to_supervisor/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getSupervisor/"
+  to = "https://register.kdsgroup.co.in/getSupervisor/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getSupervisor/*"
+  to = "https://register.kdsgroup.co.in/getSupervisor/:splat"
+  status = 200
+  force = true
+
+
+
+  
+
+
+
 # SPA fallback - must be the very last redirect
 [[redirects]]
   from = "/*"
@@ -712,3 +780,5 @@
   to = "https://register.kdsgroup.co.in/downloadVilNotStartedTblDESU/:splat"
   status = 200
   force = true
+
+

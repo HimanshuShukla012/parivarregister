@@ -1448,6 +1448,77 @@ export default defineConfig({
     });
   },
 },
+
+"/uploadChunkBulk": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying uploadChunkBulk:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+
+"/insertNewSupervisor": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying insertNewSupervisor:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+
+"/get_zila_blocks": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying get_zila_blocks:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+
+"/add_block_to_supervisor": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying add_block_to_supervisor:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+
+"/getSupervisor": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying getSupervisor:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+
     },
   },
 });

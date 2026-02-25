@@ -8,6 +8,7 @@ import SachivDashboard from './pages/dashboards/sachiv/SachivDashboard';
 import PMDashboard from './pages/dashboards/pm/PMDashboard';
 import SupervisorDashboard from './pages/dashboards/supervisor/SupervisorDashboard';
 import DPRODashboard from "./pages/dashboards/dpro/DPRODashboard";
+import AdminDashboard from './pages/dashboards/admin/AdminDashboard';
 
 
 const AppRouter = () => {
@@ -19,7 +20,7 @@ const AppRouter = () => {
         
         {/* Dashboard routes */}
         <Route path="/operator/dashboard" element={<OperatorDashboard />} />
-        <Route path="/admin/dashboard" element={<div>Admin Dashboard</div>} />
+        <Route path="/admin/dashboard" element={<AdminDashboard/>} />
         <Route path="/pm/dashboard" element={<PMDashboard />} />
         <Route path="/sachiv/dashboard" element={<SachivDashboard />} />
         <Route path="/ado/dashboard" element={<div>ADO Dashboard</div>} />

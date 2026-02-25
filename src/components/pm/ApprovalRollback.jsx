@@ -34,8 +34,21 @@ const PMApprovalRollback = () => {
   const [selectedForApproval, setSelectedForApproval] = useState([]);
   const [approvalSearchTerm, setApprovalSearchTerm] = useState("");
 
+  // Pending Approval Village Dropdown (from /get_updated_rejected_families)
+  const [approvalGaonOptions, setApprovalGaonOptions] = useState([]);
+  const [selectedApprovalGaonCode, setSelectedApprovalGaonCode] = useState("");
+  const [updatedRejectedFamilyGroups, setUpdatedRejectedFamilyGroups] =
+    useState([]);
+
   // Approved Data
   const [approvedData, setApprovedData] = useState([]);
+
+  // Safely display value in table
+  const displayValue = (value) => {
+    if (value === null || value === undefined) return "";
+    if (value === "NULL") return "";
+    return String(value).trim();
+  };
 
   // Statistics
   const [stats, setStats] = useState({
@@ -184,7 +197,7 @@ const PMApprovalRollback = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("/assignSupervisorToRejectedFamilies/", {
+      const response = await fetch("/assignSupervisorToRejectedFamilies", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -218,7 +231,7 @@ const PMApprovalRollback = () => {
   const fetchUpdatedFamilies = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/get_updated_rejected_gaon", {
+      const response = await fetch("/get_updated_rejected_families", {
         method: "GET",
         credentials: "include",
       });
@@ -227,43 +240,64 @@ const PMApprovalRollback = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log("Updated Families Response:", data);
+      const payload = await response.json();
+      console.log("Updated Rejected Families Response:", payload);
 
-      if (data.success) {
-        const enrichedData = await Promise.all(
-          (data.data || []).map(async (item) => {
-            try {
-              const detailResponse = await fetch(
-                `/getRejectedByGaonCode?gaonCode=${item.gaonCode}`,
-                { credentials: "include" },
-              );
-              const detailData = await detailResponse.json();
+      if (payload?.success) {
+        const groups = Array.isArray(payload.data) ? payload.data : [];
+        setUpdatedRejectedFamilyGroups(groups);
 
-              if (detailData.success && detailData.data) {
-                const familyMember = detailData.data.find(
-                  (f) => f.id === item.fromID,
-                );
-                return {
-                  ...item,
-                  memberName: familyMember?.memberName || "Unknown",
-                  familyHeadName: familyMember?.familyHeadName || "Unknown",
-                  caste: familyMember?.caste || "Unknown",
-                };
-              }
-              return item;
-            } catch {
-              return item;
-            }
-          }),
-        );
+        // Build unique dropdown options: gaon name + gaon code
+        const map = new Map();
+        for (const g of groups) {
+          const code = g?.gaonCode ?? g?.gaon_code;
+          if (code === undefined || code === null) continue;
 
-        setUpdatedFamilies(enrichedData);
-        setStats((prev) => ({ ...prev, pendingApproval: enrichedData.length }));
+          const gaonName =
+            g?.data?.[0]?.gaon ||
+            g?.data?.[0]?.gaonName ||
+            g?.data?.[0]?.village ||
+            "Village";
+
+          const key = String(code);
+          if (!map.has(key))
+            map.set(key, { gaonCode: String(code), gaon: gaonName });
+        }
+
+        const options = Array.from(map.values());
+        setApprovalGaonOptions(options);
+
+        // pendingApproval count = sum of totalRecords (fallback to row count)
+        const pendingCount = groups.reduce((sum, g) => {
+          const tr = Number(g?.totalRecords);
+          if (!Number.isNaN(tr) && tr > 0) return sum + tr;
+          const len = Array.isArray(g?.data) ? g.data.length : 0;
+          return sum + len;
+        }, 0);
+
+        setStats((prev) => ({ ...prev, pendingApproval: pendingCount }));
+
+        // Reset selection and rows until user selects a village (as per requirement)
+        setSelectedForApproval([]);
+        setSelectedApprovalGaonCode("");
+        setUpdatedFamilies([]);
+      } else {
+        setUpdatedRejectedFamilyGroups([]);
+        setApprovalGaonOptions([]);
+        setSelectedApprovalGaonCode("");
+        setUpdatedFamilies([]);
+        setSelectedForApproval([]);
+        setStats((prev) => ({ ...prev, pendingApproval: 0 }));
       }
     } catch (error) {
-      console.error("Error fetching updated families:", error);
+      console.error("Error fetching updated rejected families:", error);
       alert("Failed to load pending approvals");
+      setUpdatedRejectedFamilyGroups([]);
+      setApprovalGaonOptions([]);
+      setSelectedApprovalGaonCode("");
+      setUpdatedFamilies([]);
+      setSelectedForApproval([]);
+      setStats((prev) => ({ ...prev, pendingApproval: 0 }));
     } finally {
       setLoading(false);
     }
@@ -331,6 +365,16 @@ const PMApprovalRollback = () => {
     );
   };
 
+  // ✅ Identify Family Head row (checkbox + view only on this row)
+  const isFamilyHeadRecord = (row) => {
+    const head = (row?.familyHeadName ?? "").trim();
+    const member = (row?.memberName ?? "").trim();
+    if (!head && !member) return false;
+    // If memberName missing but familyHeadName present, treat as head row
+    if (head && !member) return true;
+    return head === member;
+  };
+
   const getFilteredUpdatedFamilies = () => {
     if (!approvalSearchTerm) return updatedFamilies;
     return updatedFamilies.filter(
@@ -343,6 +387,37 @@ const PMApprovalRollback = () => {
           ?.toLowerCase()
           .includes(approvalSearchTerm.toLowerCase()),
     );
+  };
+
+  const handleApprovalVillageChange = (e) => {
+    const code = e.target.value || "";
+    setSelectedApprovalGaonCode(code);
+    setSelectedForApproval([]); // reset selection on village change
+
+    if (!code) {
+      setUpdatedFamilies([]);
+      return;
+    }
+
+    // Flatten all groups for selected gaonCode, attach rejectedFamilyId on each member row
+    const rows = (updatedRejectedFamilyGroups || [])
+      .filter(
+        (g) =>
+          String(g?.gaonCode) === String(code) ||
+          String(g?.gaon_code) === String(code),
+      )
+      .flatMap((g) => {
+        const rejectedFamilyId = g?.rejectedFamilyId;
+        const gaonCode = g?.gaonCode ?? g?.gaon_code;
+        const list = Array.isArray(g?.data) ? g.data : [];
+        return list.map((member) => ({
+          ...member,
+          rejectedFamilyId,
+          gaonCode: member?.gaonCode ?? gaonCode,
+        }));
+      });
+
+    setUpdatedFamilies(rows);
   };
 
   const groupFamiliesByHouse = (familiesData) => {
@@ -1163,6 +1238,43 @@ const PMApprovalRollback = () => {
                 )}
               </div>
 
+              {/* Village dropdown for Pending Approval */}
+              <div style={{ marginBottom: "1rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.5rem",
+                    color: "#1e293b",
+                    fontWeight: "600",
+                  }}
+                >
+                  <MapPin size={16} />
+                  Select Village
+                </div>
+                <select
+                  value={selectedApprovalGaonCode}
+                  onChange={handleApprovalVillageChange}
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem 1rem",
+                    border: "2px solid #e2e8f0",
+                    borderRadius: "12px",
+                    fontSize: "0.95rem",
+                    outline: "none",
+                    background: "white",
+                  }}
+                >
+                  <option value="">-- Select Village --</option>
+                  {approvalGaonOptions.map((g) => (
+                    <option key={String(g.gaonCode)} value={String(g.gaonCode)}>
+                      {g.gaon} ({g.gaonCode})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div
                 style={{
                   border: "2px solid #e2e8f0",
@@ -1171,114 +1283,68 @@ const PMApprovalRollback = () => {
                   boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                 }}
               >
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr
-                      style={{
-                        background: "linear-gradient(135deg, #fef3c7, #fde68a)",
-                        borderBottom: "2px solid #e2e8f0",
-                      }}
-                    >
-                      <th
-                        style={{
-                          padding: "1rem",
-                          textAlign: "left",
-                          fontWeight: "600",
-                          color: "#1e293b",
-                          width: "50px",
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={
-                            selectedForApproval.length ===
-                              getFilteredUpdatedFamilies().length &&
-                            getFilteredUpdatedFamilies().length > 0
-                          }
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedForApproval(
-                                getFilteredUpdatedFamilies().map((f) => f.id),
-                              );
-                            } else {
-                              setSelectedForApproval([]);
-                            }
-                          }}
-                          style={{
-                            width: "18px",
-                            height: "18px",
-                            cursor: "pointer",
-                          }}
-                        />
-                      </th>
-                      <th
-                        style={{
-                          padding: "1rem",
-                          textAlign: "left",
-                          fontWeight: "600",
-                          color: "#1e293b",
-                        }}
-                      >
-                        Village Code
-                      </th>
-                      <th
-                        style={{
-                          padding: "1rem",
-                          textAlign: "left",
-                          fontWeight: "600",
-                          color: "#1e293b",
-                        }}
-                      >
-                        Family Head
-                      </th>
-                      <th
-                        style={{
-                          padding: "1rem",
-                          textAlign: "left",
-                          fontWeight: "600",
-                          color: "#1e293b",
-                        }}
-                      >
-                        Member
-                      </th>
-                      <th
-                        style={{
-                          padding: "1rem",
-                          textAlign: "left",
-                          fontWeight: "600",
-                          color: "#1e293b",
-                        }}
-                      >
-                        Caste
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {getFilteredUpdatedFamilies().map((family, idx) => (
+                {/* 👇 ADD THIS WRAPPER */}
+                <div
+                  style={{
+                    width: "100%",
+                    maxHeight: "500px", // Y-axis scroll
+                    overflowY: "auto",
+                    overflowX: "auto",
+                  }}
+                >
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead>
                       <tr
-                        key={family.id}
                         style={{
-                          borderBottom: "1px solid #e2e8f0",
-                          background: idx % 2 === 0 ? "white" : "#f8fafc",
-                          transition: "background 0.2s ease",
+                          background:
+                            "linear-gradient(135deg, #fef3c7, #fde68a)",
+                          borderBottom: "2px solid #e2e8f0",
                         }}
                       >
-                        <td style={{ padding: "1rem" }}>
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                            width: "50px",
+                          }}
+                        >
                           <input
                             type="checkbox"
-                            checked={selectedForApproval.includes(family.id)}
+                            checked={(() => {
+                              const filtered = getFilteredUpdatedFamilies();
+                              const ids = Array.from(
+                                new Set(
+                                  filtered
+                                    .filter((f) => isFamilyHeadRecord(f))
+                                    .map((f) => f.rejectedFamilyId)
+                                    .filter(
+                                      (v) => v !== undefined && v !== null,
+                                    ),
+                                ),
+                              );
+                              return (
+                                ids.length > 0 &&
+                                selectedForApproval.length === ids.length
+                              );
+                            })()}
                             onChange={(e) => {
+                              const filtered = getFilteredUpdatedFamilies();
+                              const ids = Array.from(
+                                new Set(
+                                  filtered
+                                    .filter((f) => isFamilyHeadRecord(f))
+                                    .map((f) => f.rejectedFamilyId)
+                                    .filter(
+                                      (v) => v !== undefined && v !== null,
+                                    ),
+                                ),
+                              );
                               if (e.target.checked) {
-                                setSelectedForApproval([
-                                  ...selectedForApproval,
-                                  family.id,
-                                ]);
+                                setSelectedForApproval(ids);
                               } else {
-                                setSelectedForApproval(
-                                  selectedForApproval.filter(
-                                    (id) => id !== family.id,
-                                  ),
-                                );
+                                setSelectedForApproval([]);
                               }
                             }}
                             style={{
@@ -1287,29 +1353,519 @@ const PMApprovalRollback = () => {
                               cursor: "pointer",
                             }}
                           />
-                        </td>
-                        <td
+                        </th>
+
+                        <th
                           style={{
                             padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
                             color: "#1e293b",
-                            fontWeight: "500",
+                            width: "70px",
                           }}
                         >
-                          {family.gaonCode}
-                        </td>
-                        <td style={{ padding: "1rem", color: "#475569" }}>
-                          {family.familyHeadName || "Loading..."}
-                        </td>
-                        <td style={{ padding: "1rem", color: "#475569" }}>
-                          {family.memberName || "Loading..."}
-                        </td>
-                        <td style={{ padding: "1rem", color: "#475569" }}>
-                          {family.caste || "Loading..."}
-                        </td>
+                          Sno
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Village Code
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Village Name
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Family Head
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Member
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Caste
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          House No
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Father/Husband
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Gender
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Religion
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          DOB
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Business
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Literacy
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Qualification
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Operator
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Entry Date
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          PDF No
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          From Page
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          To Page
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Status
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Remark
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          District
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Tehsil
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Block
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          Sabha
+                        </th>
+
+                        {/* <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                          }}
+                        >
+                          IDs
+                        </th> */}
+                        <th
+                          style={{
+                            padding: "1rem",
+                            textAlign: "left",
+                            fontWeight: "600",
+                            color: "#1e293b",
+                            width: "170px",
+                          }}
+                        >
+                          Action
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {getFilteredUpdatedFamilies().map((family, idx) => (
+                        <tr
+                          key={`${family.rejectedFamilyId || "rf"}_${family.id || idx}`}
+                          style={{
+                            borderBottom: "1px solid #e2e8f0",
+                            background: idx % 2 === 0 ? "white" : "#f8fafc",
+                            transition: "background 0.2s ease",
+                          }}
+                        >
+                          <td style={{ padding: "1rem" }}>
+                            {isFamilyHeadRecord(family) && (
+                              <input
+                                type="checkbox"
+                                checked={selectedForApproval.includes(
+                                  family.rejectedFamilyId,
+                                )}
+                                onChange={(e) => {
+                                  const rfId = family.rejectedFamilyId;
+                                  if (rfId === undefined || rfId === null)
+                                    return;
+
+                                  if (e.target.checked) {
+                                    if (!selectedForApproval.includes(rfId)) {
+                                      setSelectedForApproval([
+                                        ...selectedForApproval,
+                                        rfId,
+                                      ]);
+                                    }
+                                  } else {
+                                    setSelectedForApproval(
+                                      selectedForApproval.filter(
+                                        (id) => id !== rfId,
+                                      ),
+                                    );
+                                  }
+                                }}
+                                style={{
+                                  width: "18px",
+                                  height: "18px",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            )}
+                          </td>
+
+                          <td
+                            style={{
+                              padding: "1rem",
+                              color: "#1e293b",
+                              fontWeight: "500",
+                            }}
+                          >
+                            {idx + 1}
+                          </td>
+
+                          <td
+                            style={{
+                              padding: "1rem",
+                              color: "#1e293b",
+                              fontWeight: "500",
+                            }}
+                          >
+                            {family.gaonCode}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.gaon)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.familyHeadName)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.memberName)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.caste)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.houseNumberNum)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.fatherOrHusbandName)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.gender)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.religion)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.dob)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.business)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.literacy)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.qualification)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.byOperator)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.entryDate)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.pdfNo)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.fromPage)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.toPage)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.status)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.remark)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.zila)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.tehsil)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.block)}
+                          </td>
+
+                          <td style={{ padding: "1rem", color: "#475569" }}>
+                            {displayValue(family.sabha)}
+                          </td>
+
+                          {/* <td
+                            style={{
+                              padding: "1rem",
+                              color: "#475569",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {displayValue(family.id)} /{" "}
+                            {displayValue(family.rejectedFamilyId)}
+                          </td> */}
+
+                          <td style={{ padding: "1rem" }}>
+                            <div style={{ display: "flex", gap: "0.5rem" }}>
+                              {isFamilyHeadRecord(family) && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (
+                                      !family?.pdfNo ||
+                                      family?.fromPage == null ||
+                                      family?.toPage == null
+                                    ) {
+                                      alert(
+                                        "PDF not available for this record",
+                                      );
+                                      return;
+                                    }
+                                    handleViewPdf(family);
+                                  }}
+                                  style={{
+                                    padding: "0.5rem 0.75rem",
+                                    borderRadius: "10px",
+                                    border: "none",
+                                    background:
+                                      "linear-gradient(135deg, #3b82f6, #2563eb)",
+                                    color: "white",
+                                    cursor: "pointer",
+                                    fontWeight: "600",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.35rem",
+                                  }}
+                                >
+                                  <FileText size={14} />
+                                  View
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
               {loading && (
@@ -1325,7 +1881,7 @@ const PMApprovalRollback = () => {
                 </div>
               )}
 
-              {!loading && getFilteredUpdatedFamilies().length === 0 && (
+              {!loading && !selectedApprovalGaonCode && (
                 <div
                   style={{
                     textAlign: "center",
@@ -1333,15 +1889,35 @@ const PMApprovalRollback = () => {
                     color: "#94a3b8",
                   }}
                 >
-                  <CheckCircle
+                  <MapPin
                     size={48}
-                    style={{ margin: "0 auto 1rem", opacity: 0.3 }}
+                    style={{ margin: "0 auto 1rem", opacity: 0.5 }}
                   />
                   <p style={{ fontSize: "1.1rem" }}>
-                    No families awaiting approval
+                    Please select a village to view pending approvals
                   </p>
                 </div>
               )}
+
+              {!loading &&
+                selectedApprovalGaonCode &&
+                getFilteredUpdatedFamilies().length === 0 && (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "3rem",
+                      color: "#94a3b8",
+                    }}
+                  >
+                    <CheckCircle
+                      size={48}
+                      style={{ margin: "0 auto 1rem", opacity: 0.3 }}
+                    />
+                    <p style={{ fontSize: "1.1rem" }}>
+                      No families awaiting approval
+                    </p>
+                  </div>
+                )}
             </div>
           )}
 
