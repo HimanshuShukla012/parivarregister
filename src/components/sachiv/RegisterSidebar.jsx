@@ -1,16 +1,28 @@
 // src/components/sachiv/RegisterSidebar.jsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const RegisterSidebar = ({ user, villages, selectedVillage, onVillageClick, onChangePassword, onLogout }) => {
+const RegisterSidebar = ({
+  user,
+  villages,
+  selectedVillage,
+  onVillageClick,
+  onChangePassword,
+  onLogout,
+}) => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const pendingVerificationRegisters = villages.filter(v => v.approvedBySachiv === 'N' && !v.aDORemark);
-  const rejectedRegisters = villages.filter(v => v.aDORemark);
-  const completedRegisters = villages.filter(v => v.approvedBySachiv === 'Y');
+  const pendingVerificationRegisters = villages.filter(
+    (v) => v.approvedBySachiv === "N" && !v.aDORemark,
+  );
+  const rejectedRegisters = villages.filter((v) => v.aDORemark);
+  const completedRegisters = villages.filter((v) => v.approvedBySachiv === "Y");
 
   return (
     <>
-      <div className={`sachiv-sidebar ${collapsed ? 'sachiv-hidden' : ''}`}>
+      <div className={`sachiv-sidebar ${collapsed ? "sachiv-hidden" : ""}`}>
         <div className="sachiv-sidebar-header">
           <i className="fas fa-user-shield"></i>
           <div className="sachiv-title">सचिव पैनल</div>
@@ -51,33 +63,64 @@ const RegisterSidebar = ({ user, villages, selectedVillage, onVillageClick, onCh
         <div className="sachiv-dropdown">
           <button className="sachiv-dropbtn">
             <span>
-              <i className="fas fa-hourglass-half" style={{marginRight: '8px'}}></i>
+              <i
+                className="fas fa-hourglass-half"
+                style={{ marginRight: "8px" }}
+              ></i>
               लंबित सत्यापन
             </span>
-            <span style={{
-              background: 'rgba(59, 130, 246, 0.2)',
-              color: '#93c5fd',
-              padding: '0.25rem 0.5rem',
-              borderRadius: '12px',
-              fontSize: '0.75rem',
-              fontWeight: '600'
-            }}>
+            <span
+              style={{
+                background: "rgba(59, 130, 246, 0.2)",
+                color: "#93c5fd",
+                padding: "0.25rem 0.5rem",
+                borderRadius: "12px",
+                fontSize: "0.75rem",
+                fontWeight: "600",
+              }}
+            >
               {pendingVerificationRegisters.length}
             </span>
           </button>
           <div className="sachiv-dropdown-content">
+            {/* ✅ NEW: open Pending page (Dashboard) */}
+            {location.pathname !== "/sachiv/dashboard" && (
+              <a
+                onClick={() => navigate("/sachiv/dashboard")}
+                style={{
+                  fontWeight: "700",
+                  color: "#60a5fa",
+                  borderBottom: "1px solid rgba(96,165,250,0.25)",
+                  paddingBottom: "8px",
+                  marginBottom: "6px",
+                }}
+              >
+                ➜ लंबित सत्यापन पेज खोलें
+              </a>
+            )}
+
             {pendingVerificationRegisters.length > 0 ? (
               pendingVerificationRegisters.map((village, index) => (
                 <a
                   key={index}
-                  onClick={() => onVillageClick(village, 'verification')}
-                  className={selectedVillage?.gaonCode === village.gaonCode ? 'sachiv-active' : ''}
+                  onClick={() => onVillageClick(village, "verification")}
+                  className={
+                    selectedVillage?.gaonCode === village.gaonCode
+                      ? "sachiv-active"
+                      : ""
+                  }
                 >
                   {village.gaon}
                 </a>
               ))
             ) : (
-              <a style={{color: '#9ca3af', fontStyle: 'italic', cursor: 'default'}}>
+              <a
+                style={{
+                  color: "#9ca3af",
+                  fontStyle: "italic",
+                  cursor: "default",
+                }}
+              >
                 कोई लंबित गाँव नहीं
               </a>
             )}
@@ -88,33 +131,63 @@ const RegisterSidebar = ({ user, villages, selectedVillage, onVillageClick, onCh
         <div className="sachiv-dropdown">
           <button className="sachiv-dropbtn">
             <span>
-              <i className="fas fa-times-circle" style={{marginRight: '8px'}}></i>
+              <i
+                className="fas fa-times-circle"
+                style={{ marginRight: "8px" }}
+              ></i>
               ADO द्वारा अस्वीकृत
             </span>
-            <span style={{
-              background: 'rgba(239, 68, 68, 0.2)',
-              color: '#fca5a5',
-              padding: '0.25rem 0.5rem',
-              borderRadius: '12px',
-              fontSize: '0.75rem',
-              fontWeight: '600'
-            }}>
+            <span
+              style={{
+                background: "rgba(239, 68, 68, 0.2)",
+                color: "#fca5a5",
+                padding: "0.25rem 0.5rem",
+                borderRadius: "12px",
+                fontSize: "0.75rem",
+                fontWeight: "600",
+              }}
+            >
               {rejectedRegisters.length}
             </span>
           </button>
+
           <div className="sachiv-dropdown-content">
+            {/* ✅ NEW: open ADO page */}
+            <a
+              onClick={() => navigate("/sachiv/ado-rejected")}
+              style={{
+                fontWeight: "700",
+                color: "#ef4444",
+                borderBottom: "1px solid rgba(239,68,68,0.25)",
+                paddingBottom: "8px",
+                marginBottom: "6px",
+              }}
+            >
+              ➜ ADO Reject Page खोलें
+            </a>
+
             {rejectedRegisters.length > 0 ? (
               rejectedRegisters.map((village, index) => (
                 <a
                   key={index}
-                  onClick={() => onVillageClick(village, 'pending')}
-                  className={selectedVillage?.gaonCode === village.gaonCode ? 'sachiv-active' : ''}
+                  onClick={() => onVillageClick(village, "pending")}
+                  className={
+                    selectedVillage?.gaonCode === village.gaonCode
+                      ? "sachiv-active"
+                      : ""
+                  }
                 >
                   {village.gaon}
                 </a>
               ))
             ) : (
-              <a style={{color: '#9ca3af', fontStyle: 'italic', cursor: 'default'}}>
+              <a
+                style={{
+                  color: "#9ca3af",
+                  fontStyle: "italic",
+                  cursor: "default",
+                }}
+              >
                 कोई अस्वीकृत गाँव नहीं
               </a>
             )}
@@ -125,17 +198,22 @@ const RegisterSidebar = ({ user, villages, selectedVillage, onVillageClick, onCh
         <div className="sachiv-dropdown">
           <button className="sachiv-dropbtn">
             <span>
-              <i className="fas fa-check-circle" style={{marginRight: '8px'}}></i>
+              <i
+                className="fas fa-check-circle"
+                style={{ marginRight: "8px" }}
+              ></i>
               पूर्ण रजिस्टर
             </span>
-            <span style={{
-              background: 'rgba(34, 197, 94, 0.2)',
-              color: '#86efac',
-              padding: '0.25rem 0.5rem',
-              borderRadius: '12px',
-              fontSize: '0.75rem',
-              fontWeight: '600'
-            }}>
+            <span
+              style={{
+                background: "rgba(34, 197, 94, 0.2)",
+                color: "#86efac",
+                padding: "0.25rem 0.5rem",
+                borderRadius: "12px",
+                fontSize: "0.75rem",
+                fontWeight: "600",
+              }}
+            >
               {completedRegisters.length}
             </span>
           </button>
@@ -144,14 +222,24 @@ const RegisterSidebar = ({ user, villages, selectedVillage, onVillageClick, onCh
               completedRegisters.map((village, index) => (
                 <a
                   key={index}
-                  onClick={() => onVillageClick(village, 'completed')}
-                  className={selectedVillage?.gaonCode === village.gaonCode ? 'sachiv-active' : ''}
+                  onClick={() => onVillageClick(village, "completed")}
+                  className={
+                    selectedVillage?.gaonCode === village.gaonCode
+                      ? "sachiv-active"
+                      : ""
+                  }
                 >
                   {village.gaon}
                 </a>
               ))
             ) : (
-              <a style={{color: '#9ca3af', fontStyle: 'italic', cursor: 'default'}}>
+              <a
+                style={{
+                  color: "#9ca3af",
+                  fontStyle: "italic",
+                  cursor: "default",
+                }}
+              >
                 कोई पूर्ण गाँव नहीं
               </a>
             )}
@@ -160,13 +248,13 @@ const RegisterSidebar = ({ user, villages, selectedVillage, onVillageClick, onCh
 
         {/* Change Password */}
         <div className="sachiv-dropdown">
-          <button 
-            className="sachiv-dropbtn" 
+          <button
+            className="sachiv-dropbtn"
             onClick={onChangePassword}
-            style={{borderBottom: 'none'}}
+            style={{ borderBottom: "none" }}
           >
             <span>
-              <i className="fas fa-key" style={{marginRight: '8px'}}></i>
+              <i className="fas fa-key" style={{ marginRight: "8px" }}></i>
               पासवर्ड बदलें
             </span>
           </button>
@@ -187,12 +275,12 @@ const RegisterSidebar = ({ user, villages, selectedVillage, onVillageClick, onCh
           className="sachiv-toggleBtn"
           onClick={() => setCollapsed(false)}
           style={{
-            position: 'fixed',
-            left: '10px',
-            top: '10px',
+            position: "fixed",
+            left: "10px",
+            top: "10px",
             zIndex: 1000,
-            background: 'linear-gradient(135deg, #1e293b, #334155)',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+            background: "linear-gradient(135deg, #1e293b, #334155)",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
           }}
         >
           <i className="fa fa-bars"></i>

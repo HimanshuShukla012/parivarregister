@@ -1125,7 +1125,7 @@ export default defineConfig({
         },
       },
 
-      "/bulk-approve-rejected-families": {
+      "/bulk-approve-rejected-families/": {
         target: "https://register.kdsgroup.co.in",
         changeOrigin: true,
         secure: false,

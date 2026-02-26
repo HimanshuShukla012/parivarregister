@@ -20,6 +20,7 @@ import "../../../assets/styles/pages/pm.css";
 import LiveDataEntriesView from "../../../components/pm/LiveDataEntriesView";
 import ApprovalStatusView from "../../../components/pm/ApprovalStatusView";
 import ManageSupervisorView from "../../../components/pm/ManageSupervisorView";
+import UserManagementView from "../../../components/pm/UserManagementView";
 
 const PMDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,11 @@ const PMDashboard = () => {
   const [rawTableData, setRawTableData] = useState([]);
   const [rawLoading, setRawLoading] = useState(false);
 
+  const [notifCounts, setNotifCounts] = useState({ rejectedVillages: 0, pendingFamilies: 0 });
+const [notifOpen, setNotifOpen] = useState(false);
+const [sachivValidationTab, setSachivValidationTab] = useState("rejected");
+
+
   const collapseMenu = () => {
     setSidebarCollapsed(true);
   };
@@ -69,6 +75,16 @@ const PMDashboard = () => {
     initDashboard();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notifOpen && !e.target.closest(".notif-wrapper")) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [notifOpen]);
+
   // ✅ FIX: Zila list should NOT depend on other APIs (Promise.all fail issue)
   const initDashboard = async () => {
     setLoading(true);
@@ -82,6 +98,22 @@ const PMDashboard = () => {
         console.error("❌ zilaList load failed:", e);
         setZilaList([]);
       }
+
+
+      try {
+  const res = await fetch("/get_updated_rejected_families", { credentials: "include" });
+  const payload = await res.json();
+  if (payload?.success) {
+    const groups = Array.isArray(payload.data?.groups) ? payload.data.groups : [];
+    const uniqueVillages = new Set(groups.map(g => g?.gaonCode ?? g?.gaon_code)).size;
+    const pendingFamilies = payload.data?.totalFamilies ?? groups.reduce((sum, g) => {
+      return sum + (Array.isArray(g?.rejectedFamilyIds) ? g.rejectedFamilyIds.length : 0);
+    }, 0);
+    setNotifCounts({ rejectedVillages: uniqueVillages, pendingFamilies });
+  }
+} catch (e) {
+  console.error("❌ notif counts failed:", e);
+}
 
       // ✅ Keep existing dashboard data calls (safe)
       try {
@@ -396,13 +428,16 @@ const PMDashboard = () => {
           {/* Sachiv Validation - NEW ADDITION */}
           <div className="dropdown">
             <button
-              className={`dropbtn ${
-                activeView === "sachiv-validation" ? "active" : ""
-              }`}
-              onClick={() => setActiveView("sachiv-validation")}
-            >
-              Sachiv Validation
-            </button>
+  className={`dropbtn ${
+    activeView === "sachiv-validation" ? "active" : ""
+  }`}
+  onClick={() => {
+    setSachivValidationTab("rejected");
+    setActiveView("sachiv-validation");
+  }}
+>
+  Sachiv Validation
+</button>
           </div>
 
           {/* Approval Status */}
@@ -449,6 +484,18 @@ const PMDashboard = () => {
             </button>
           </div>
 
+          {/* User Management */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${
+                activeView === "user-management" ? "active" : ""
+              }`}
+              onClick={() => setActiveView("user-management")}
+            >
+              User Management
+            </button>
+          </div>
+
         </div>
 
         {/* Logout */}
@@ -489,13 +536,117 @@ const PMDashboard = () => {
                 <h2>Ministry of Panchayati Raj</h2>
               </div>
             </div>
-            <div className="right-section">
-              <img
-                src="/assets/images/Kds_logo.png"
-                alt="KDS Logo"
-                className="kds-logo"
-              />
-            </div>
+            <div className="right-section" style={{ position: "relative", display: "flex", alignItems: "center", gap: "1rem" }}>
+  
+  {/* Notification Bell */}
+  <div className="notif-wrapper" style={{ position: "relative" }}>
+  <button
+    onClick={() => setNotifOpen(!notifOpen)}
+  style={{
+    background: notifOpen ? "#f1f5f9" : "white",
+    border: "2px solid #e2e8f0",
+    borderRadius: "50%",
+    cursor: "pointer",
+    position: "relative",
+    width: "44px",
+    height: "44px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "20px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    transition: "all 0.2s ease",
+  }}
+>
+  🔔
+  {(notifCounts.rejectedVillages > 0 || notifCounts.pendingFamilies > 0) && (
+    <span style={{
+      position: "absolute",
+      top: "-4px",
+      right: "-4px",
+      background: "#ef4444",
+      color: "white",
+      borderRadius: "999px",
+      fontSize: "10px",
+      fontWeight: "700",
+      minWidth: "18px",
+      height: "18px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "0 4px",
+      lineHeight: 1,
+    }}>
+      {(notifCounts.rejectedVillages + notifCounts.pendingFamilies) > 99
+        ? "99+"
+        : notifCounts.rejectedVillages + notifCounts.pendingFamilies}
+    </span>
+  )}
+</button>
+
+    {/* Dropdown */}
+    {notifOpen && (
+      <div style={{
+        position: "absolute",
+        right: 0,
+        top: "calc(100% + 8px)",
+        background: "white",
+        borderRadius: "12px",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+        minWidth: "260px",
+        zIndex: 9999,
+        overflow: "hidden",
+        border: "1px solid #e2e8f0",
+      }}>
+        <div style={{ padding: "12px 16px", borderBottom: "1px solid #e2e8f0", fontWeight: "700", fontSize: "14px", color: "#1e293b" }}>
+          Notifications
+        </div>
+
+        {notifCounts.rejectedVillages > 0 && (
+          <div
+            onClick={() => { setSachivValidationTab("rejected"); setActiveView("sachiv-validation"); setNotifOpen(false); }}
+
+            style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", borderBottom: "1px solid #f1f5f9" }}
+            onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
+            onMouseLeave={e => e.currentTarget.style.background = "white"}
+          >
+            <span style={{ background: "#fee2e2", color: "#dc2626", borderRadius: "8px", padding: "6px 10px", fontWeight: "700", fontSize: "18px", minWidth: "40px", textAlign: "center" }}>
+              {notifCounts.rejectedVillages}
+            </span>
+            <span style={{ fontSize: "13px", color: "#475569", fontWeight: "500" }}>Rejected Villages pending action</span>
+          </div>
+        )}
+
+        {notifCounts.pendingFamilies > 0 && (
+          <div
+            onClick={() => { setSachivValidationTab("approval"); setActiveView("sachiv-validation"); setNotifOpen(false); }}
+
+            style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}
+            onMouseEnter={e => e.currentTarget.style.background = "#f8fafc"}
+            onMouseLeave={e => e.currentTarget.style.background = "white"}
+          >
+            <span style={{ background: "#fef3c7", color: "#d97706", borderRadius: "8px", padding: "6px 10px", fontWeight: "700", fontSize: "18px", minWidth: "40px", textAlign: "center" }}>
+              {notifCounts.pendingFamilies}
+            </span>
+            <span style={{ fontSize: "13px", color: "#475569", fontWeight: "500" }}>Families pending approval</span>
+          </div>
+        )}
+
+        {notifCounts.rejectedVillages === 0 && notifCounts.pendingFamilies === 0 && (
+          <div style={{ padding: "16px", textAlign: "center", color: "#94a3b8", fontSize: "13px" }}>
+            No pending notifications
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+
+  <img
+    src="/assets/images/Kds_logo.png"
+    alt="KDS Logo"
+    className="kds-logo"
+  />
+</div>
           </div>
         </div>
 
@@ -539,11 +690,14 @@ const PMDashboard = () => {
 
           {/* Sachiv Validation - NEW SECTION */}
           {activeView === "sachiv-validation" && (
-            <>
-              <h1 className="page-title">Data Approvals & Rollback</h1>
-              <PMApprovalRollback />
-            </>
-          )}
+  <>
+    <h1 className="page-title">Data Approvals & Rollback</h1>
+    <PMApprovalRollback
+      key={sachivValidationTab}
+      initialTab={sachivValidationTab}
+    />
+  </>
+)}
 
           {/* HQ Dashboard */}
           {activeView === "hq-dashboard" && (
@@ -841,6 +995,10 @@ const PMDashboard = () => {
           )}
           {activeView === "manage-supervisor" && (
   <ManageSupervisorView />
+)}
+
+{activeView === "user-management" && (
+  <UserManagementView/>
 )}
 
         </div>

@@ -9,7 +9,7 @@ import PMDashboard from './pages/dashboards/pm/PMDashboard';
 import SupervisorDashboard from './pages/dashboards/supervisor/SupervisorDashboard';
 import DPRODashboard from "./pages/dashboards/dpro/DPRODashboard";
 import AdminDashboard from './pages/dashboards/admin/AdminDashboard';
-
+import AdoRejectedPage from './components/sachiv/AdoRejectedPage';
 
 const AppRouter = () => {
   return (
@@ -31,6 +31,7 @@ const AppRouter = () => {
         <Route path="/director/dashboard" element={<div>Director Dashboard</div>} />
         <Route path="/supervisor-sc/dashboard" element={<div>Supervisor SC Dashboard</div>} />
         <Route path="/supervisor-de/dashboard" element={< SupervisorDashboard/>} />
+        <Route path="/sachiv/ado-rejected" element={<AdoRejectedPage />} />
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

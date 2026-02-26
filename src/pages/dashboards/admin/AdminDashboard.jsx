@@ -20,6 +20,7 @@ import BulkPdfUpload from "../../../components/admin/BulkPdfUpload";
 import SystemDashboard from "../../../components/admin/AdminLogs";
 import ManageSupervisorView from "../../../components/pm/ManageSupervisorView";
 import ApprovedDataView from "../../../components/admin/ApprovedDataView";
+import UserManagementView from "../../../components/pm/UserManagementView";
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -428,6 +429,18 @@ const AdminDashboard = () => {
               onClick={() => setActiveView("manage-supervisor")}
             >
               Manage Supervisor
+            </button>
+          </div>
+
+          {/* User Management */}
+          <div className="dropdown">
+            <button
+              className={`dropbtn ${
+                activeView === "user-management" ? "active" : ""
+              }`}
+              onClick={() => setActiveView("user-management")}
+            >
+              User Management
             </button>
           </div>
 
@@ -855,6 +868,10 @@ const AdminDashboard = () => {
 )}
 {activeView === "server-logs" && (
    <SystemDashboard />
+)}
+
+{activeView === "user-management" && (
+  <UserManagementView/>
 )}
         </div>
       </div>

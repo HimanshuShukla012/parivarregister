@@ -66,16 +66,16 @@ const SachivDashboard = () => {
     if (gaonData && gaonData.length > 0) {
       // Total families and members (including both approved and pending)
       const totalFamilies = gaonData.filter(
-        (row) => String(row.serialNo) === "1"
+        (row) => String(row.serialNo) === "1",
       ).length;
       const totalMembers = gaonData.length;
 
       // Approved families and members only
       const approvedFamilies = gaonData.filter(
-        (row) => String(row.serialNo) === "1" && row.status === "Approved"
+        (row) => String(row.serialNo) === "1" && row.status === "Approved",
       ).length;
       const approvedMembers = gaonData.filter(
-        (row) => row.status === "Approved"
+        (row) => row.status === "Approved",
       ).length;
 
       setStats({
@@ -119,15 +119,19 @@ const SachivDashboard = () => {
         setUser(userInfo);
         setVillages(villageData);
 
+        // ✅ ADD: save for ADO page reuse
+        localStorage.setItem("sachiv_user", JSON.stringify(userInfo));
+        localStorage.setItem("sachiv_villages", JSON.stringify(villageData));
+
         const firstPendingVerification = villageData.find(
-          (v) => v.approvedBySachiv === "N" && !v.aDORemark
+          (v) => v.approvedBySachiv === "N" && !v.aDORemark,
         );
         if (firstPendingVerification) {
           handleVillageClick(firstPendingVerification, "verification");
         }
       } else {
         alert(
-          "No villages found for your Sabha. Please contact administrator."
+          "No villages found for your Sabha. Please contact administrator.",
         );
       }
     } catch (error) {
@@ -141,11 +145,18 @@ const SachivDashboard = () => {
   const handleVillageClick = async (village, mode = "pending") => {
     setLoading(true);
     setSelectedVillage(village);
+
+    // ✅ ADD: save selected village for ADO page reuse
+    localStorage.setItem("sachiv_selected_village", JSON.stringify(village));
+
     setViewMode(mode);
 
     try {
       const data = await sachivService.getGaonData(village.gaonCode);
       setGaonData(data);
+
+      // ✅ ADD: save gaon data for ADO page reuse
+      localStorage.setItem("sachiv_gaon_data", JSON.stringify(data));
 
       if (mode === "verification") {
         setSelectedGaonForVerification(village);
@@ -169,7 +180,7 @@ const SachivDashboard = () => {
     if (window.confirm("क्या आप इस रजिस्टर को सत्यापित करना चाहते हैं?")) {
       try {
         const result = await sachivService.sachivApprove(
-          `g${selectedVillage.gaonCode}`
+          `g${selectedVillage.gaonCode}`,
         );
         if (result.status === "success") {
           alert("सत्यापित हो गया!");
@@ -218,7 +229,7 @@ const SachivDashboard = () => {
     fromPage,
     toPage,
     gaonCode,
-    familyData
+    familyData,
   ) => {
     try {
       // Build the FULL backend URL directly
@@ -236,7 +247,7 @@ const SachivDashboard = () => {
 
       // Fetch the PDF as a blob with credentials
       const response = await fetch(url, {
-        credentials: "include", // This ensures cookies are sent
+        credentials: "include",
         headers: {
           Accept: "application/pdf",
         },
@@ -457,7 +468,7 @@ const SachivDashboard = () => {
           <KeyLegend
             onScrollToError={() => {
               const errorCell = document.querySelector(
-                "td[style*='background-color: red']"
+                "td[style*='background-color: red']",
               );
               if (errorCell) {
                 errorCell.scrollIntoView({
@@ -483,7 +494,7 @@ const SachivDashboard = () => {
               onViewPDF={handleViewPDF}
               onEdit={handleEditFamily}
               villageIndex={villages.findIndex(
-                (v) => v.gaonCode === selectedVillage?.gaonCode
+                (v) => v.gaonCode === selectedVillage?.gaonCode,
               )}
             />
           ) : viewMode === "approved" ? (
@@ -580,7 +591,7 @@ const SachivDashboard = () => {
                 if (selectedGaonForVerification) {
                   handleVillageClick(
                     selectedGaonForVerification,
-                    "verification"
+                    "verification",
                   );
                 }
               })

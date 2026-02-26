@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Search,
   UserCheck,
@@ -16,8 +16,13 @@ import {
   FileDown,
 } from "lucide-react";
 
-const PMApprovalRollback = () => {
-  const [activeTab, setActiveTab] = useState("rejected");
+const PMApprovalRollback = ({ initialTab = "rejected" }) => {
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  // Sync if parent changes initialTab (e.g. clicking notif twice)
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
   const [loading, setLoading] = useState(false);
 
   // Rejected Families States
@@ -37,6 +42,7 @@ const PMApprovalRollback = () => {
   // Pending Approval Village Dropdown (from /get_updated_rejected_families)
   const [approvalGaonOptions, setApprovalGaonOptions] = useState([]);
   const [selectedApprovalGaonCode, setSelectedApprovalGaonCode] = useState("");
+  const updatedFamiliesRef = useRef([]);
   const [updatedRejectedFamilyGroups, setUpdatedRejectedFamilyGroups] =
     useState([]);
 
@@ -71,15 +77,19 @@ const PMApprovalRollback = () => {
   };
 
   useEffect(() => {
-    if (activeTab === "rejected") {
-      fetchRejectedGaons();
-      fetchSupervisors();
-    } else if (activeTab === "approval") {
-      fetchUpdatedFamilies();
-    } else if (activeTab === "approved") {
-      fetchApprovedData();
-    }
-  }, [activeTab]);
+  fetchUpdatedFamilies();
+}, []);
+
+useEffect(() => {
+  if (activeTab === "rejected") {
+    fetchRejectedGaons();
+    fetchSupervisors();
+  } else if (activeTab === "approval") {
+    // already loaded on mount, no need to refetch
+  } else if (activeTab === "approved") {
+    fetchApprovedData();
+  }
+}, [activeTab]);
 
   const fetchRejectedGaons = async () => {
     setLoading(true);
@@ -244,8 +254,8 @@ const PMApprovalRollback = () => {
       console.log("Updated Rejected Families Response:", payload);
 
       if (payload?.success) {
-        const groups = Array.isArray(payload.data) ? payload.data : [];
-        setUpdatedRejectedFamilyGroups(groups);
+  const groups = Array.isArray(payload.data?.groups) ? payload.data.groups : [];
+  setUpdatedRejectedFamilyGroups(groups);
 
         // Build unique dropdown options: gaon name + gaon code
         const map = new Map();
@@ -267,13 +277,11 @@ const PMApprovalRollback = () => {
         const options = Array.from(map.values());
         setApprovalGaonOptions(options);
 
-        // pendingApproval count = sum of totalRecords (fallback to row count)
-        const pendingCount = groups.reduce((sum, g) => {
-          const tr = Number(g?.totalRecords);
-          if (!Number.isNaN(tr) && tr > 0) return sum + tr;
-          const len = Array.isArray(g?.data) ? g.data.length : 0;
-          return sum + len;
-        }, 0);
+// pendingApproval count = family count only (rows where sno/srNo === 1, i.e. family heads)
+        const pendingCount = payload.data?.totalFamilies ?? groups.reduce((sum, g) => {
+  const ids = Array.isArray(g?.rejectedFamilyIds) ? g.rejectedFamilyIds : [];
+  return sum + ids.length;
+}, 0);
 
         setStats((prev) => ({ ...prev, pendingApproval: pendingCount }));
 
@@ -311,19 +319,26 @@ const PMApprovalRollback = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("/bulk-approve-rejected-families", {
+      const response = await fetch("/bulk-approve-rejected-families/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ rejectedFamilyIds: selectedForApproval }),
+        body: JSON.stringify({
+  gaonCode: Number(selectedApprovalGaonCode),
+  memberIds: updatedFamilies
+    .filter((f) => selectedForApproval.includes(String(f.rejectedFamilyId)))
+    .map((f) => f.id)
+    .filter((id) => id !== undefined && id !== null)
+    .map(Number),
+}),
       });
 
       const data = await response.json();
       if (data.success) {
-        alert(`${data.data.approved} families approved successfully!`);
+        alert(`${selectedForApproval.length} ${selectedForApproval.length === 1 ? "family" : "families"} approved successfully!`);
         setSelectedForApproval([]);
         fetchUpdatedFamilies();
       } else {
@@ -365,29 +380,28 @@ const PMApprovalRollback = () => {
     );
   };
 
-  // ✅ Identify Family Head row (checkbox + view only on this row)
+// ✅ Identify Family Head row — Sr. No. 1 is always the family head
   const isFamilyHeadRecord = (row) => {
+    const sno = row?.sno ?? row?.srNo ?? row?.sr_no ?? row?.serialNo;
+    if (sno !== undefined && sno !== null) return Number(sno) === 1;
+    // fallback if sno field missing: match familyHeadName === memberName
     const head = (row?.familyHeadName ?? "").trim();
     const member = (row?.memberName ?? "").trim();
     if (!head && !member) return false;
-    // If memberName missing but familyHeadName present, treat as head row
     if (head && !member) return true;
     return head === member;
   };
 
   const getFilteredUpdatedFamilies = () => {
-    if (!approvalSearchTerm) return updatedFamilies;
-    return updatedFamilies.filter(
-      (family) =>
-        family.gaonCode?.toString().includes(approvalSearchTerm) ||
-        family.memberName
-          ?.toLowerCase()
-          .includes(approvalSearchTerm.toLowerCase()) ||
-        family.familyHeadName
-          ?.toLowerCase()
-          .includes(approvalSearchTerm.toLowerCase()),
-    );
-  };
+  const result = !approvalSearchTerm ? updatedFamilies : updatedFamilies.filter(
+    (family) =>
+      family.gaonCode?.toString().includes(approvalSearchTerm) ||
+      family.memberName?.toLowerCase().includes(approvalSearchTerm.toLowerCase()) ||
+      family.familyHeadName?.toLowerCase().includes(approvalSearchTerm.toLowerCase()),
+  );
+  console.log("Filtered rows displayed:", result.length, "| Rows with checkbox:", result.filter(r => isFamilyHeadRecord(r)).length, "| Serial No counts:", result.reduce((acc, r) => { const sno = r?.sno ?? r?.srNo ?? r?.sr_no ?? r?.serialNo; acc[sno] = (acc[sno] || 0) + 1; return acc; }, {}));
+  return result;
+};
 
   const handleApprovalVillageChange = (e) => {
     const code = e.target.value || "";
@@ -407,17 +421,28 @@ const PMApprovalRollback = () => {
           String(g?.gaon_code) === String(code),
       )
       .flatMap((g) => {
-        const rejectedFamilyId = g?.rejectedFamilyId;
-        const gaonCode = g?.gaonCode ?? g?.gaon_code;
-        const list = Array.isArray(g?.data) ? g.data : [];
-        return list.map((member) => ({
-          ...member,
-          rejectedFamilyId,
-          gaonCode: member?.gaonCode ?? gaonCode,
-        }));
-      });
+  const gaonCode = g?.gaonCode ?? g?.gaon_code;
+  const rejectedFamilyIds = Array.isArray(g?.rejectedFamilyIds) ? g.rejectedFamilyIds : [];
+  const list = Array.isArray(g?.data) ? g.data : [];
+  return list.map((member, memberIndex) => ({
+    ...member,
+    rejectedFamilyId: rejectedFamilyIds[memberIndex] ?? member?.id,
+    gaonCode: member?.gaonCode ?? gaonCode,
+  }));
+});
 
     setUpdatedFamilies(rows);
+    const headRows = rows.filter(r => isFamilyHeadRecord(r));
+console.log("Sample head row fields:", JSON.stringify(headRows[0], null, 2));
+console.log("Sample head row 2:", JSON.stringify(headRows[1], null, 2));
+console.log("Sample head row 3:", JSON.stringify(headRows[2], null, 2));
+    const uniqueIds = new Set(rows.filter(r => isFamilyHeadRecord(r)).map(r => String(r.rejectedFamilyId)));
+console.log("Unique rejectedFamilyIds on head rows:", uniqueIds.size, [...uniqueIds].slice(0, 10));
+    updatedFamiliesRef.current = rows;
+    console.log("updatedFamilies set with rows:", rows.length, "head records:", rows.filter(r => isFamilyHeadRecord(r)).length);
+    console.log("Total rows displayed:", rows.length);
+console.log("Rows with checkbox (family head records):", rows.filter(r => isFamilyHeadRecord(r)).length);
+console.log("Serial No breakdown:", rows.map((r, i) => ({ rowIndex: i, sno: r?.sno ?? r?.srNo ?? r?.sr_no ?? r?.serialNo, isHead: isFamilyHeadRecord(r) })));
   };
 
   const groupFamiliesByHouse = (familiesData) => {
@@ -481,36 +506,6 @@ const PMApprovalRollback = () => {
               </div>
               <div style={{ fontSize: "0.875rem", opacity: 0.9 }}>
                 Total Rejected Villages
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            background: "linear-gradient(135deg, #3b82f6, #2563eb)",
-            borderRadius: "16px",
-            padding: "1.5rem",
-            color: "white",
-            boxShadow: "0 10px 30px rgba(59, 130, 246, 0.3)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <div
-              style={{
-                background: "rgba(255,255,255,0.2)",
-                padding: "1rem",
-                borderRadius: "12px",
-              }}
-            >
-              <UserCheck size={28} />
-            </div>
-            <div>
-              <div style={{ fontSize: "2rem", fontWeight: "700" }}>
-                {stats.assignedToSupervisor}
-              </div>
-              <div style={{ fontSize: "0.875rem", opacity: 0.9 }}>
-                Assigned to Supervisor
               </div>
             </div>
           </div>
@@ -1313,40 +1308,32 @@ const PMApprovalRollback = () => {
                           <input
                             type="checkbox"
                             checked={(() => {
-                              const filtered = getFilteredUpdatedFamilies();
-                              const ids = Array.from(
-                                new Set(
-                                  filtered
-                                    .filter((f) => isFamilyHeadRecord(f))
-                                    .map((f) => f.rejectedFamilyId)
-                                    .filter(
-                                      (v) => v !== undefined && v !== null,
-                                    ),
-                                ),
-                              );
-                              return (
-                                ids.length > 0 &&
-                                selectedForApproval.length === ids.length
-                              );
-                            })()}
-                            onChange={(e) => {
-                              const filtered = getFilteredUpdatedFamilies();
-                              const ids = Array.from(
-                                new Set(
-                                  filtered
-                                    .filter((f) => isFamilyHeadRecord(f))
-                                    .map((f) => f.rejectedFamilyId)
-                                    .filter(
-                                      (v) => v !== undefined && v !== null,
-                                    ),
-                                ),
-                              );
-                              if (e.target.checked) {
-                                setSelectedForApproval(ids);
-                              } else {
-                                setSelectedForApproval([]);
-                              }
-                            }}
+  const allIds = Array.from(
+    new Set(
+      updatedFamilies
+        .filter((f) => isFamilyHeadRecord(f))
+        .map((f) => String(f.rejectedFamilyId))
+        .filter((v) => v && v !== "undefined" && v !== "null"),
+    ),
+  );
+  return allIds.length > 0 && allIds.every((id) => selectedForApproval.includes(id));
+})()}
+onChange={(e) => {
+  const allIds = Array.from(
+    new Set(
+      updatedFamilies
+        .filter((f) => isFamilyHeadRecord(f))
+        .map((f) => String(f.rejectedFamilyId))
+        .filter((v) => v && v !== "undefined" && v !== "null"),
+    ),
+  );
+  console.log("Select all IDs (using rejectedFamilyId):", allIds.length);
+  if (e.target.checked) {
+    setSelectedForApproval(allIds);
+  } else {
+    setSelectedForApproval([]);
+  }
+}}
                             style={{
                               width: "18px",
                               height: "18px",
@@ -1668,29 +1655,18 @@ const PMApprovalRollback = () => {
                             {isFamilyHeadRecord(family) && (
                               <input
                                 type="checkbox"
-                                checked={selectedForApproval.includes(
-                                  family.rejectedFamilyId,
-                                )}
-                                onChange={(e) => {
-                                  const rfId = family.rejectedFamilyId;
-                                  if (rfId === undefined || rfId === null)
-                                    return;
-
-                                  if (e.target.checked) {
-                                    if (!selectedForApproval.includes(rfId)) {
-                                      setSelectedForApproval([
-                                        ...selectedForApproval,
-                                        rfId,
-                                      ]);
-                                    }
-                                  } else {
-                                    setSelectedForApproval(
-                                      selectedForApproval.filter(
-                                        (id) => id !== rfId,
-                                      ),
-                                    );
-                                  }
-                                }}
+checked={selectedForApproval.includes(String(family.rejectedFamilyId))}
+onChange={(e) => {
+  const fId = String(family.rejectedFamilyId);
+  if (!fId || fId === "undefined" || fId === "null") return;
+  if (e.target.checked) {
+    if (!selectedForApproval.includes(fId)) {
+      setSelectedForApproval([...selectedForApproval, fId]);
+    }
+  } else {
+    setSelectedForApproval(selectedForApproval.filter((id) => id !== fId));
+  }
+}}
                                 style={{
                                   width: "18px",
                                   height: "18px",
@@ -1707,7 +1683,7 @@ const PMApprovalRollback = () => {
                               fontWeight: "500",
                             }}
                           >
-                            {idx + 1}
+                            {displayValue(family.sno ?? family.srNo ?? family.sr_no ?? family.serialNo ?? (idx + 1))}
                           </td>
 
                           <td
