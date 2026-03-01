@@ -648,11 +648,7 @@
 
 
 
-# SPA fallback - must be the very last redirect
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+
 
 # Supervisor-specific endpoints
 [[redirects]]
@@ -782,3 +778,21 @@
   force = true
 
 
+[[redirects]]
+  from = "/getSupervisorBlocks/"
+  to = "https://register.kdsgroup.co.in/getSupervisorBlocks/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/getSupervisorBlocks/*"
+  to = "https://register.kdsgroup.co.in/getSupervisorBlocks/:splat"
+  status = 200
+  force = true
+
+
+# SPA fallback - must be the very last redirect
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
