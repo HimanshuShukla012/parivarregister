@@ -124,7 +124,7 @@ const ManageOperatorModal = ({ loginID, onClose, onAddOperator, inline }) => {
                     <td style={tdStyle}>
                       {op.documentUrl ? (
                         <a
-                          href={`https://parivarregister.kdsgroup.co.in/app/view-document/${op.loginID}/`}
+                          href={`${import.meta.env.VITE_PDF_BASE_URL}/view-document/${op.loginID}/`}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{

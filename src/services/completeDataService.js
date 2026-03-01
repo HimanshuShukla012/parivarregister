@@ -26,7 +26,7 @@ const completeDataService = {
   },
 
   // Get Completed/Approved Block Data
-  // API: https://register.kdsgroup.co.in/getCompletedBlock/?zila=Amethi&block=Bhetua
+  
   getCompletedBlock: async (zila, block) => {
     try {
       const response = await api.get(

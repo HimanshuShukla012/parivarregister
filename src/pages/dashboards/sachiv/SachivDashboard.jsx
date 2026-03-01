@@ -232,13 +232,8 @@ const SachivDashboard = () => {
     familyData,
   ) => {
     try {
-      // Build the FULL backend URL directly
-      const baseUrl =
-        import.meta.env.MODE === "development"
-          ? "https://parivarregister.kdsgroup.co.in/app"
-          : "";
-
-      let url = `${baseUrl}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+      
+      let url = `${import.meta.env.VITE_PDF_BASE_URL}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
 
       if (fromPage) url += `&fromPage=${fromPage}`;
       if (toPage) url += `&toPage=${toPage}`;

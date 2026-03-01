@@ -116,7 +116,7 @@ const SupervisorDashboard = () => {
     let blocks = [];
     try {
       const res = await fetch(
-        `https://register.kdsgroup.co.in//getSupervisorBlocks/?loginID=${loginID}`,
+        `${import.meta.env.VITE_API_BASE_URL}/getSupervisorBlocks/?loginID=${loginID}`,
       );
       const json = await res.json();
       if (json.success && Array.isArray(json.data?.blocks)) {
@@ -189,7 +189,7 @@ const SupervisorDashboard = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `https://register.kdsgroup.co.in//getAssignedRejectedDataBySupervisor/?supervisorId=${loginID}`,
+          `${import.meta.env.VITE_API_BASE_URL}/getAssignedRejectedDataBySupervisor/?supervisorId=${loginID}`,
         );
         const json = await res.json();
 
@@ -1255,7 +1255,7 @@ const SupervisorDashboard = () => {
                 onDelete={handleDeleteRecord}
                 onApprove={handleApproveFamily}
                 onViewPDF={(pdfNo, fromPage, toPage, gaonCode) => {
-                  const url = `https://parivarregister.kdsgroup.co.in/app/getPDFPage/?pdfNo=${pdfNo}&fromPage=${fromPage}&toPage=${toPage}&gaonCode=${gaonCode}`;
+                  const url = `${import.meta.env.VITE_PDF_BASE_URL}/getPDFPage/?pdfNo=${pdfNo}&fromPage=${fromPage}&toPage=${toPage}&gaonCode=${gaonCode}`;
                   window.open(url, "_blank");
                 }}
               />

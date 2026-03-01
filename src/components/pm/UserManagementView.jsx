@@ -1,21 +1,31 @@
 import { useState, useEffect } from "react";
-import { Search, RefreshCw, Key, User, Shield, CheckCircle, XCircle, AlertTriangle, ChevronDown } from "lucide-react";
+import {
+  Search,
+  RefreshCw,
+  Key,
+  User,
+  Shield,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  ChevronDown,
+} from "lucide-react";
 
 const DESIGNATIONS = [
   { label: "Admin", value: "Admin", color: "#06c4d9", bg: "#fffbeb" },
   { label: "Project Manager", value: "PM", color: "#0630d9", bg: "#fffbeb" },
-    { label: "HQ", value: "HQ", color: "#06d95a", bg: "#fffbeb" },
-    { label: "Division", value: "DD", color: "#d94206", bg: "#fffbeb" },
-    { label: "ADO", value: "AD", color: "#6366f1", bg: "#eef2ff" },
+  { label: "HQ", value: "HQ", color: "#06d95a", bg: "#fffbeb" },
+  { label: "Division", value: "DD", color: "#d94206", bg: "#fffbeb" },
+  { label: "ADO", value: "AD", color: "#6366f1", bg: "#eef2ff" },
   { label: "Sachiv", value: "SA", color: "#0891b2", bg: "#ecfeff" },
   { label: "Supervisor", value: "SU", color: "#059669", bg: "#ecfdf5" },
   { label: "Operator", value: "OP", color: "#d97706", bg: "#fffbeb" },
-  
-  
 ];
 
 const UserManagementView = () => {
-  const [selectedDesignation, setSelectedDesignation] = useState(DESIGNATIONS[0]);
+  const [selectedDesignation, setSelectedDesignation] = useState(
+    DESIGNATIONS[0],
+  );
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,8 +47,7 @@ const UserManagementView = () => {
     setUsers([]);
     try {
       const res = await fetch(
-        `https://register.kdsgroup.co.in/getLoginDetails/?designation=${designation}`,
-        
+        `${import.meta.env.VITE_API_BASE_URL}/getLoginDetails/?designation=${designation}`,
       );
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
@@ -68,7 +77,10 @@ const UserManagementView = () => {
 
   const handleResetPassword = async () => {
     if (!newPassword || !confirmPassword) {
-      setResetResult({ success: false, message: "Please fill in both fields." });
+      setResetResult({
+        success: false,
+        message: "Please fill in both fields.",
+      });
       return;
     }
     if (newPassword !== confirmPassword) {
@@ -76,30 +88,48 @@ const UserManagementView = () => {
       return;
     }
     if (newPassword.length < 3) {
-      setResetResult({ success: false, message: "Password must be at least 3 characters." });
+      setResetResult({
+        success: false,
+        message: "Password must be at least 3 characters.",
+      });
       return;
     }
 
     setResetting(true);
     setResetResult(null);
     try {
-      const res = await fetch("https://register.kdsgroup.co.in/resetPassword/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          loginID: selectedUser.loginID,
-          newPassword: newPassword,
-        }),
-      });
+      const res = await fetch(
+        "${import.meta.env.VITE_API_BASE_URL}/resetPassword/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            loginID: selectedUser.loginID,
+            newPassword: newPassword,
+          }),
+        },
+      );
       const data = await res.json();
-      if (res.ok && (data.success || data.message?.toLowerCase().includes("success"))) {
-        setResetResult({ success: true, message: "Password reset successfully!" });
+      if (
+        res.ok &&
+        (data.success || data.message?.toLowerCase().includes("success"))
+      ) {
+        setResetResult({
+          success: true,
+          message: "Password reset successfully!",
+        });
         setTimeout(() => closeModal(), 1800);
       } else {
-        setResetResult({ success: false, message: data.message || data.error || "Reset failed." });
+        setResetResult({
+          success: false,
+          message: data.message || data.error || "Reset failed.",
+        });
       }
     } catch (e) {
-      setResetResult({ success: false, message: "Network error. Please try again." });
+      setResetResult({
+        success: false,
+        message: "Network error. Please try again.",
+      });
     } finally {
       setResetting(false);
     }
@@ -108,7 +138,7 @@ const UserManagementView = () => {
   const filteredUsers = users.filter(
     (u) =>
       u.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      u.loginID?.toLowerCase().includes(searchTerm.toLowerCase())
+      u.loginID?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Parse name: "District_Block_Sabha" format
@@ -127,28 +157,43 @@ const UserManagementView = () => {
   return (
     <div style={{ padding: "1.5rem", fontFamily: "'DM Sans', sans-serif" }}>
       {/* Header */}
-      <div style={{
-        background: "white",
-        borderRadius: "16px",
-        padding: "1.5rem 2rem",
-        marginBottom: "1.5rem",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: "1rem",
-      }}>
+      <div
+        style={{
+          background: "white",
+          borderRadius: "16px",
+          padding: "1.5rem 2rem",
+          marginBottom: "1.5rem",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "1rem",
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <div style={{
-            width: "42px", height: "42px", borderRadius: "12px",
-            background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
+          <div
+            style={{
+              width: "42px",
+              height: "42px",
+              borderRadius: "12px",
+              background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Shield size={20} color="white" />
           </div>
           <div>
-            <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: "700", color: "#0f172a" }}>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: "1.2rem",
+                fontWeight: "700",
+                color: "#0f172a",
+              }}
+            >
               User Management
             </h2>
             <p style={{ margin: 0, fontSize: "0.8rem", color: "#64748b" }}>
@@ -159,10 +204,16 @@ const UserManagementView = () => {
 
         {/* Search */}
         <div style={{ position: "relative", width: "300px" }}>
-          <Search size={16} style={{
-            position: "absolute", left: "12px", top: "50%",
-            transform: "translateY(-50%)", color: "#94a3b8",
-          }} />
+          <Search
+            size={16}
+            style={{
+              position: "absolute",
+              left: "12px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "#94a3b8",
+            }}
+          />
           <input
             type="text"
             placeholder="Search name or login ID..."
@@ -178,38 +229,47 @@ const UserManagementView = () => {
               boxSizing: "border-box",
               transition: "border-color 0.2s",
             }}
-            onFocus={e => e.target.style.borderColor = "#6366f1"}
-            onBlur={e => e.target.style.borderColor = "#e2e8f0"}
+            onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
+            onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
           />
         </div>
       </div>
 
       {/* Designation Tabs */}
-      <div style={{
-        display: "flex",
-        gap: "0.75rem",
-        marginBottom: "1.5rem",
-        flexWrap: "wrap",
-      }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "0.75rem",
+          marginBottom: "1.5rem",
+          flexWrap: "wrap",
+        }}
+      >
         {DESIGNATIONS.map((d) => (
           <button
             key={d.value}
-            onClick={() => { setSelectedDesignation(d); setSearchTerm(""); }}
+            onClick={() => {
+              setSelectedDesignation(d);
+              setSearchTerm("");
+            }}
             style={{
               padding: "0.6rem 1.5rem",
               borderRadius: "10px",
-              border: selectedDesignation.value === d.value
-                ? `2px solid ${d.color}`
-                : "2px solid #e2e8f0",
-              background: selectedDesignation.value === d.value ? d.bg : "white",
-              color: selectedDesignation.value === d.value ? d.color : "#64748b",
+              border:
+                selectedDesignation.value === d.value
+                  ? `2px solid ${d.color}`
+                  : "2px solid #e2e8f0",
+              background:
+                selectedDesignation.value === d.value ? d.bg : "white",
+              color:
+                selectedDesignation.value === d.value ? d.color : "#64748b",
               fontWeight: selectedDesignation.value === d.value ? "700" : "500",
               cursor: "pointer",
               fontSize: "0.875rem",
               transition: "all 0.2s ease",
-              boxShadow: selectedDesignation.value === d.value
-                ? `0 4px 12px ${d.color}30`
-                : "0 1px 4px rgba(0,0,0,0.05)",
+              boxShadow:
+                selectedDesignation.value === d.value
+                  ? `0 4px 12px ${d.color}30`
+                  : "0 1px 4px rgba(0,0,0,0.05)",
             }}
           >
             {d.label}
@@ -218,26 +278,30 @@ const UserManagementView = () => {
       </div>
 
       {/* Table */}
-      <div style={{
-        background: "white",
-        borderRadius: "16px",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-        overflow: "hidden",
-        border: "1px solid #f1f5f9",
-      }}>
+      <div
+        style={{
+          background: "white",
+          borderRadius: "16px",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+          overflow: "hidden",
+          border: "1px solid #f1f5f9",
+        }}
+      >
         {/* Table header */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr 140px 130px",
-          padding: "0.875rem 1.5rem",
-          background: "#f8fafc",
-          borderBottom: "2px solid #e2e8f0",
-          fontSize: "0.75rem",
-          fontWeight: "700",
-          color: "#475569",
-          textTransform: "uppercase",
-          letterSpacing: "0.05em",
-        }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr 140px 130px",
+            padding: "0.875rem 1.5rem",
+            background: "#f8fafc",
+            borderBottom: "2px solid #e2e8f0",
+            fontSize: "0.75rem",
+            fontWeight: "700",
+            color: "#475569",
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+          }}
+        >
           <span>District</span>
           <span>Block</span>
           <span>Sabha</span>
@@ -247,154 +311,238 @@ const UserManagementView = () => {
 
         {/* Loading */}
         {loading && (
-          <div style={{ padding: "3rem", textAlign: "center", color: "#64748b" }}>
-            <RefreshCw size={32} color="#6366f1" style={{ animation: "spin 1s linear infinite", margin: "0 auto 0.75rem", display: "block" }} />
+          <div
+            style={{ padding: "3rem", textAlign: "center", color: "#64748b" }}
+          >
+            <RefreshCw
+              size={32}
+              color="#6366f1"
+              style={{
+                animation: "spin 1s linear infinite",
+                margin: "0 auto 0.75rem",
+                display: "block",
+              }}
+            />
             <p style={{ margin: 0, fontSize: "0.9rem" }}>Loading users...</p>
           </div>
         )}
 
         {/* Empty */}
         {!loading && filteredUsers.length === 0 && (
-          <div style={{ padding: "3rem", textAlign: "center", color: "#94a3b8" }}>
-            <User size={40} style={{ margin: "0 auto 0.75rem", opacity: 0.4, display: "block" }} />
+          <div
+            style={{ padding: "3rem", textAlign: "center", color: "#94a3b8" }}
+          >
+            <User
+              size={40}
+              style={{
+                margin: "0 auto 0.75rem",
+                opacity: 0.4,
+                display: "block",
+              }}
+            />
             <p style={{ margin: 0 }}>No users found</p>
           </div>
         )}
 
         {/* Rows */}
         <div style={{ maxHeight: "520px", overflowY: "auto" }}>
-          {!loading && filteredUsers.map((user, idx) => {
-            const parsed = parseName(user.name);
-            return (
-              <div
-                key={user.loginID}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr 1fr 140px 130px",
-                  padding: "0.875rem 1.5rem",
-                  borderBottom: idx < filteredUsers.length - 1 ? "1px solid #f1f5f9" : "none",
-                  background: idx % 2 === 0 ? "white" : "#fafbfc",
-                  alignItems: "center",
-                  transition: "background 0.15s",
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = "#f0f4ff"}
-                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 0 ? "white" : "#fafbfc"}
-              >
-                <span style={{ fontSize: "0.875rem", color: "#1e293b", fontWeight: "500" }}>
-                  {parsed.district}
-                </span>
-                <span style={{ fontSize: "0.875rem", color: "#475569" }}>
-                  {parsed.block}
-                </span>
-                <span style={{ fontSize: "0.875rem", color: "#475569" }}>
-                  {parsed.sabha}
-                </span>
-                <span>
-                  <code style={{
-                    background: `${selectedDesignation.bg}`,
-                    color: selectedDesignation.color,
-                    padding: "3px 8px",
-                    borderRadius: "6px",
-                    fontSize: "0.8rem",
-                    fontWeight: "700",
-                    fontFamily: "monospace",
-                    border: `1px solid ${selectedDesignation.color}30`,
-                  }}>
-                    {user.loginID}
-                  </code>
-                </span>
-                <div style={{ textAlign: "center" }}>
-                  <button
-                    onClick={() => openResetModal(user)}
+          {!loading &&
+            filteredUsers.map((user, idx) => {
+              const parsed = parseName(user.name);
+              return (
+                <div
+                  key={user.loginID}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr 140px 130px",
+                    padding: "0.875rem 1.5rem",
+                    borderBottom:
+                      idx < filteredUsers.length - 1
+                        ? "1px solid #f1f5f9"
+                        : "none",
+                    background: idx % 2 === 0 ? "white" : "#fafbfc",
+                    alignItems: "center",
+                    transition: "background 0.15s",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "#f0f4ff")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background =
+                      idx % 2 === 0 ? "white" : "#fafbfc")
+                  }
+                >
+                  <span
                     style={{
-                      padding: "0.4rem 0.9rem",
-                      background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "8px",
-                      fontSize: "0.78rem",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.35rem",
-                      boxShadow: "0 2px 8px rgba(99,102,241,0.3)",
-                      transition: "all 0.2s ease",
+                      fontSize: "0.875rem",
+                      color: "#1e293b",
+                      fontWeight: "500",
                     }}
-                    onMouseEnter={e => e.currentTarget.style.transform = "translateY(-1px)"}
-                    onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
                   >
-                    <Key size={12} />
-                    Reset
-                  </button>
+                    {parsed.district}
+                  </span>
+                  <span style={{ fontSize: "0.875rem", color: "#475569" }}>
+                    {parsed.block}
+                  </span>
+                  <span style={{ fontSize: "0.875rem", color: "#475569" }}>
+                    {parsed.sabha}
+                  </span>
+                  <span>
+                    <code
+                      style={{
+                        background: `${selectedDesignation.bg}`,
+                        color: selectedDesignation.color,
+                        padding: "3px 8px",
+                        borderRadius: "6px",
+                        fontSize: "0.8rem",
+                        fontWeight: "700",
+                        fontFamily: "monospace",
+                        border: `1px solid ${selectedDesignation.color}30`,
+                      }}
+                    >
+                      {user.loginID}
+                    </code>
+                  </span>
+                  <div style={{ textAlign: "center" }}>
+                    <button
+                      onClick={() => openResetModal(user)}
+                      style={{
+                        padding: "0.4rem 0.9rem",
+                        background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "8px",
+                        fontSize: "0.78rem",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.35rem",
+                        boxShadow: "0 2px 8px rgba(99,102,241,0.3)",
+                        transition: "all 0.2s ease",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.transform = "translateY(-1px)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.transform = "translateY(0)")
+                      }
+                    >
+                      <Key size={12} />
+                      Reset
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </div>
 
       {/* Reset Password Modal */}
       {modalOpen && selectedUser && (
         <div
-          onClick={(e) => { if (e.target === e.currentTarget) closeModal(); }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeModal();
+          }}
           style={{
-            position: "fixed", inset: 0,
+            position: "fixed",
+            inset: 0,
             background: "rgba(15,23,42,0.5)",
             backdropFilter: "blur(4px)",
-            display: "flex", alignItems: "center", justifyContent: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             zIndex: 99999,
             animation: "fadeIn 0.2s ease",
           }}
         >
-          <div style={{
-            background: "white",
-            borderRadius: "20px",
-            padding: "2rem",
-            width: "420px",
-            boxShadow: "0 25px 60px rgba(0,0,0,0.2)",
-            animation: "slideUp 0.25s ease",
-          }}>
+          <div
+            style={{
+              background: "white",
+              borderRadius: "20px",
+              padding: "2rem",
+              width: "420px",
+              boxShadow: "0 25px 60px rgba(0,0,0,0.2)",
+              animation: "slideUp 0.25s ease",
+            }}
+          >
             {/* Modal Header */}
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
-              <div style={{
-                width: "44px", height: "44px", borderRadius: "12px",
-                background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0,
-              }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                marginBottom: "1.5rem",
+              }}
+            >
+              <div
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "12px",
+                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
                 <Key size={20} color="white" />
               </div>
               <div>
-                <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "700", color: "#0f172a" }}>
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: "1.1rem",
+                    fontWeight: "700",
+                    color: "#0f172a",
+                  }}
+                >
                   Reset Password
                 </h3>
                 <p style={{ margin: 0, fontSize: "0.8rem", color: "#64748b" }}>
-                  {selectedUser.loginID} — {parseName(selectedUser.name).district}
+                  {selectedUser.loginID} —{" "}
+                  {parseName(selectedUser.name).district}
                 </p>
               </div>
             </div>
 
             {/* User info pill */}
-            <div style={{
-              background: "#f8fafc",
-              border: "1px solid #e2e8f0",
-              borderRadius: "10px",
-              padding: "0.75rem 1rem",
-              marginBottom: "1.25rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-            }}>
+            <div
+              style={{
+                background: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                borderRadius: "10px",
+                padding: "0.75rem 1rem",
+                marginBottom: "1.25rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+            >
               <User size={14} color="#64748b" />
-              <span style={{ fontSize: "0.85rem", color: "#334155", fontWeight: "500" }}>
+              <span
+                style={{
+                  fontSize: "0.85rem",
+                  color: "#334155",
+                  fontWeight: "500",
+                }}
+              >
                 {selectedUser.name?.replace(/_/g, " → ")}
               </span>
             </div>
 
             {/* New Password */}
             <div style={{ marginBottom: "1rem" }}>
-              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "600", color: "#374151", marginBottom: "0.4rem" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "0.8rem",
+                  fontWeight: "600",
+                  color: "#374151",
+                  marginBottom: "0.4rem",
+                }}
+              >
                 New Password
               </label>
               <input
@@ -412,14 +560,22 @@ const UserManagementView = () => {
                   boxSizing: "border-box",
                   transition: "border-color 0.2s",
                 }}
-                onFocus={e => e.target.style.borderColor = "#6366f1"}
-                onBlur={e => e.target.style.borderColor = "#e2e8f0"}
+                onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
+                onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
               />
             </div>
 
             {/* Confirm Password */}
             <div style={{ marginBottom: "1.25rem" }}>
-              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: "600", color: "#374151", marginBottom: "0.4rem" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "0.8rem",
+                  fontWeight: "600",
+                  color: "#374151",
+                  marginBottom: "0.4rem",
+                }}
+              >
                 Confirm Password
               </label>
               <input
@@ -438,30 +594,33 @@ const UserManagementView = () => {
                   boxSizing: "border-box",
                   transition: "border-color 0.2s",
                 }}
-                onFocus={e => e.target.style.borderColor = "#6366f1"}
-                onBlur={e => e.target.style.borderColor = "#e2e8f0"}
+                onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
+                onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
               />
             </div>
 
             {/* Result message */}
             {resetResult && (
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                padding: "0.75rem 1rem",
-                borderRadius: "10px",
-                marginBottom: "1rem",
-                background: resetResult.success ? "#f0fdf4" : "#fef2f2",
-                border: `1px solid ${resetResult.success ? "#bbf7d0" : "#fecaca"}`,
-                fontSize: "0.85rem",
-                fontWeight: "500",
-                color: resetResult.success ? "#166534" : "#dc2626",
-              }}>
-                {resetResult.success
-                  ? <CheckCircle size={16} color="#16a34a" />
-                  : <AlertTriangle size={16} color="#dc2626" />
-                }
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  padding: "0.75rem 1rem",
+                  borderRadius: "10px",
+                  marginBottom: "1rem",
+                  background: resetResult.success ? "#f0fdf4" : "#fef2f2",
+                  border: `1px solid ${resetResult.success ? "#bbf7d0" : "#fecaca"}`,
+                  fontSize: "0.85rem",
+                  fontWeight: "500",
+                  color: resetResult.success ? "#166534" : "#dc2626",
+                }}
+              >
+                {resetResult.success ? (
+                  <CheckCircle size={16} color="#16a34a" />
+                ) : (
+                  <AlertTriangle size={16} color="#dc2626" />
+                )}
                 {resetResult.message}
               </div>
             )}
@@ -503,13 +662,24 @@ const UserManagementView = () => {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "0.4rem",
-                  boxShadow: resetting ? "none" : "0 4px 12px rgba(99,102,241,0.35)",
+                  boxShadow: resetting
+                    ? "none"
+                    : "0 4px 12px rgba(99,102,241,0.35)",
                 }}
               >
-                {resetting
-                  ? <><RefreshCw size={14} style={{ animation: "spin 1s linear infinite" }} /> Resetting...</>
-                  : <><Key size={14} /> Reset Password</>
-                }
+                {resetting ? (
+                  <>
+                    <RefreshCw
+                      size={14}
+                      style={{ animation: "spin 1s linear infinite" }}
+                    />{" "}
+                    Resetting...
+                  </>
+                ) : (
+                  <>
+                    <Key size={14} /> Reset Password
+                  </>
+                )}
               </button>
             </div>
           </div>

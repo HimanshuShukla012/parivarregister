@@ -805,6 +805,18 @@
   status = 200
   force = true
 
+[[redirects]]
+  from = "/get_rejected_sabha_data/"
+  to = "https://register.kdsgroup.co.in/get_rejected_sabha_data/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/get_rejected_sabha_data/*"
+  to = "https://register.kdsgroup.co.in/get_rejected_sabha_data/:splat"
+  status = 200
+  force = true
+
 # SPA fallback - must be the very last redirect
 [[redirects]]
   from = "/*"

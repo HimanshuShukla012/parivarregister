@@ -4,7 +4,7 @@
 import api from './api';
 
 
-const BASE_URL = "https://parivarregister.kdsgroup.co.in";
+
 
 
 const pmService = {
@@ -368,7 +368,7 @@ getGaonApprovalStatusByZilaBlock: async (zila, block) => {
 },
 
 getRegisterPDFUrl: ({ gaonCode, registerNo }) => {
-  return `${BASE_URL}/app/getRegisterPDF/?gaonCode=${gaonCode}&registerNo=${registerNo}`;
+  return `${import.meta.env.VITE_PDF_BASE_URL}/app/getRegisterPDF/?gaonCode=${gaonCode}&registerNo=${registerNo}`;
 },
 
 

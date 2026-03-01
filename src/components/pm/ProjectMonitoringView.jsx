@@ -123,7 +123,7 @@ const ProjectMonitoringView = () => {
     //   return;
     // }
     handleDownloadReport(
-      `https://register.kdsgroup.co.in//download_gp_wise_report/`,
+      `${import.meta.env.VITE_API_BASE_URL}/download_gp_wise_report/`,
     );
   };
 
@@ -133,7 +133,7 @@ const ProjectMonitoringView = () => {
     //   return;
     // }
     handleDownloadReport(
-      `https://register.kdsgroup.co.in//download_block_wise_report/`,
+      `${import.meta.env.VITE_API_BASE_URL}/download_block_wise_report/`,
     );
   };
 
@@ -570,7 +570,7 @@ const ProjectMonitoringView = () => {
                 color: "#22C55E",
                 onClick: () =>
                   handleDownloadReport(
-                    "https://register.kdsgroup.co.in//downloadVilScanPendingTbl/",
+                    "${import.meta.env.VITE_API_BASE_URL}/downloadVilScanPendingTbl/",
                   ),
               },
               {
@@ -721,7 +721,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadReport(
-                    "https://register.kdsgroup.co.in//district_overview_excel_api/",
+                    "${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/",
                   )
                 }
                 style={styles.downloadBtn}
@@ -738,7 +738,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadGPReport(
-                    "https://register.kdsgroup.co.in//district_overview_excel_api/",
+                    "${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/",
                   )
                 }
                 style={styles.downloadBtn}
@@ -770,7 +770,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   window.open(
-                    "https://register.kdsgroup.co.in/export_village_detailed_report/",
+                    "${import.meta.env.VITE_API_BASE_URL}/export_village_detailed_report/",
                     "_blank",
                   )
                 }

@@ -90,7 +90,7 @@ export const authService = {
 
   logout: async () => {
     try {
-      await fetch("https://register.kdsgroup.co.in/logout/", {
+      await fetch("${import.meta.env.VITE_API_BASE_URL}/logout/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,26 +147,26 @@ export const authService = {
   },
 
   getDashboardRoute: (loginID) => {
-  if (!loginID) return "/";
+    if (!loginID) return "/";
 
-  // ✅ Check exact matches FIRST
-  if (loginID.toLowerCase() === "admin") return "/admin/dashboard";
-  if (loginID.toLowerCase() === "pm") return "/pm/dashboard";
+    // ✅ Check exact matches FIRST
+    if (loginID.toLowerCase() === "admin") return "/admin/dashboard";
+    if (loginID.toLowerCase() === "pm") return "/pm/dashboard";
 
-  const firstTwo = loginID.substring(0, 2).toUpperCase();
-  const firstFour = loginID.substring(0, 4).toUpperCase();
+    const firstTwo = loginID.substring(0, 2).toUpperCase();
+    const firstFour = loginID.substring(0, 4).toUpperCase();
 
-  if (firstFour === "SCSU") return "/supervisor-sc/dashboard";
-  if (firstFour === "DESU") return "/supervisor-de/dashboard";
-  if (firstTwo === "OP") return "/operator/dashboard";
-  if (firstTwo === "SA") return "/sachiv/dashboard";
-  if (firstTwo === "AD") return "/ado/dashboard";
-  if (firstTwo === "HQ") return "/hq/dashboard";
-  if (firstTwo === "DP") return "/dpro/dashboard";
-  if (firstTwo === "DD") return "/dd/dashboard";
-  if (firstTwo === "TL") return "/tl/dashboard";
-  if (firstTwo === "DI") return "/director/dashboard";
+    if (firstFour === "SCSU") return "/supervisor-sc/dashboard";
+    if (firstFour === "DESU") return "/supervisor-de/dashboard";
+    if (firstTwo === "OP") return "/operator/dashboard";
+    if (firstTwo === "SA") return "/sachiv/dashboard";
+    if (firstTwo === "AD") return "/ado/dashboard";
+    if (firstTwo === "HQ") return "/hq/dashboard";
+    if (firstTwo === "DP") return "/dpro/dashboard";
+    if (firstTwo === "DD") return "/dd/dashboard";
+    if (firstTwo === "TL") return "/tl/dashboard";
+    if (firstTwo === "DI") return "/director/dashboard";
 
-  return "/";
-},
+    return "/";
+  },
 };

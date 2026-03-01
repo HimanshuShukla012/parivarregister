@@ -1530,7 +1530,18 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
-
+      "/get_rejected_sabha_data": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on("proxyReq", (proxyReq, req) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader("Cookie", req.headers.cookie);
+            }
+          });
+        },
+      },
     },
   },
 });

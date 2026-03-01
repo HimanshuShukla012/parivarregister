@@ -2,11 +2,11 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "", // Use empty string to make relative URLs work correctly in both dev and prod
+  baseURL: import.meta.env.VITE_API_BASE_URL || "",
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // CRITICAL: Send cookies with every request
+  withCredentials: true,
 });
 
 // Helper function to get CSRF token from cookies
@@ -63,7 +63,7 @@ api.interceptors.request.use(
       if (!csrfToken) {
         try {
           console.log("🔄 Fetching CSRF token...");
-          const response = await axios.get("/csrf/", {
+const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL || ""}/csrf/`, {
             withCredentials: true,
           });
           csrfToken = response.data.csrfToken;

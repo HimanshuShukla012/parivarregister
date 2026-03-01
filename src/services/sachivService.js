@@ -72,6 +72,24 @@ const response = await api.get(`/rejectFamilySachiv/?id=${id}&gaonCode=${gaonCod
     return response.data;
   },
 
+  // Get rejected sabha data
+  getRejectedSabhaData: async (sabhaName) => {
+    const response = await api.get(`/get_rejected_sabha_data/?sabhaName=${encodeURIComponent(sabhaName)}`);
+    return response.data;
+  },
+
+  // Approve all rejected families in a gaon
+  approveAllFamiliesSachiv: async (gaonCode) => {
+    const response = await api.get(`/approveFamilySachiv/?gaonCode=${gaonCode}&approveAll=true`);
+    return response.data;
+  },
+
+  // Reject all rejected families in a gaon
+  rejectAllFamiliesSachiv: async (gaonCode, remark) => {
+    const response = await api.get(`/rejectFamilySachiv/?gaonCode=${gaonCode}&rejectAll=true&remark=${encodeURIComponent(remark)}`);
+    return response.data;
+  },
+
   // Ajax logout (for unload event)
   ajaxLogout: async () => {
     try {

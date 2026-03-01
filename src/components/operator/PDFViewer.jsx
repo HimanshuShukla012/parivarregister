@@ -30,7 +30,7 @@ const PDFViewer = ({ gaonCode, registerOptions = [] }) => {
       return;
     }
 
-    const url = `https://parivarregister.kdsgroup.co.in/app/getRegisterPDF/?gaonCode=${encodeURIComponent(
+    const url = `${import.meta.env.VITE_PDF_BASE_URL}/getRegisterPDF/?gaonCode=${encodeURIComponent(
       gaonCode,
     )}&registerNo=${encodeURIComponent(registerNo)}`;
 
