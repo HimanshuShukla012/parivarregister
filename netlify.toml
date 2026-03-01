@@ -791,6 +791,20 @@
   force = true
 
 
+
+[[redirects]]
+  from = "/sabha_reaport_api/*"
+  to = "https://register.kdsgroup.co.in/sabha_reaport_api/:splat"
+  status = 200
+  force = true
+
+
+[[redirects]]
+  from = "/sabha_report_api/*"
+  to = "https://register.kdsgroup.co.in/sabha_report_api/:splat"
+  status = 200
+  force = true
+
 # SPA fallback - must be the very last redirect
 [[redirects]]
   from = "/*"

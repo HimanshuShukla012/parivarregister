@@ -10,6 +10,7 @@ import SupervisorDashboard from './pages/dashboards/supervisor/SupervisorDashboa
 import DPRODashboard from "./pages/dashboards/dpro/DPRODashboard";
 import AdminDashboard from './pages/dashboards/admin/AdminDashboard';
 import AdoRejectedPage from './components/sachiv/AdoRejectedPage';
+import ADODashboard from './pages/dashboards/ado/ADODashboard';
 
 const AppRouter = () => {
   return (
@@ -23,7 +24,7 @@ const AppRouter = () => {
         <Route path="/admin/dashboard" element={<AdminDashboard/>} />
         <Route path="/pm/dashboard" element={<PMDashboard />} />
         <Route path="/sachiv/dashboard" element={<SachivDashboard />} />
-        <Route path="/ado/dashboard" element={<div>ADO Dashboard</div>} />
+        <Route path="/ado/dashboard" element={<ADODashboard/>} />
         <Route path="/hq/dashboard" element={<HQDashboard />} />
         <Route path="/dpro/dashboard" element={<DPRODashboard/>} />
         <Route path="/dd/dashboard" element={<div>DD Dashboard</div>} />

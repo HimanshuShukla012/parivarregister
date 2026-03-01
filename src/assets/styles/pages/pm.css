@@ -384,7 +384,9 @@
 .pm-stat-card {
   padding: 1.5rem;
   border-radius: 16px;
-  box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 8px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   gap: 1.25rem;
@@ -415,20 +417,19 @@
 .pm-card-icon-wrapper {
   width: 64px;
   height: 64px;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  background: rgb(99 102 241);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
   flex-shrink: 0;
   backdrop-filter: blur(10px);
-  color: #f8fafc;
 }
 
 .pm-card-body {
   flex: 1;
-  color: rgb(71 68 68);
+  color: white;
 }
 
 .pm-card-value {
@@ -1142,7 +1143,7 @@ table td {
 }
 
 table th {
-  background-color: #e6c96a; /* Same header tone */
+  background-color: #7fa1e5; /* Same header tone */
   text-align: center;
   font-weight: 600;
 }
@@ -1150,7 +1151,6 @@ table th {
 table td {
   background-color: #ffffff;
 }
-
 
 /* =========================
    PM - Live Data Entries
@@ -1301,7 +1301,7 @@ table td {
   margin-top: 12px;
   border: 1px solid #cfd5df;
   height: 520px;
-  overflow: auto; /* y/x scroll inside pdf */
+  overflow: auto;
 }
 
 .pm-liveentries-pdfFrame {
@@ -1318,13 +1318,13 @@ table td {
 .pm-liveentries-tableScroll {
   width: 100%;
   max-height: 600px;
-  overflow: auto; /* BOTH x and y */
+  overflow: auto;
   border: 1px solid #1c1c1c;
 }
 
 .pm-liveentries-table {
   border-collapse: collapse;
-  width: max-content; /* enables horizontal scroll */
+  width: max-content;
   min-width: 100%;
 }
 
@@ -1445,10 +1445,9 @@ table td {
 
 /* ===== Live Data Entries tweaks ===== */
 
-/* Make table scroll both X and Y */
 .pm-liveentries-tableScroll {
-  max-height: 330px; /* keep same visual height */
-  overflow: auto; /* X + Y scroll */
+  max-height: 330px;
+  overflow: auto;
 }
 
 /* Left card: choose file row */
@@ -1497,23 +1496,20 @@ table td {
   height: 100%;
   border: 0;
 }
-/* âœ… Prevent right table from stretching when left PDF grows */
+
 .pm-liveentries-body {
-  align-items: flex-start; /* was stretching due to default */
+  align-items: flex-start;
 }
 
-/* âœ… Ensure table card doesn't take full stretched height */
 .pm-liveentries-tableCard {
   align-self: flex-start;
   height: fit-content;
 }
 
-/* (Optional) If your table wrapper has fixed height, keep it stable */
 .pm-liveentries-tableScroll {
-  max-height: 600px; /* adjust if needed */
+  max-height: 600px;
   overflow: auto;
 }
-
 /* ========================================
    Approval Status - table + download button + scroll
    ======================================== */
@@ -1650,6 +1646,245 @@ table td {
 }
 
 .pm-approval-badge.pending {
-  background: #ff4d4d;
+  background: #d8f9cb;
+}
+/* ==============================
+   Manage Supervisor 
+============================== */
+.ms-page {
+  border: 2px solid #000;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.ms-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ms-title {
+  font-size: 34px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.ms-add-btn {
+  background: #7ee05a;
+  border: 2px solid #000;
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ms-add-icon {
+  font-weight: 900;
+  margin-right: 0px;
+}
+
+.ms-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ms-search {
+  width: 320px;
+  padding: 10px 12px;
+  border: 2px solid #000;
+  border-radius: 10px;
+  outline: none;
+}
+
+.ms-zila {
+  padding: 10px 12px;
+  border: 2px solid #000;
+  border-radius: 10px;
+  outline: none;
+  background: #fff;
+}
+
+.ms-table-wrap,
+.ms-table {
+  position: relative;
+  z-index: 1;
+}
+
+.ms-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ms-table th,
+.ms-table td {
+  border: 2px solid #000;
+  padding: 10px 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.ms-table thead th {
+  background: #b9edf6;
+  font-weight: 800;
+}
+
+.ms-doc {
+  color: blue;
+  text-decoration: underline;
+}
+
+.ms-actions {
+  position: relative;
+  z-index: 999;
+}
+
+.ms-action-btn {
+  position: relative;
+  pointer-events: auto;
+  cursor: pointer;
+
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  font-size: 22px;
+  line-height: 1;
+  color: #000;
+}
+
+.ms-empty {
+  padding: 18px;
+  font-weight: 700;
+}
+/* ====== MODAL (Edit Supervisor) ====== */
+.ms-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.ms-modal {
+  width: 760px;
+  max-width: calc(100% - 60px);
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px 22px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.ms-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ms-modal-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.ms-modal-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #ff4a4a;
   color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.ms-modal-close:hover {
+  background: #e63c3c;
+}
+
+.ms-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 22px;
+  margin-top: 6px;
+}
+
+.ms-field label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.ms-field input,
+.ms-field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d5d5d5;
+  border-radius: 6px;
+  outline: none;
+}
+
+.ms-modal-actions {
+  margin-top: 12px;
+}
+
+.ms-modal-update {
+  background: #586d8d;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-weight: 800;
+  cursor: pointer;
+}
+/* ====== ACTION BUTTONS (Edit/Delete) one-line & small ====== */
+.ms-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.ms-add-btn {
+  background: #7ee05a !important;
+  border: 2px solid #000 !important;
+  border-radius: 30px;
+  padding: 10px 22px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #000 !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: none;
+}
+
+.ms-add-btn:hover {
+  background: #6fd64d !important;
+}
+.ms-table-wrap {
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

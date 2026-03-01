@@ -1519,6 +1519,18 @@ export default defineConfig({
   },
 },
 
+      // ✅ Sabha Report endpoints
+      "/sabha_reaport_api": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/sabha_report_api": {
+        target: "https://register.kdsgroup.co.in",
+        changeOrigin: true,
+        secure: false,
+      },
+
     },
   },
 });
