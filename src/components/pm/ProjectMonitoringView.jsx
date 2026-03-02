@@ -113,16 +113,17 @@ const ProjectMonitoringView = () => {
   //   link.click();
   // };
 
-const handleDownloadReport = async (url) => {
+  const handleDownloadReport = async (url) => {
     try {
       const response = await api.get(url, { responseType: "blob" });
-      const blob = new Blob([response.data], { 
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
       const disposition = response.headers["content-disposition"];
-      let filename = url.split("/").filter(Boolean).pop().split("?")[0] + ".xlsx";
+      let filename =
+        url.split("/").filter(Boolean).pop().split("?")[0] + ".xlsx";
       if (disposition) {
         const match = disposition.match(/filename="?([^"]+)"?/);
         if (match) filename = match[1];
@@ -741,11 +742,11 @@ const handleDownloadReport = async (url) => {
               </h4>
               <button
                 onClick={() =>
-  window.open(
-    `${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/`,
-    "_blank"
-  )
-}
+                  window.open(
+                    `${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/`,
+                    "_blank",
+                  )
+                }
                 style={styles.downloadBtn}
               >
                 <FaDownload /> Download
@@ -759,11 +760,11 @@ const handleDownloadReport = async (url) => {
               <h4 style={styles.cardTitle}>Digitisation GP Report</h4>
               <button
                 onClick={() =>
-  window.open(
-    `${import.meta.env.VITE_API_BASE_URL}/download_gp_wise_report/`,
-    "_blank"
-  )
-}
+                  window.open(
+                    `${import.meta.env.VITE_API_BASE_URL}/download_gp_wise_report/`,
+                    "_blank",
+                  )
+                }
                 style={styles.downloadBtn}
               >
                 <FaDownload /> Download
@@ -777,11 +778,11 @@ const handleDownloadReport = async (url) => {
               <h4 style={styles.cardTitle}>Digitisation Block-wise Report</h4>
               <button
                 onClick={() =>
-  window.open(
-    `${import.meta.env.VITE_API_BASE_URL}/download_block_wise_report/`,
-    "_blank"
-  )
-}
+                  window.open(
+                    `${import.meta.env.VITE_API_BASE_URL}/download_block_wise_report/`,
+                    "_blank",
+                  )
+                }
                 style={styles.downloadBtn}
               >
                 <FaDownload /> Download

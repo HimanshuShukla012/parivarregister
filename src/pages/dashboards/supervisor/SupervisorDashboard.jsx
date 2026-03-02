@@ -328,7 +328,7 @@ const SupervisorDashboard = () => {
       fromPage = tmp;
     }
 
-    let url = `${import.meta.env.VITE_API_BASE_URL}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+    let url = `${import.meta.env.VITE_PDF_BASE_URL}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
     if (fromPage) url += `&fromPage=${fromPage}`;
     if (toPage) url += `&toPage=${toPage}`;
     return url;

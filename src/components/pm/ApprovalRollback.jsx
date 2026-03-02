@@ -71,7 +71,7 @@ const PMApprovalRollback = ({ initialTab = "rejected" }) => {
 
     const gaonCode = member.gaonCode || selectedGaon?.gaonCode;
 
-    const url = `${import.meta.env.VITE_API_BASE_URL}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
+    const url = `${import.meta.env.VITE_PDF_BASE_URL}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
 
     window.open(url, "_blank", "noopener,noreferrer");
   };
