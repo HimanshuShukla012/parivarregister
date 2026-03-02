@@ -90,7 +90,7 @@ export const authService = {
 
   logout: async () => {
     try {
-      await fetch("${import.meta.env.VITE_API_BASE_URL}/logout/", {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/logout/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

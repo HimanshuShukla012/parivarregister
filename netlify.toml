@@ -817,6 +817,41 @@
   status = 200
   force = true
 
+
+
+[[redirects]]
+  from = "/downloadVilScanPendingTbl/*"
+  to = "https://register.kdsgroup.co.in/downloadVilScanPendingTbl/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_gp_wise_report/*"
+  to = "https://register.kdsgroup.co.in/download_gp_wise_report/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/download_block_wise_report/*"
+  to = "https://register.kdsgroup.co.in/download_block_wise_report/:splat"
+  status = 200
+  force = true
+
+
+[[redirects]]
+  from = "/getLoginDetails/*"
+  to = "https://register.kdsgroup.co.in/getLoginDetails/:splat"
+  status = 200
+  force = true
+
+
+
+[[redirects]]
+  from = "/downloadSupervisorDoc/*"
+  to = "https://register.kdsgroup.co.in/downloadSupervisorDoc/:splat"
+  status = 200
+  force = true
+
 # SPA fallback - must be the very last redirect
 [[redirects]]
   from = "/*"

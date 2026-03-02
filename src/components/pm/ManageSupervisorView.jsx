@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useState } from "react";
 import manageSupervisorService from "../../services/manageSupervisorService";
 import EditSupervisorModal from "./EditSupervisorModal";
+import XLSX from "xlsx-js-style";
+
 
 const ManageSupervisorView = ({ zilaList = [] }) => {
   const [loading, setLoading] = useState(false);
@@ -57,6 +59,8 @@ const ManageSupervisorView = ({ zilaList = [] }) => {
       const aadhar  = pick(r, ["aadhar", "aadhaar", "gst", "gstNo", "aadharNo"], "-");
       const loc     = pick(r, ["assignedLocation", "location", "zila", "district"], "-");
       const docUrl  = pick(r, ["documentUrl", "document", "docUrl", "pdfUrl"], "");
+      console.log("🔍 Full row object:", r); // ADD THIS
+
       return name === "-" && loginId === "-" && aadhar === "-" && loc === "-" && !docUrl;
     };
     const allPlaceholder = filteredRows.every(isPlaceholder);
@@ -163,8 +167,89 @@ const operatorCount = rows.filter((r) => pick(r, ["role", "Role"], "") === "DE")
               </p>
             </div>
             <button
+onClick={() => {
+                const TITLE_FILL = "001F3864";
+                const HEADER_FILL = "004472C4";
+                const DATA_FILL = "FFE699";
+                const WHITE = "FFFFFF";
+                const cols = ["Name", "Login ID", "Role", "Assigned District", "Assigned Blocks"];
+                const colWidths = [{ wch: 28 }, { wch: 18 }, { wch: 28 }, { wch: 22 }, { wch: 45 }];
+                const total = rows.length;
+
+                const borderStyle = {
+                  top: { style: "thin" }, bottom: { style: "thin" },
+                  left: { style: "thin" }, right: { style: "thin" },
+                };
+
+                const makeCell = (v, fill, bold, fontSize, color, halign) => ({
+                  v, t: "s",
+                  s: {
+                    fill: { patternType: "solid", fgColor: { rgb: fill } },
+                    font: { bold, sz: fontSize, color: { rgb: color }, name: "Calibri" },
+                    alignment: { horizontal: halign, vertical: "center" },
+                    border: borderStyle,
+                  },
+                });
+
+                const wb = XLSX.utils.book_new();
+                const ws = {};
+
+                // Row 1: Title (merged across 5 cols)
+                ws["A1"] = makeCell(`Supervisor List  |  Total: ${total}`, TITLE_FILL, true, 13, WHITE, "center");
+                ws["B1"] = makeCell("", TITLE_FILL, false, 13, WHITE, "center");
+                ws["C1"] = makeCell("", TITLE_FILL, false, 13, WHITE, "center");
+                ws["D1"] = makeCell("", TITLE_FILL, false, 13, WHITE, "center");
+                ws["E1"] = makeCell("", TITLE_FILL, false, 13, WHITE, "center");
+
+                // Row 2: Headers
+                cols.forEach((col, i) => {
+                  const cellRef = XLSX.utils.encode_cell({ r: 1, c: i });
+                  ws[cellRef] = makeCell(col, HEADER_FILL, true, 11, WHITE, "center");
+                });
+
+                // Data rows
+                rows.forEach((r, rowIdx) => {
+                  const roleLabel = r.role === "SC" ? "Scanning Supervisor" : r.role === "DE" ? "Data Entry Supervisor" : r.role || "—";
+                  const blocks = Array.isArray(r.assignedBlocks) && r.assignedBlocks.length > 0 ? r.assignedBlocks.join(", ") : "—";
+                  const values = [
+                    pick(r, ["name", "fullName", "supervisorName"], "—"),
+                    pick(r, ["loginId", "loginID"], "—"),
+                    roleLabel,
+                    pick(r, ["assignedLocation", "location", "zila", "district"], "—"),
+                    blocks,
+                  ];
+                  const aligns = ["left", "center", "left", "left", "left"];
+                  values.forEach((val, colIdx) => {
+                    const cellRef = XLSX.utils.encode_cell({ r: rowIdx + 2, c: colIdx });
+                    ws[cellRef] = makeCell(val, DATA_FILL, false, 11, "000000", aligns[colIdx]);
+                  });
+                });
+
+                const range = XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r: rows.length + 1, c: 4 } });
+                ws["!ref"] = range;
+                ws["!cols"] = colWidths;
+                ws["!rows"] = [{ hpt: 22 }, { hpt: 16 }, ...rows.map(() => ({ hpt: 14 }))];
+                ws["!merges"] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }];
+
+                XLSX.utils.book_append_sheet(wb, ws, "Supervisors");
+                XLSX.writeFile(wb, "Supervisors.xlsx");
+              }}
+              style={{
+                padding: "0.875rem 1.75rem",
+                background: "linear-gradient(135deg, #10b981, #059669)",
+                color: "white", border: "none", borderRadius: "12px",
+                fontWeight: 700, cursor: "pointer", fontSize: "0.95rem",
+                display: "flex", alignItems: "center", gap: "0.5rem",
+                boxShadow: "0 4px 12px rgba(16,185,129,0.3)",
+                transition: "all 0.2s", fontFamily: "inherit",
+              }}
+            >
+              <span style={{ fontSize: "18px", lineHeight: 1 }}>⬇</span>
+              Download Excel
+            </button>
+            <button
               className="msv-add-btn"
-              onClick={() => setAddOpen(true)}
+              onClick={() => setAddOpen(true)}         
               style={{
                 padding: "0.875rem 1.75rem",
                 background: "linear-gradient(135deg, #3b82f6, #2563eb)",
@@ -252,7 +337,9 @@ const operatorCount = rows.filter((r) => pick(r, ["role", "Role"], "") === "DE")
                     const loginId = pick(r, ["loginId", "loginID", "supervisorId", "id"], "—");
                     const aadhar  = pick(r, ["aadhar", "aadhaar", "gst", "gstNo", "aadharNo"], "—");
                     const role    = pick(r, ["role", "Role"], "—");
-                    const docUrl  = pick(r, ["documentUrl", "document", "docUrl", "pdfUrl"], "");
+                    const docUrl = r.document 
+                      ? `${import.meta.env.VITE_API_BASE_URL}/downloadSupervisorDoc/?loginID=${loginId}` 
+                      : "";
                     const loc     = pick(r, ["assignedLocation", "location", "zila", "district"], "—");
 
                     const roleColors = {

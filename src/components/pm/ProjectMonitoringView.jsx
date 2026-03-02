@@ -113,8 +113,29 @@ const ProjectMonitoringView = () => {
   //   link.click();
   // };
 
-  const handleDownloadReport = (url) => {
-    window.open(url, "_blank");
+const handleDownloadReport = async (url) => {
+    try {
+      const response = await api.get(url, { responseType: "blob" });
+      const blob = new Blob([response.data], { 
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+      });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      const disposition = response.headers["content-disposition"];
+      let filename = url.split("/").filter(Boolean).pop().split("?")[0] + ".xlsx";
+      if (disposition) {
+        const match = disposition.match(/filename="?([^"]+)"?/);
+        if (match) filename = match[1];
+      }
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error("❌ Download failed:", error);
+      alert("Download failed. Please try again.");
+    }
   };
 
   const handleDownloadGPReport = () => {
@@ -570,7 +591,7 @@ const ProjectMonitoringView = () => {
                 color: "#22C55E",
                 onClick: () =>
                   handleDownloadReport(
-                    "${import.meta.env.VITE_API_BASE_URL}/downloadVilScanPendingTbl/",
+                    `${import.meta.env.VITE_API_BASE_URL}/downloadVilScanPendingTbl/`,
                   ),
               },
               {
@@ -721,7 +742,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadReport(
-                    "${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/",
+                    `${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/`,
                   )
                 }
                 style={styles.downloadBtn}
@@ -738,7 +759,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   handleDownloadGPReport(
-                    "${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/",
+                    `${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/`,
                   )
                 }
                 style={styles.downloadBtn}
@@ -770,7 +791,7 @@ const ProjectMonitoringView = () => {
               <button
                 onClick={() =>
                   window.open(
-                    "${import.meta.env.VITE_API_BASE_URL}/export_village_detailed_report/",
+                    `${import.meta.env.VITE_API_BASE_URL}/export_village_detailed_report/`,
                     "_blank",
                   )
                 }

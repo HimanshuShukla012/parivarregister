@@ -99,7 +99,7 @@ const UserManagementView = () => {
     setResetResult(null);
     try {
       const res = await fetch(
-        "${import.meta.env.VITE_API_BASE_URL}/resetPassword/",
+        `${import.meta.env.VITE_API_BASE_URL}/resetPassword/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
