@@ -741,10 +741,11 @@ const handleDownloadReport = async (url) => {
               </h4>
               <button
                 onClick={() =>
-                  handleDownloadReport(
-                    `${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/`,
-                  )
-                }
+  window.open(
+    `${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/`,
+    "_blank"
+  )
+}
                 style={styles.downloadBtn}
               >
                 <FaDownload /> Download
@@ -758,10 +759,11 @@ const handleDownloadReport = async (url) => {
               <h4 style={styles.cardTitle}>Digitisation GP Report</h4>
               <button
                 onClick={() =>
-                  handleDownloadGPReport(
-                    `${import.meta.env.VITE_API_BASE_URL}/district_overview_excel_api/`,
-                  )
-                }
+  window.open(
+    `${import.meta.env.VITE_API_BASE_URL}/download_gp_wise_report/`,
+    "_blank"
+  )
+}
                 style={styles.downloadBtn}
               >
                 <FaDownload /> Download
@@ -774,7 +776,12 @@ const handleDownloadReport = async (url) => {
             <div style={styles.cardHeader}>
               <h4 style={styles.cardTitle}>Digitisation Block-wise Report</h4>
               <button
-                onClick={handleBlockReportDownload}
+                onClick={() =>
+  window.open(
+    `${import.meta.env.VITE_API_BASE_URL}/download_block_wise_report/`,
+    "_blank"
+  )
+}
                 style={styles.downloadBtn}
               >
                 <FaDownload /> Download

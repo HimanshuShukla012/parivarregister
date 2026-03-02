@@ -71,7 +71,7 @@ const PMApprovalRollback = ({ initialTab = "rejected" }) => {
 
     const gaonCode = member.gaonCode || selectedGaon?.gaonCode;
 
-    const url = `https://prds.kdsgroup.co.in/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
+    const url = `${import.meta.env.VITE_API_BASE_URL}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}&fromPage=${fromPage}&toPage=${toPage}`;
 
     window.open(url, "_blank", "noopener,noreferrer");
   };
@@ -423,12 +423,23 @@ useEffect(() => {
       .flatMap((g) => {
   const gaonCode = g?.gaonCode ?? g?.gaon_code;
   const rejectedFamilyIds = Array.isArray(g?.rejectedFamilyIds) ? g.rejectedFamilyIds : [];
-  const list = Array.isArray(g?.data) ? g.data : [];
-  return list.map((member, memberIndex) => ({
-    ...member,
-    rejectedFamilyId: rejectedFamilyIds[memberIndex] ?? member?.id,
-    gaonCode: member?.gaonCode ?? gaonCode,
-  }));
+  const familyGroups = Array.isArray(g?.data) ? g.data : [];
+  return familyGroups.flatMap((familyGroup, familyIndex) => {
+    const members = Array.isArray(familyGroup?.members) ? familyGroup.members : [];
+    const familyInfo = familyGroup?.familyInfo ?? {};
+    const rejectedFamilyId = rejectedFamilyIds[familyIndex] ?? familyInfo?.id;
+    return members.map((member) => ({
+      ...member,
+      gaonCode: member?.gaonCode ?? gaonCode,
+      rejectedFamilyId,
+      houseNumberNum: member?.houseNumberNum ?? familyInfo?.houseNumberNum,
+      houseNumberText: member?.houseNumberText ?? familyInfo?.houseNumberText,
+      familyHeadName: member?.familyHeadName ?? familyInfo?.familyHeadName,
+      pdfNo: member?.pdfNo ?? familyInfo?.pdfNo,
+      fromPage: member?.fromPage ?? familyInfo?.fromPage,
+      toPage: member?.toPage ?? familyInfo?.toPage,
+    }));
+  });
 });
 
     setUpdatedFamilies(rows);
