@@ -471,7 +471,7 @@ const response = await api.get(`/downloadDistrictDetails/?district=${encodeURICo
 
   // View PDF Page - CRITICAL FIX: No trailing slash before query params!
   viewPDFPage: (pdfNo, fromPage, toPage, gaonCode) => {
-    let url = `/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
+    let url = `${import.meta.env.VITE_PDF_BASE_URL}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
     if (fromPage) url += `&fromPage=${fromPage}`;
     if (toPage) url += `&toPage=${toPage}`;
     window.open(url, '_blank');

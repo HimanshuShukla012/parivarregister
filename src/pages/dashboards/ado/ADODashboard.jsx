@@ -1,8 +1,11 @@
 // src/pages/dashboards/ado/ADODashboard.jsx
 import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
-import "../../../assets/styles/pages/hq.css"
-
+import GaonDataTable from "../../../components/hq/GaonDataTable";
+import ADOVerifyDataEntryForm from "../../../components/ado/ADOVerifyDataEntryForm";
+import ADOSabhaApprovalTable from "../../../components/ado/ADOSabhaApprovalTable";
+import "../../../assets/styles/pages/hq.css";
+import api from "../../../services/api";
 import { fetchSabhaReport } from "../../../services/adoService";
 
 const ADODashboard = () => {
@@ -11,77 +14,71 @@ const ADODashboard = () => {
   const [blockName, setBlockName] = useState("");
   const [sabhaReport, setSabhaReport] = useState([]);
   const [error, setError] = useState("");
+  const [gaonData, setGaonData] = useState([]);
+  const [showGaonData, setShowGaonData] = useState(false);
 
   // villages modal
   const [villagesOpen, setVillagesOpen] = useState(false);
   const [selectedSabha, setSelectedSabha] = useState(null);
 
+  const handleGaonDataLoad = (data) => {
+    setGaonData(data);
+    setShowGaonData(true);
+  };
+
   useEffect(() => {
     document.body.classList.add("hq-page");
-    return () => {
-      document.body.classList.remove("hq-page");
-    };
+    return () => document.body.classList.remove("hq-page");
   }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlBlock = params.get("block");
-
     const resolved = (urlBlock || DEFAULT_BLOCK || "").trim();
     setBlockName(resolved);
-
     if (!urlBlock && resolved) {
       params.set("block", resolved);
-      const newUrl = `${window.location.pathname}?${params.toString()}`;
-      window.history.replaceState({}, "", newUrl);
+      window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${params.toString()}`,
+      );
     }
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    async function load() {
-      setLoading(true);
-      setError("");
-
-      try {
-        const data = await fetchSabhaReport(blockName);
-
-        const rows = Array.isArray(data) ? data : data?.response || [];
-
-        if (isMounted) {
-          setSabhaReport(rows);
-        }
-      } catch (e) {
-        console.error(e);
-        if (isMounted) {
-          setSabhaReport([]);
-          setError(e?.message || "Failed to load report.");
-        }
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-
-    if (blockName) load();
-    else {
+  const loadSabhaReport = async (block) => {
+    if (!block) {
       setLoading(false);
       setSabhaReport([]);
+      return;
     }
+    setLoading(true);
+    setError("");
+    try {
+      const data = await fetchSabhaReport(block);
+      const rows = Array.isArray(data) ? data : data?.response || [];
+      setSabhaReport(rows);
+    } catch (e) {
+      console.error(e);
+      setSabhaReport([]);
+      setError(e?.message || "Failed to load report.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return () => {
-      isMounted = false;
-    };
+  useEffect(() => {
+    loadSabhaReport(blockName);
   }, [blockName]);
 
-  const pageTitle = useMemo(() => {
-    return blockName ? `ADO Dashboard - ${blockName} Block` : "ADO Dashboard";
-  }, [blockName]);
+  const pageTitle = useMemo(
+    () => (blockName ? `ADO Dashboard — ${blockName} Block` : "ADO Dashboard"),
+    [blockName],
+  );
 
   const downloadSabhaReportExcel = () => {
     try {
       const wb = XLSX.utils.book_new();
-
       const data = (sabhaReport || []).map((r, i) => ({
         "SL NO": r.sl_no ?? i + 1,
         "Sabha Name": r.sabha_name ?? "",
@@ -96,45 +93,21 @@ const ADODashboard = () => {
         "Families Rejected": r.families_rejected ?? 0,
         "Verification %": r.percentage_verification ?? 0,
         "Sabha Status": r.sabha_status ?? "",
-        "Villages (Count)": Array.isArray(r.villages) ? r.villages.length : 0,
-        "Gaon Code": Array.isArray(r.villages)
-          ? r.villages
-              .map((v) => v?.gaon_code)
-              .filter(Boolean)
-              .join(", ")
-          : "",
-        "Gaon Name": Array.isArray(r.villages)
-          ? r.villages
-              .map((v) => v?.gaon_name)
-              .filter(Boolean)
-              .join(", ")
-          : "",
       }));
-
       const ws = XLSX.utils.json_to_sheet(data);
       XLSX.utils.book_append_sheet(wb, ws, "Sabha Report");
-
-      const fileName = `${blockName || "ADO"}_Sabha_Report.xlsx`;
-      XLSX.writeFile(wb, fileName);
+      XLSX.writeFile(wb, `${blockName || "ADO"}_Sabha_Report.xlsx`);
     } catch (e) {
       console.error(e);
     }
   };
 
-  const openVillages = (row) => {
-    setSelectedSabha(row);
-    setVillagesOpen(true);
-  };
-
-  const closeVillages = () => {
-    setVillagesOpen(false);
-    setSelectedSabha(null);
-  };
+  const openVillages = (row) => { setSelectedSabha(row); setVillagesOpen(true); };
+  const closeVillages = () => { setVillagesOpen(false); setSelectedSabha(null); };
 
   const formatPercent = (val) => {
     const n = Number(val);
-    if (Number.isNaN(n)) return "0%";
-    return `${n.toFixed(2)}%`;
+    return Number.isNaN(n) ? "0%" : `${n.toFixed(2)}%`;
   };
 
   return (
@@ -159,15 +132,17 @@ const ADODashboard = () => {
               alt="KDS Logo"
               className="kds-logo"
             />
-            <div className="user-info" style={{ position: "relative", padding: "0px", overflow: "hidden" }}>
+            <div
+              className="user-info"
+              style={{ position: "relative", padding: "0px", overflow: "hidden" }}
+            >
               <a
                 href="/"
                 className="logout"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (window.confirm("Are you sure you want to logout?")) {
+                  if (window.confirm("Are you sure you want to logout?"))
                     window.location.href = "/";
-                  }
                 }}
                 style={{ position: "relative", padding: "10px" }}
               >
@@ -183,6 +158,7 @@ const ADODashboard = () => {
       <div className="main-content">
         <h1 className="page-title">{pageTitle}</h1>
 
+        {/* ── Sabha Report Table ── */}
         <div className="section">
           <div className="section-header">
             <h2 className="section-title">Block Overview</h2>
@@ -192,9 +168,8 @@ const ADODashboard = () => {
           <div className="table-container">
             <div className="table-header">
               <h3 className="table-title">
-                Sabha Report{blockName ? ` - ${blockName}` : ""}
+                Sabha Report{blockName ? ` — ${blockName}` : ""}
               </h3>
-
               <button
                 className="download-btn"
                 onClick={downloadSabhaReportExcel}
@@ -205,11 +180,9 @@ const ADODashboard = () => {
               </button>
             </div>
 
-            {error ? (
+            {error && (
               <div style={{ padding: 12, color: "#b00020" }}>{error}</div>
-            ) : null}
-
-            {/* blockName will always resolve in local dev (DEFAULT_BLOCK) */}
+            )}
 
             <div className="table-wrapper">
               <table>
@@ -219,35 +192,31 @@ const ADODashboard = () => {
                     <th>Sabha Name</th>
                     <th>Sabha Code</th>
                     <th>No. of Villages</th>
-                    <th>Uninhabited Villages</th>
-                    <th>Inhabited Villages</th>
+                    <th>Uninhabited</th>
+                    <th>Inhabited</th>
                     <th>Registers Taken Over</th>
                     <th>Registers Scanned</th>
                     <th>Families Registered</th>
                     <th>Families Verified</th>
                     <th>Families Rejected</th>
                     <th>Verification %</th>
-                    <th>Sabha Status</th>
+                    <th>Status</th>
                     <th>Villages</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td
-                        colSpan={14}
-                        style={{ textAlign: "center", padding: 16 }}
-                      >
-                        Loading...
+                      <td colSpan={14} style={{ textAlign: "center", padding: 16 }}>
+                        Loading…
                       </td>
                     </tr>
-                  ) : sabhaReport && sabhaReport.length > 0 ? (
+                  ) : sabhaReport.length > 0 ? (
                     sabhaReport.map((row, index) => (
-                      <tr key={`${row?.sabha_code || index}`}>
+                      <tr key={row?.sabha_code || index}>
                         <td>{row?.sl_no ?? index + 1}</td>
-                        <td>{row?.sabha_name ?? "-"}</td>
-                        <td>{row?.sabha_code ?? "-"}</td>
+                        <td>{row?.sabha_name ?? "—"}</td>
+                        <td>{row?.sabha_code ?? "—"}</td>
                         <td>{row?.no_of_villages ?? 0}</td>
                         <td>{row?.uninhabited_villages ?? 0}</td>
                         <td>{row?.inhabited_villages ?? 0}</td>
@@ -257,24 +226,18 @@ const ADODashboard = () => {
                         <td>{row?.families_verified ?? 0}</td>
                         <td>{row?.families_rejected ?? 0}</td>
                         <td>{formatPercent(row?.percentage_verification)}</td>
-                        <td>{row?.sabha_status ?? "-"}</td>
+                        <td>{row?.sabha_status ?? "—"}</td>
                         <td style={{ whiteSpace: "nowrap" }}>
                           <div className="view_button_box">
                             <span>
-                              {Array.isArray(row?.villages)
-                                ? row.villages.length
-                                : 0}
+                              {Array.isArray(row?.villages) ? row.villages.length : 0}
                             </span>
                             <button
                               className="download-btn view_button"
                               onClick={() => openVillages(row)}
-                              disabled={
-                                !Array.isArray(row?.villages) ||
-                                row.villages.length === 0
-                              }
+                              disabled={!Array.isArray(row?.villages) || row.villages.length === 0}
                               title={
-                                !Array.isArray(row?.villages) ||
-                                row.villages.length === 0
+                                !Array.isArray(row?.villages) || row.villages.length === 0
                                   ? "No villages"
                                   : "View villages"
                               }
@@ -287,10 +250,7 @@ const ADODashboard = () => {
                     ))
                   ) : (
                     <tr>
-                      <td
-                        colSpan={14}
-                        style={{ textAlign: "center", padding: 16 }}
-                      >
+                      <td colSpan={14} style={{ textAlign: "center", padding: 16 }}>
                         No data found.
                       </td>
                     </tr>
@@ -300,6 +260,20 @@ const ADODashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* ── Sabha Approval Table ── */}
+        <ADOSabhaApprovalTable
+          sabhaList={sabhaReport}
+          onRefresh={() => loadSabhaReport(blockName)}
+        />
+
+        {/* ── Verify Data Entry ── */}
+        <ADOVerifyDataEntryForm
+          sabhaList={sabhaReport}
+          onGaonDataLoad={handleGaonDataLoad}
+        />
+
+        {showGaonData && <GaonDataTable data={gaonData} />}
 
         {/* Villages Modal */}
         {villagesOpen && (
@@ -339,15 +313,13 @@ const ADODashboard = () => {
                 }}
               >
                 <div style={{ fontWeight: 700 }}>
-                  Villages - {selectedSabha?.sabha_name || "-"} (
-                  {selectedSabha?.sabha_code || "-"})
+                  Villages — {selectedSabha?.sabha_name || "—"} (
+                  {selectedSabha?.sabha_code || "—"})
                 </div>
-
                 <button className="download-btn" onClick={closeVillages}>
                   Close
                 </button>
               </div>
-
               <div
                 style={{
                   padding: 12,
@@ -366,20 +338,17 @@ const ADODashboard = () => {
                   </thead>
                   <tbody>
                     {(selectedSabha?.villages || []).map((v, i) => (
-                      <tr key={`${v?.gaon_code || i}`}>
+                      <tr key={v?.gaon_code || i}>
                         <td>{i + 1}</td>
-                        <td>{v?.gaon_code ?? "-"}</td>
-                        <td>{v?.gaon_name ?? "-"}</td>
+                        <td>{v?.gaon_code ?? "—"}</td>
+                        <td>{v?.gaon_name ?? "—"}</td>
                         <td>{v?.unpopulated ? "Yes" : "No"}</td>
                       </tr>
                     ))}
                     {(!selectedSabha?.villages ||
                       selectedSabha.villages.length === 0) && (
                       <tr>
-                        <td
-                          colSpan={4}
-                          style={{ textAlign: "center", padding: 16 }}
-                        >
+                        <td colSpan={4} style={{ textAlign: "center", padding: 16 }}>
                           No villages found.
                         </td>
                       </tr>
