@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import divisionService from "../../services/divisionService";
+import VerifyDataEntryForm from "../../components/hq/VerifyDataEntryForm";
+import GaonDataTable from "../../components/hq/GaonDataTable";
 import "../../assets/styles/pages/hq.css";
+import hqService from "../../services/hqService";
 
 const DivisionHQDashboard = ({ username }) => {
   const [loading, setLoading] = useState(true);
@@ -8,6 +11,9 @@ const DivisionHQDashboard = ({ username }) => {
   const [districtData, setDistrictData] = useState([]);
   const [divisionSummary, setDivisionSummary] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [zilaList, setZilaList] = useState([]);
+const [gaonData, setGaonData] = useState([]);
+const [showGaonData, setShowGaonData] = useState(false);
 
   useEffect(() => {
     document.body.classList.add("hq-page");
@@ -20,24 +26,41 @@ const DivisionHQDashboard = ({ username }) => {
   }, []);
 
   const fetchData = async () => {
-    try {
-      const data = await divisionService.getDivisionReport(username);
-      setRawData(data);
-      generateDistrictData(data);
-      generateDivisionSummary(data);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to load division data");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const [divisionData, zilas] = await Promise.all([
+      divisionService.getDivisionReport(username),
+      hqService.getZilaList(),
+    ]);
+
+    setRawData(divisionData);
+    generateDistrictData(divisionData);
+    generateDivisionSummary(divisionData);
+
+    setZilaList(zilas || []);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to load division data");
+  } finally {
+    setLoading(false);
+  }
+};
+
+  
+
+
+const handleGaonDataLoad = (data) => {
+  setGaonData(data);
+  setShowGaonData(true);
+};
 
   const getBlocksForDistrict = (districtName) => {
   return rawData.filter(
     (item) => item.district_name === districtName
   );
 };
+
+
+
 
   const generateDivisionSummary = (data) => {
     const summary = data.reduce(
@@ -302,11 +325,28 @@ const DivisionHQDashboard = ({ username }) => {
               </div>
             </div>
           </div>
+          
         </div>
       ))}
+
+      
     </div>
   </>
 )}
+
+{/* ============================= */}
+{/* VERIFY DATA ENTRY SECTION */}
+{/* ============================= */}
+
+<div className="section">
+  
+  <VerifyDataEntryForm
+    zilaList={zilaList}
+    onGaonDataLoad={handleGaonDataLoad}
+  />
+
+  {showGaonData && <GaonDataTable data={gaonData} />}
+</div>
       </div>
     </div>
   );
