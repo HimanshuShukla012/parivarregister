@@ -137,7 +137,7 @@ export const authService = {
     if (firstTwo === "DP") return "dpro";
     if (firstTwo === "DD") return "dd";
     if (firstTwo === "TL") return "tl";
-    if (firstTwo === "DI") return "director";
+    if (firstTwo === "DIR") return "director";
     if (firstFour === "SCSU") return "supervisorSC";
     if (firstFour === "DESU") return "supervisorDE";
     if (loginID.toLowerCase() === "admin") return "admin";

@@ -30,7 +30,7 @@ const AppRouter = () => {
         <Route path="/dpro/dashboard" element={<DPRODashboard/>} />
         <Route path="/dd/dashboard" element={<DivisionHQDashboard />} />
         <Route path="/tl/dashboard" element={<div>TL Dashboard</div>} />
-        <Route path="/director/dashboard" element={<div>Director Dashboard</div>} />
+        <Route path="/director/dashboard" element={<HQDashboard />} />
         <Route path="/supervisor-sc/dashboard" element={<div>Supervisor SC Dashboard</div>} />
         <Route path="/supervisor-de/dashboard" element={< SupervisorDashboard/>} />
         <Route path="/sachiv/ado-rejected" element={<AdoRejectedPage />} />
