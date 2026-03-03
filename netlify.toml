@@ -852,6 +852,20 @@
   status = 200
   force = true
 
+
+[[redirects]]
+  from = "/drpo_rejected_data_report/"
+  to = "https://register.kdsgroup.co.in/drpo_rejected_data_report/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/drpo_rejected_data_report/*"
+  to = "https://register.kdsgroup.co.in/drpo_rejected_data_report/:splat"
+  status = 200
+  force = true
+
+
 # SPA fallback - must be the very last redirect
 [[redirects]]
   from = "/*"

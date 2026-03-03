@@ -1,61 +1,110 @@
-import React, { useState } from 'react';
-import api from '../../services/api';
+import React, { useState } from "react";
+import api from "../../services/api";
 
-const EditFamilyModal = ({ familyData, onClose, onSuccess, onError, setLoading }) => {
+const EditFamilyModal = ({
+  familyData,
+  onClose,
+  onSuccess,
+  onError,
+  setLoading,
+}) => {
   const [formData, setFormData] = useState(familyData);
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   const fieldConfig = {
-    houseNumberNum: { label: 'मकान नम्बर (अंकों में) *', type: 'number', required: true },
-    houseNumberText: { label: 'मकान नम्बर (अक्षरों में)', type: 'text' },
-    familyHeadName: { label: 'परिवार के प्रमुख का नाम *', type: 'text', required: true },
-    pdfNo: { label: 'PDF No. *', type: 'number', required: true },
-    fromPage: { label: 'From Page No. *', type: 'number', required: true },
-    toPage: { label: 'To Page No. *', type: 'number', required: true },
-    memberName: { label: 'परिवार के सदस्य का नाम *', type: 'text', required: true },
-    fatherOrHusbandName: { label: 'पिता या पति का नाम', type: 'text' },
-    gender: { 
-      label: 'पुरुष / महिला *', 
-      type: 'select', 
-      required: true, 
-      options: ['पुरुष', 'महिला', 'अन्य'] 
+    houseNumberNum: {
+      label: "मकान नम्बर (अंकों में) *",
+      type: "number",
+      required: true,
     },
-    religion: { 
-      label: 'धर्म *', 
-      type: 'select', 
-      required: true, 
-      options: ['हिन्दू', 'मुस्लिम', 'ईसाई', 'सिख', 'बौद्ध', 'जैन', 'अन्य'] 
+    houseNumberText: { label: "मकान नम्बर (अक्षरों में)", type: "text" },
+    familyHeadName: {
+      label: "परिवार के प्रमुख का नाम *",
+      type: "text",
+      required: true,
     },
-    caste: { label: 'जाति', type: 'text' },
-    dob: { 
-      label: 'जन्म तिथि', 
-      type: 'date', 
-      attributes: { min: '1900-01-01', max: today } 
+    pdfNo: { label: "PDF No. *", type: "number", required: true },
+    fromPage: { label: "From Page No. *", type: "number", required: true },
+    toPage: { label: "To Page No. *", type: "number", required: true },
+    memberName: {
+      label: "परिवार के सदस्य का नाम *",
+      type: "text",
+      required: true,
     },
-    business: { label: 'व्यावसाय', type: 'text' },
-    literacy: { 
-      label: 'साक्षर या निरक्षर', 
-      type: 'select', 
-      options: ['साक्षर', 'निरक्षर'] 
+    fatherOrHusbandName: { label: "पिता या पति का नाम", type: "text" },
+    gender: {
+      label: "पुरुष / महिला *",
+      type: "select",
+      required: true,
+      options: ["पुरुष", "महिला", "अन्य"],
     },
-    qualification: { 
-      label: 'योग्यता', 
-      type: 'select', 
-      options: ['<5', '5 से 9', '10', '11', '12', 'ग्रेजुएशन', 'डिप्लोमा', 'पोस्ट ग्रेजुएशन', 'पीएचडी'] 
+    religion: {
+      label: "धर्म *",
+      type: "select",
+      required: true,
+      options: ["हिन्दू", "मुस्लिम", "ईसाई", "सिख", "बौद्ध", "जैन", "अन्य"],
     },
-    leavingDate: { 
-      label: 'सर्किल छोड़ देने/ मृत्यु का दिनांक', 
-      type: 'date', 
-      attributes: { min: '1900-01-01', max: today } 
+    caste: { label: "जाति", type: "text" },
+    dob: {
+      label: "जन्म तिथि",
+      type: "date",
+      attributes: { min: "1900-01-01", max: today },
     },
-    description: { label: 'विवरण', type: 'text' }
+    business: { label: "व्यावसाय", type: "text" },
+    literacy: {
+      label: "साक्षर या निरक्षर",
+      type: "select",
+      options: ["साक्षर", "निरक्षर"],
+    },
+    qualification: {
+      label: "योग्यता",
+      type: "select",
+      options: [
+        "<5",
+        "5 से 9",
+        "10",
+        "11",
+        "12",
+        "ग्रेजुएशन",
+        "डिप्लोमा",
+        "पोस्ट ग्रेजुएशन",
+        "पीएचडी",
+      ],
+    },
+    leavingDate: {
+      label: "सर्किल छोड़ देने/ मृत्यु का दिनांक",
+      type: "date",
+      attributes: { min: "1900-01-01", max: today },
+    },
+    description: { label: "विवरण", type: "text" },
   };
 
-  const commonFields = ['houseNumberNum', 'houseNumberText', 'familyHeadName', 'pdfNo', 'fromPage', 'toPage'];
+  const commonFields = [
+    "houseNumberNum",
+    "houseNumberText",
+    "familyHeadName",
+    "pdfNo",
+    "fromPage",
+    "toPage",
+  ];
   const hiddenFields = [
-    'id', 'zilaCode', 'zila', 'tehsilCode', 'tehsil', 'blockCode', 'block',
-    'sabhaCode', 'sabha', 'panchayat', 'gaon', 'gaonCode', 'serialNo',
-    'byOperator', 'entryDate', 'status', 'remark'
+    "id",
+    "zilaCode",
+    "zila",
+    "tehsilCode",
+    "tehsil",
+    "blockCode",
+    "block",
+    "sabhaCode",
+    "sabha",
+    "panchayat",
+    "gaon",
+    "gaonCode",
+    "serialNo",
+    "byOperator",
+    "entryDate",
+    "status",
+    "remark",
   ];
 
   const handleSubmit = async (e) => {
@@ -67,19 +116,19 @@ const EditFamilyModal = ({ familyData, onClose, onSuccess, onError, setLoading }
       gaonCode: formData[0].gaonCode,
       houseNumberNum: formData[0].houseNumberNum,
       houseNumberText: formData[0].houseNumberText,
-      familyHeadName: formData[0].familyHeadName
+      familyHeadName: formData[0].familyHeadName,
     };
 
     try {
-      const response = await api.post('/supervisorUpdate/', payload);
-      if (response.data.status === 'success') {
+      const response = await api.post("/supervisorUpdate/", payload);
+      if (response.data.status === "success") {
         onSuccess();
       } else {
-        onError('Error: ' + response.data.error);
+        onError("Error: " + response.data.error);
       }
     } catch (error) {
-      onError('Error while updating data!');
-      console.error('Error:', error);
+      onError("Error while updating data!");
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
@@ -101,17 +150,21 @@ const EditFamilyModal = ({ familyData, onClose, onSuccess, onError, setLoading }
     return (
       <div key={fieldId} className="form-group">
         <label htmlFor={fieldId}>{config.label}</label>
-        {config.type === 'select' ? (
+        {config.type === "select" ? (
           <select
             id={fieldId}
             className="form-control"
-            value={value || ''}
-            onChange={(e) => handleFieldChange(isCommon ? 0 : memberIndex, key, e.target.value)}
+            value={value || ""}
+            onChange={(e) =>
+              handleFieldChange(isCommon ? 0 : memberIndex, key, e.target.value)
+            }
             required={config.required}
           >
             <option value="">{config.label}</option>
             {config.options.map((opt) => (
-              <option key={opt} value={opt}>{opt}</option>
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
             ))}
           </select>
         ) : (
@@ -119,8 +172,10 @@ const EditFamilyModal = ({ familyData, onClose, onSuccess, onError, setLoading }
             id={fieldId}
             type={config.type}
             className="form-control"
-            value={value || ''}
-            onChange={(e) => handleFieldChange(isCommon ? 0 : memberIndex, key, e.target.value)}
+            value={value || ""}
+            onChange={(e) =>
+              handleFieldChange(isCommon ? 0 : memberIndex, key, e.target.value)
+            }
             required={config.required}
             {...(config.attributes || {})}
           />
@@ -130,13 +185,38 @@ const EditFamilyModal = ({ familyData, onClose, onSuccess, onError, setLoading }
   };
 
   return (
-    <div className="formModal isVisible" onClick={(e) => e.target.classList.contains('formModal') && onClose()}>
-      <div className="popupModal1">
+    <div
+      className="formModal isVisible"
+      onClick={(e) => e.target.classList.contains("formModal") && onClose()}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        background: "rgba(0,0,0,0.45)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "16px",
+      }}
+    >
+      <div
+        className="popupModal1"
+        style={{
+          width: "min(1200px, 96vw)",
+          maxHeight: "92vh",
+          overflow: "hidden",
+          background: "#fff",
+          borderRadius: "12px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+        }}
+      >
         <div className="headerbg"></div>
         <h1>परिवार रजिस्टर डाटा एंट्री एडिट फॉर्म</h1>
-        
+
         <form id="familyForm1" onSubmit={handleSubmit}>
-          <div style={{ overflowY: 'scroll', maxHeight: '64vh' }}>
+          <div
+            style={{ overflowY: "auto", maxHeight: "72vh", padding: "0 8px" }}
+          >
             {/* Common Fields */}
             <div className="form-row common-fields">
               {commonFields.map((key) => renderField(key, 0, true))}
@@ -152,15 +232,15 @@ const EditFamilyModal = ({ familyData, onClose, onSuccess, onError, setLoading }
                     <input
                       key={`hidden-${key}-${idx}`}
                       type="hidden"
-                      value={member[key] || ''}
+                      value={member[key] || ""}
                       readOnly
                     />
                   ))}
-                  
+
                   {/* Visible fields */}
-                  {Object.keys(fieldConfig).filter(key => !commonFields.includes(key)).map((key) => 
-                    renderField(key, idx, false)
-                  )}
+                  {Object.keys(fieldConfig)
+                    .filter((key) => !commonFields.includes(key))
+                    .map((key) => renderField(key, idx, false))}
                 </div>
               </div>
             ))}

@@ -98,3 +98,10 @@ export default {
   approveSabha,
   rejectSabha,
 };
+
+export const fetchRejectedBlocks = async (blockName) => {
+  const response = await api.get(
+    `/drpo_rejected_data_report/?blockName=${encodeURIComponent(blockName)}`
+  );
+  return response.data;
+};

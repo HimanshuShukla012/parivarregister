@@ -11,6 +11,7 @@ import DPRODashboard from "./pages/dashboards/dpro/DPRODashboard";
 import AdminDashboard from './pages/dashboards/admin/AdminDashboard';
 import AdoRejectedPage from './components/sachiv/AdoRejectedPage';
 import ADODashboard from './pages/dashboards/ado/ADODashboard';
+import DivisionHQDashboard from './pages/dd/dddashboard';
 
 const AppRouter = () => {
   return (
@@ -27,7 +28,7 @@ const AppRouter = () => {
         <Route path="/ado/dashboard" element={<ADODashboard/>} />
         <Route path="/hq/dashboard" element={<HQDashboard />} />
         <Route path="/dpro/dashboard" element={<DPRODashboard/>} />
-        <Route path="/dd/dashboard" element={<div>DD Dashboard</div>} />
+        <Route path="/dd/dashboard" element={<DivisionHQDashboard />} />
         <Route path="/tl/dashboard" element={<div>TL Dashboard</div>} />
         <Route path="/director/dashboard" element={<div>Director Dashboard</div>} />
         <Route path="/supervisor-sc/dashboard" element={<div>Supervisor SC Dashboard</div>} />

@@ -12,6 +12,8 @@ const DataTablePanel = ({
   onError,
   setLoading,
   showPDF,
+  gaonDetails,
+  onViewPdf,
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -37,10 +39,9 @@ const DataTablePanel = ({
   const handleEdit = (index) => {
     const familyData = [tableData[index]];
 
-    // Collect all family members
     for (
       let i = index + 1;
-      i < tableData.length && tableData[i]["serialNo"] !== "1";
+      i < tableData.length && String(tableData[i]["serialNo"]) !== "1";
       i++
     ) {
       familyData.push(tableData[i]);
@@ -78,6 +79,40 @@ const DataTablePanel = ({
         />
         <button type="submit">गांव का डाटा पाएं</button>
       </form>
+
+      {/* ✅ Village Details Box */}
+      {gaonDetails && (
+        <div
+          className="gaon-details-box"
+          style={{
+            marginTop: "12px",
+            marginBottom: "12px",
+            padding: "10px",
+            border: "1px solid #ddd",
+            borderRadius: "8px",
+            background: "#fafafa",
+          }}
+        >
+          <div>
+            <b>ज़िला:</b> {gaonDetails.zila} ({gaonDetails.zilaCode})
+          </div>
+          <div>
+            <b>तहसील:</b> {gaonDetails.tehsil} ({gaonDetails.tehsilCode})
+          </div>
+          <div>
+            <b>ब्लॉक:</b> {gaonDetails.block} ({gaonDetails.blockCode})
+          </div>
+          <div>
+            <b>सभा:</b> {gaonDetails.sabha} ({gaonDetails.sabhaCode})
+          </div>
+          <div>
+            <b>गांव:</b> {gaonDetails.gaon} ({gaonDetails.gaonCode})
+          </div>
+          <div>
+            <b>No. of Registers:</b> {gaonDetails.noOfRegisters}
+          </div>
+        </div>
+      )}
 
       <table className="main-table" id="gaonTable">
         <thead>
@@ -126,37 +161,42 @@ const DataTablePanel = ({
                 <td>{row["qualification"]}</td>
                 <td>{handleNullDate(row["leavingDate"])}</td>
                 <td>{row["description"]}</td>
+
                 <td>
-                  {row["status"] !== "Approved" && row["serialNo"] === "1" && (
-                    <button
-                      className="editBtn"
-                      onClick={() => handleEdit(index)}
-                    >
-                      <i className="fas fa-edit"></i>
-                    </button>
-                  )}
+                  {row["status"] !== "Approved" &&
+                    String(row["serialNo"]) === "1" && (
+                      <button
+                        type="button"
+                        className="editBtn"
+                        onClick={() => handleEdit(index)}
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                    )}
                 </td>
+
                 <td>{row["pdfNo"] || ""}</td>
                 <td>{row["fromPage"] || ""}</td>
                 <td>{row["toPage"] || ""}</td>
+
                 <td>
-                  {row["serialNo"] === "1" &&
+                  {String(row["serialNo"]) === "1" &&
                   row["pdfNo"] &&
                   row["fromPage"] &&
                   row["toPage"] ? (
                     <button
+                      type="button"
                       onClick={() =>
-                        viewPDFPage(
-                          row["pdfNo"],
-                          row["fromPage"],
-                          row["toPage"],
-                          row["gaonCode"],
-                        )
+                        onViewPdf({
+                          pdfNo: row["pdfNo"],
+                          fromPage: row["fromPage"],
+                          toPage: row["toPage"],
+                        })
                       }
                     >
                       <i className="fas fa-eye"></i>
                     </button>
-                  ) : row["serialNo"] === "1" &&
+                  ) : String(row["serialNo"]) === "1" &&
                     (!row["pdfNo"] || !row["fromPage"] || !row["toPage"]) ? (
                     "Add pdf & page no. first!"
                   ) : null}

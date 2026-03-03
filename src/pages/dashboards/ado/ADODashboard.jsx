@@ -7,6 +7,7 @@ import ADOSabhaApprovalTable from "../../../components/ado/ADOSabhaApprovalTable
 import "../../../assets/styles/pages/hq.css";
 import api from "../../../services/api";
 import { fetchSabhaReport } from "../../../services/adoService";
+import DPRORejectedTable from "../../../components/ado/DPRORejectedTable";
 
 const ADODashboard = () => {
   const DEFAULT_BLOCK = "Katehari";
@@ -20,6 +21,10 @@ const ADODashboard = () => {
   // villages modal
   const [villagesOpen, setVillagesOpen] = useState(false);
   const [selectedSabha, setSelectedSabha] = useState(null);
+
+  // 🔔 Notification states
+const [rejectedCount, setRejectedCount] = useState(0);
+const [notifOpen, setNotifOpen] = useState(false);
 
   const handleGaonDataLoad = (data) => {
     setGaonData(data);
@@ -70,6 +75,37 @@ const ADODashboard = () => {
   useEffect(() => {
     loadSabhaReport(blockName);
   }, [blockName]);
+
+  useEffect(() => {
+  const loadRejectedCount = async () => {
+    if (!blockName) return;
+
+    try {
+      const res = await api.get(
+        `/drpo_rejected_data_report/?blockName=${encodeURIComponent(blockName)}`
+      );
+
+      const data = Array.isArray(res.data) ? res.data : [];
+      setRejectedCount(data.length);
+    } catch (e) {
+      console.error("❌ Failed to load rejected blocks count:", e);
+      setRejectedCount(0);
+    }
+  };
+
+  loadRejectedCount();
+}, [blockName]);
+
+
+useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (notifOpen && !e.target.closest(".notif-wrapper")) {
+      setNotifOpen(false);
+    }
+  };
+  document.addEventListener("click", handleClickOutside);
+  return () => document.removeEventListener("click", handleClickOutside);
+}, [notifOpen]);
 
   const pageTitle = useMemo(
     () => (blockName ? `ADO Dashboard — ${blockName} Block` : "ADO Dashboard"),
@@ -126,31 +162,165 @@ const ADODashboard = () => {
               <h2>Ministry of Panchayati Raj</h2>
             </div>
           </div>
-          <div className="right-section">
-            <img
-              src="/assets/images/Kds_logo.png"
-              alt="KDS Logo"
-              className="kds-logo"
-            />
-            <div
-              className="user-info"
-              style={{ position: "relative", padding: "0px", overflow: "hidden" }}
+          <div
+  className="right-section"
+  style={{ position: "relative", display: "flex", alignItems: "center", gap: "1rem" }}
+>
+
+  {/* 🔔 Notification Bell */}
+  <div className="notif-wrapper" style={{ position: "relative" }}>
+    <button
+      onClick={() => setNotifOpen(!notifOpen)}
+      style={{
+        background: notifOpen ? "#f1f5f9" : "white",
+        border: "2px solid #e2e8f0",
+        borderRadius: "50%",
+        cursor: "pointer",
+        position: "relative",
+        width: "44px",
+        height: "44px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "20px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        transition: "all 0.2s ease",
+      }}
+    >
+      🔔
+      {rejectedCount > 0 && (
+        <span
+          style={{
+            position: "absolute",
+            top: "-4px",
+            right: "-4px",
+            background: "#ef4444",
+            color: "white",
+            borderRadius: "999px",
+            fontSize: "10px",
+            fontWeight: "700",
+            minWidth: "18px",
+            height: "18px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 4px",
+          }}
+        >
+          {rejectedCount > 99 ? "99+" : rejectedCount}
+        </span>
+      )}
+    </button>
+
+    {/* Dropdown */}
+    {notifOpen && (
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: "calc(100% + 8px)",
+          background: "white",
+          borderRadius: "12px",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+          minWidth: "260px",
+          zIndex: 9999,
+          overflow: "hidden",
+          border: "1px solid #e2e8f0",
+        }}
+      >
+        <div
+          style={{
+            padding: "12px 16px",
+            borderBottom: "1px solid #e2e8f0",
+            fontWeight: "700",
+            fontSize: "14px",
+            color: "#1e293b",
+          }}
+        >
+          Notifications
+        </div>
+
+        {rejectedCount > 0 ? (
+          <div
+            onClick={() => {
+              document
+                .getElementById("dpro-rejected-section")
+                ?.scrollIntoView({ behavior: "smooth" });
+              setNotifOpen(false);
+            }}
+            style={{
+              padding: "12px 16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              cursor: "pointer",
+            }}
+          >
+            <span
+              style={{
+                background: "#fee2e2",
+                color: "#dc2626",
+                borderRadius: "8px",
+                padding: "6px 10px",
+                fontWeight: "700",
+                fontSize: "18px",
+                minWidth: "40px",
+                textAlign: "center",
+              }}
             >
-              <a
-                href="/"
-                className="logout"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (window.confirm("Are you sure you want to logout?"))
-                    window.location.href = "/";
-                }}
-                style={{ position: "relative", padding: "10px" }}
-              >
-                <i className="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-              </a>
-            </div>
+              {rejectedCount}
+            </span>
+            <span
+              style={{
+                fontSize: "13px",
+                color: "#475569",
+                fontWeight: "500",
+              }}
+            >
+              DPRO Rejected Blocks pending action
+            </span>
           </div>
+        ) : (
+          <div
+            style={{
+              padding: "16px",
+              textAlign: "center",
+              color: "#94a3b8",
+              fontSize: "13px",
+            }}
+          >
+            No pending notifications
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+
+  <img
+    src="/assets/images/Kds_logo.png"
+    alt="KDS Logo"
+    className="kds-logo"
+  />
+
+  <div
+    className="user-info"
+    style={{ position: "relative", padding: "0px", overflow: "hidden" }}
+  >
+    <a
+      href="/"
+      className="logout"
+      onClick={(e) => {
+        e.preventDefault();
+        if (window.confirm("Are you sure you want to logout?"))
+          window.location.href = "/";
+      }}
+      style={{ position: "relative", padding: "10px" }}
+    >
+      <i className="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+    </a>
+  </div>
+</div>
         </div>
       </div>
 
@@ -266,6 +436,10 @@ const ADODashboard = () => {
           sabhaList={sabhaReport}
           onRefresh={() => loadSabhaReport(blockName)}
         />
+
+        <div id="dpro-rejected-section">
+  <DPRORejectedTable blockName={blockName} />
+</div>
 
         {/* ── Verify Data Entry ── */}
         <ADOVerifyDataEntryForm

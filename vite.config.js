@@ -1600,6 +1600,20 @@ export default defineConfig({
           });
         },
       },
+
+      "/drpo_rejected_data_report": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      console.log("🔄 Proxying drpo_rejected_data_report:", req.url);
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
     },
   },
 });

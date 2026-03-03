@@ -30,12 +30,13 @@ const PDFViewer = ({ gaonCode, registerOptions = [] }) => {
       return;
     }
 
-    const url = `${import.meta.env.VITE_PDF_BASE_URL}/getRegisterPDF/?gaonCode=${encodeURIComponent(
+    // ✅ ONLY CHANGE: use relative URL (works with vite proxy / prod)
+    const url = `/getRegisterPDF/?gaonCode=${encodeURIComponent(
       gaonCode,
     )}&registerNo=${encodeURIComponent(registerNo)}`;
 
     setPdfUrl(url);
-    setLocalPdfUrl(""); // Clear local PDF when loading server PDF
+    setLocalPdfUrl("");
   };
 
   const handleLocalPDFUpload = () => {
@@ -142,6 +143,7 @@ const PDFViewer = ({ gaonCode, registerOptions = [] }) => {
           height="600px"
           width="100%"
           style={{ display: "block" }}
+          title="PDF Preview"
         />
       )}
     </div>
