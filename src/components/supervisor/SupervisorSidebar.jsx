@@ -22,12 +22,18 @@ const SupervisorSidebar = ({
       <div
         className={`sidebar ${collapsed ? "hidden" : ""}`}
         style={{
-          width: "280px",
-          minHeight: "100vh",
-          background: "linear-gradient(180deg,#0f172a,#1e293b)",
-          color: "#fff",
-          padding: "12px",
-        }}
+  width: collapsed ? "0px" : "280px",
+  height: "100vh",
+  background: "linear-gradient(180deg,#0f172a,#1e293b)",
+  color: "#fff",
+  padding: collapsed ? "0" : "12px",
+  overflow: collapsed ? "hidden" : "auto",
+  transition: "width 0.3s ease, padding 0.3s ease",
+  flexShrink: 0,
+  position: "sticky",
+  top: 0,
+  zIndex: 100,
+}}
       >
         {/* Collapse Button */}
         <div style={{ textAlign: "right" }}>
@@ -134,7 +140,7 @@ const SupervisorSidebar = ({
             }}
           />
 
-          <SidebarBtn
+          {/* <SidebarBtn
             label="Rejected Families"
             active={activeItem === "rejected"}
             onClick={() => {
@@ -142,7 +148,7 @@ const SupervisorSidebar = ({
               onRejectedFamiliesClick();
             }}
             flicker={rejectedHasFlicker}
-          />
+          /> */}
 
           <SidebarBtn
             label="PM Assigned Families"

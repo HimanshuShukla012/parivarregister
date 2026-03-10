@@ -28,6 +28,7 @@ const RegisterTable = ({
   };
 
   return (
+    
     <div
       style={{
         background: "#fff",
@@ -43,7 +44,7 @@ const RegisterTable = ({
         style={{
           width: "100%",
           borderCollapse: "collapse",
-          fontSize: "14px",
+          fontSize: "13px",
         }}
       >
         <thead>
@@ -91,12 +92,13 @@ const RegisterTable = ({
           {data.length > 0 ? (
             data.map((row, index) => (
               <tr
-                key={index}
-                style={{
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                <td>{row.serialNo || ""}</td>
+  key={index}
+  style={{
+    borderBottom: "1px solid #eee",
+    verticalAlign: "middle",
+  }}
+>
+  <td style={{ padding: "10px 8px", whiteSpace: "nowrap" }}>{row.serialNo || ""}</td>
                 <td>{row.houseNumberNum || ""}</td>
                 <td>{row.houseNumberText || ""}</td>
                 <td>{row.familyHeadName || ""}</td>
@@ -113,14 +115,8 @@ const RegisterTable = ({
                 <td>{row.description || ""}</td>
 
                 {/* ACTIONS */}
-                <td
-                  style={{
-                    display: "flex",
-                    gap: "6px",
-                    flexWrap: "nowrap",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <td style={{ whiteSpace: "nowrap", padding: "8px" }}>
+  <div style={{ display: "flex", gap: "6px", flexWrap: "nowrap" }}>
                   {row.status !== "Approved" && (
                     <>
                       {String(row.serialNo) === "1" && (
@@ -150,59 +146,54 @@ const RegisterTable = ({
                       </button>
                     </>
                   )}
-                </td>
+                </div></td>
 
                 <td>{row.pdfNo || ""}</td>
                 <td>{row.fromPage || ""}</td>
                 <td>{row.toPage || ""}</td>
 
-                <td
-                  style={{
-                    display: "flex",
-                    gap: "6px",
-                    flexWrap: "nowrap",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {String(row.serialNo) === "1" &&
-                    row.pdfNo &&
-                    row.fromPage &&
-                    row.toPage && (
-                      <>
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            onViewPDF(
-                              row.pdfNo,
-                              row.fromPage,
-                              row.toPage,
-                              row.gaonCode,
-                            );
-                          }}
-                          style={btnGreen}
-                        >
-                          View <i class="fas fa-eye"></i>
-                        </button>
+                <td style={{ whiteSpace: "nowrap", padding: "8px" }}>
+  <div style={{ display: "flex", gap: "6px", flexWrap: "nowrap", alignItems: "center" }}>
+    {String(row.serialNo) === "1" &&
+      row.pdfNo &&
+      row.fromPage &&
+      row.toPage && (
+        <>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onViewPDF(
+                row.pdfNo,
+                row.fromPage,
+                row.toPage,
+                row.gaonCode,
+              );
+            }}
+            style={btnGreen}
+          >
+            View <i className="fas fa-eye"></i>
+          </button>
 
-                        {row.status !== "Approved" && (
-                          <button
-                            onClick={() => onApprove(row.id, row.gaonCode)}
-                            style={btnPurple}
-                          >
-                            Approve
-                          </button>
-                        )}
-                      </>
-                    )}
+          {row.status !== "Approved" && (
+            <button
+              onClick={() => onApprove(row.id, row.gaonCode)}
+              style={btnPurple}
+            >
+              Approve
+            </button>
+          )}
+        </>
+      )}
 
-                  {String(row.serialNo) === "1" &&
-                    (!row.pdfNo || !row.fromPage || !row.toPage) && (
-                      <span style={{ fontSize: "12px", color: "#999" }}>
-                        Add pdf & page no. first!
-                      </span>
-                    )}
-                </td>
+    {String(row.serialNo) === "1" &&
+      (!row.pdfNo || !row.fromPage || !row.toPage) && (
+        <span style={{ fontSize: "12px", color: "#999" }}>
+          Add pdf & page no. first!
+        </span>
+      )}
+  </div>
+</td>
 
                 {viewMode === "rejected" && <td>{row.remark || ""}</td>}
               </tr>
@@ -227,10 +218,14 @@ const RegisterTable = ({
 const baseBtn = {
   border: "none",
   borderRadius: "20px",
-  padding: "6px 14px",
-  fontSize: "13px",
+  padding: "5px 12px",
+  fontSize: "12px",
   cursor: "pointer",
   color: "#fff",
+  whiteSpace: "nowrap",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "4px",
 };
 
 const btnGreen = {

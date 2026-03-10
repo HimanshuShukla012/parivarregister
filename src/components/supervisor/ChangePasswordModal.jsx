@@ -38,9 +38,9 @@ const ChangePasswordModal = ({ loginID, onClose }) => {
         setError(result.error || "Failed to change password");
       }
     } catch (error) {
-      console.error("Error changing password:", error);
-      setError("Failed to change password. Please try again.");
-    }
+  console.error("Error changing password:", error);
+  setError(error?.response?.data?.error || error?.message || "Failed to change password. Please try again.");
+}
   };
 
   return (

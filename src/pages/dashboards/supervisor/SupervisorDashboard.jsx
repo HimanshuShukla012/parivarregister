@@ -616,7 +616,7 @@ const SupervisorDashboard = () => {
 
   if (loading && !gaonData.length) {
     return (
-      <div className="supervisor-page">
+      <div className="supervisor-page" style={{ display: "flex", minHeight: "100vh" }}>
         <div id="loading-screen" style={{ display: "flex" }}>
           <div className="spinner"></div>
           <h2>&nbsp;&nbsp;&nbsp;Loading, please wait...</h2>
@@ -626,7 +626,7 @@ const SupervisorDashboard = () => {
   }
 
   return (
-    <div className="supervisor-page">
+    <div className="supervisor-page" style={{ display: "flex", minHeight: "100vh" }}>
       <SupervisorSidebar
         user={user}
         onPendingRegisterClick={handlePendingRegisterClick}
@@ -641,8 +641,7 @@ const SupervisorDashboard = () => {
         rejectedHasFlicker={rejectedHasFlicker}
       />
 
-      <div className="content" id="content">
-        <div
+      <div className="content" id="content" style={{ flex: 1, minWidth: 0, transition: "all 0.3s ease" }}>        <div
           style={{
             padding: "2rem",
             display: "flex",
@@ -1089,7 +1088,7 @@ const SupervisorDashboard = () => {
 
           {/* ✅ ASSIGNED SPLIT VIEW (TABLE LEFT, PDF RIGHT) */}
           {viewMode === "assigned" && gaonData.length > 0 && (
-            <div style={{ display: "flex", gap: "12px", width: "100%" }}>
+            <div style={{ display: "flex", gap: "12px", width: "100%", alignItems: "flex-start" }}>
               <div style={{ width: selectedPdfUrl ? "50%" : "100%" }}>
                 <div className="table-container">
                   <table className="main-table">
@@ -1165,16 +1164,17 @@ const SupervisorDashboard = () => {
               {selectedPdfUrl && (
                 <div
                   style={{
-                    width: "50%",
-                    background: "#fff",
-                    borderRadius: "12px",
-                    boxShadow: "0 8px 25px rgba(0,0,0,0.12)",
-                    padding: "12px",
-                    height: "calc(100vh - 260px)",
-                    position: "sticky",
-                    top: "110px",
-                    overflow: "hidden",
-                  }}
+  width: "50%",
+  background: "#fff",
+  borderRadius: "12px",
+  boxShadow: "0 8px 25px rgba(0,0,0,0.12)",
+  padding: "12px",
+  height: "calc(100vh - 160px)",
+  position: "sticky",
+  top: "20px",
+  overflow: "hidden",
+  alignSelf: "flex-start",
+}}
                 >
                   <div
                     style={{
@@ -1206,15 +1206,15 @@ const SupervisorDashboard = () => {
                     </div>
                   </div>
                   <iframe
-                    src={selectedPdfUrl}
-                    title="PDF Preview"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: "10px",
-                    }}
-                  />
+  src={`https://docs.google.com/viewer?url=${encodeURIComponent(selectedPdfUrl)}&embedded=true`}
+  title="PDF Preview"
+  style={{
+    width: "100%",
+    height: "100%",
+    border: "1px solid #e5e7eb",
+    borderRadius: "10px",
+  }}
+/>
                 </div>
               )}
             </div>
