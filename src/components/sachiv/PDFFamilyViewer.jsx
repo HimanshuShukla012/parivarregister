@@ -735,14 +735,14 @@ const PDFFamilyViewer = ({
             <div style={{ flex: 1, position: "relative" }}>
               {pdfUrl ? (
                 <iframe
-                  src={pdfUrl}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    border: "none",
-                  }}
-                  title="PDF Viewer"
-                />
+  src={pdfUrl}
+  title="PDF Preview"
+  style={{
+    width: "100%",
+    height: "100%",
+    border: "none",
+  }}
+/>
               ) : (
                 <div
                   style={{
