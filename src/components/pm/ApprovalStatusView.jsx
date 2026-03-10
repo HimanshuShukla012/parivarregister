@@ -130,39 +130,24 @@ const ApprovalStatusView = ({ zilaList = [] }) => {
 
     // Sample Excel columns (same as your gaonApprovalStatus.xlsx header row)
     const header = [
-      "जनपद कोड",
       "जनपद",
-      "तहसील कोड",
       "तहसील",
-      "ब्लाक कोड",
       "ब्लाक",
-      "गाँव सभा कोड",
       "गाँव सभा",
       "गाँव",
       "गाँव कोड",
       "Supervisor Approval?",
-      "Supervisor Approval Date (YYYY/MM/DD)",
       "सचिव द्वारा सत्यापित",
-      "Sachiv Approval Date (YYYY/MM/DD)",
       "ADO द्वारा सत्यापित",
     ];
 
     const rows = filteredRows.map((r) => {
-      const zilaCode = pick(r, ["zilaCode", "districtCode", "जनपद कोड"]);
       const zila = pick(r, ["zila", "district", "जनपद"], selectedZila);
 
-      const tehsilCode = pick(r, ["tehsilCode", "tahsilCode", "तहसील कोड"]);
       const tehsil = pick(r, ["tehsil", "tahsil", "तहसील"]);
 
-      const blockCode = pick(r, ["blockCode", "ब्लाक कोड"]);
       const block = pick(r, ["block", "ब्लाक"], selectedBlock);
-
-      const gaonSabhaCode = pick(r, [
-        "gaonSabhaCode",
-        "villageSabhaCode",
-        "गाँव सभा कोड",
-      ]);
-      const gaonSabha = pick(r, ["gaonSabha", "villageSabha", "गाँव सभा"]);
+      const gaonSabha = pick(r, ["sabha", "gaonSabha", "villageSabha", "गाँव सभा"]);
 
       // In some APIs gaon & gaonCode swapped, handle both
       const gaonName = pick(r, ["gaon", "village", "गाँव"]);
@@ -179,11 +164,7 @@ const ApprovalStatusView = ({ zilaList = [] }) => {
   "supervisor",
   "Supervisor Approval?",
 ]);
-const supDate = pick(r, [
-  "supervisorApprovalDate",
-  "supervisorDate",
-  "Supervisor Approval Date (YYYY/MM/DD)",
-]);
+
 
 const sachiv = pick(r, [
   "approvedBySachiv",       // 👈 added — matches table logic
@@ -191,11 +172,7 @@ const sachiv = pick(r, [
   "sachiv",
   "सचिव द्वारा सत्यापित",
 ]);
-const sachivDate = pick(r, [
-  "sachivApprovalDate",
-  "sachivDate",
-  "Sachiv Approval Date (YYYY/MM/DD)",
-]);
+
 
 const ado = pick(r, [
   "approvedByADO",          // 👈 added — matches table logic
@@ -205,20 +182,14 @@ const ado = pick(r, [
 ]);
 
       return [
-        zilaCode,
         zila,
-        tehsilCode,
         tehsil,
-        blockCode,
         block,
-        gaonSabhaCode,
         gaonSabha,
         gaonName,
         gaonCode,
         toYesNo(sup),
-        supDate || "",
         toYesNo(sachiv),
-        sachivDate || "",
         toYesNo(ado),
       ];
     });
@@ -356,11 +327,11 @@ const ado = pick(r, [
                 const tehsil = pick(r, ["tehsil", "tahsil", "तहसील"]);
                 const block = pick(r, ["block", "ब्लाक"], selectedBlock);
                 const gaonSabha = pick(r, [
-                  "sabha",
-                  "gaonSabha",
-                  "villageSabha",
-                  "गाँव सभा",
-                ]);
+  "sabha",
+  "gaonSabha",
+  "villageSabha",
+  "गाँव सभा",
+]);
                 const gaon = pick(r, ["gaon", "village", "गाँव"]);
                 const gaonCode = pick(r, [
                   "gaonCode",
