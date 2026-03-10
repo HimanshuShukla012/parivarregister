@@ -1136,9 +1136,20 @@ const SupervisorDashboard = () => {
                               <button
                                 type="button"
                                 className="download-btn"
-                                onClick={() =>
-                                  setSelectedPdfUrl(buildPdfUrl(row))
-                                }
+                                // WITH THIS:
+onClick={async () => {
+  try {
+    const url = buildPdfUrl(row);
+    const response = await fetch(url, { credentials: "include" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    setSelectedPdfUrl(blobUrl);
+  } catch (error) {
+    console.error("PDF load error:", error);
+    showMessage("PDF लोड करने में त्रुटि हुई", "red");
+  }
+}}
                                 disabled={!row.gaonCode}
                                 style={{ padding: "6px 10px" }}
                               >
@@ -1206,7 +1217,7 @@ const SupervisorDashboard = () => {
                     </div>
                   </div>
                   <iframe
-  src={`https://docs.google.com/viewer?url=${encodeURIComponent(selectedPdfUrl)}&embedded=true`}
+  src={selectedPdfUrl}
   title="PDF Preview"
   style={{
     width: "100%",
@@ -1254,10 +1265,22 @@ const SupervisorDashboard = () => {
                 onAdd={handleAddRecord}
                 onDelete={handleDeleteRecord}
                 onApprove={handleApproveFamily}
-                onViewPDF={(pdfNo, fromPage, toPage, gaonCode) => {
-                  const url = `${import.meta.env.VITE_PDF_BASE_URL}/getPDFPage/?pdfNo=${pdfNo}&fromPage=${fromPage}&toPage=${toPage}&gaonCode=${gaonCode}`;
-                  window.open(url, "_blank");
-                }}
+                onViewPDF={async (pdfNo, fromPage, toPage, gaonCode) => {
+  try {
+    const url = `${import.meta.env.VITE_PDF_BASE_URL}/getPDFPage/?pdfNo=${pdfNo}&fromPage=${fromPage}&toPage=${toPage}&gaonCode=${gaonCode}`;
+    const response = await fetch(url, {
+      credentials: "include",
+      headers: { Accept: "application/pdf" },
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, "_blank");
+  } catch (error) {
+    console.error("PDF load error:", error);
+    showMessage("PDF लोड करने में त्रुटि हुई", "red");
+  }
+}}
               />
             </div>
           )}
