@@ -174,28 +174,35 @@ const ApprovalStatusView = ({ zilaList = [] }) => {
       ]);
 
       const sup = pick(r, [
-        "supervisorApproved",
-        "supervisor",
-        "Supervisor Approval?",
-      ]);
-      const supDate = pick(r, [
-        "supervisorApprovalDate",
-        "supervisorDate",
-        "Supervisor Approval Date (YYYY/MM/DD)",
-      ]);
+  "approvedBySupervisor",   // 👈 added — matches table logic
+  "supervisorApproved",
+  "supervisor",
+  "Supervisor Approval?",
+]);
+const supDate = pick(r, [
+  "supervisorApprovalDate",
+  "supervisorDate",
+  "Supervisor Approval Date (YYYY/MM/DD)",
+]);
 
-      const sachiv = pick(r, [
-        "sachivVerified",
-        "sachiv",
-        "सचिव द्वारा सत्यापित",
-      ]);
-      const sachivDate = pick(r, [
-        "sachivApprovalDate",
-        "sachivDate",
-        "Sachiv Approval Date (YYYY/MM/DD)",
-      ]);
+const sachiv = pick(r, [
+  "approvedBySachiv",       // 👈 added — matches table logic
+  "sachivVerified",
+  "sachiv",
+  "सचिव द्वारा सत्यापित",
+]);
+const sachivDate = pick(r, [
+  "sachivApprovalDate",
+  "sachivDate",
+  "Sachiv Approval Date (YYYY/MM/DD)",
+]);
 
-      const ado = pick(r, ["adoVerified", "ado", "ADO द्वारा सत्यापित"]);
+const ado = pick(r, [
+  "approvedByADO",          // 👈 added — matches table logic
+  "adoVerified",
+  "ado",
+  "ADO द्वारा सत्यापित",
+]);
 
       return [
         zilaCode,
