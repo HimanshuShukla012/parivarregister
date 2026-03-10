@@ -123,10 +123,19 @@ const EditSupervisorModal = ({ isOpen, onClose, onUpdate, row }) => {
 
   // ── Submit ────────────────────────────────────────────────────────────────
   const handleSubmit = async () => {
-    setError("");
-    if (!name.trim())           { setError("Full name is required."); return; }
-    if (!selectedZilaCode)      { setError("Please select a district."); return; }
+  setError("");
+
+  if (isAdd) {
+  if (!role)                       { setError("Please select a role."); return; }
+  if (!name.trim())                { setError("Full name is required."); return; }
+  if (!aadharNo.trim())            { setError("Aadhar number is required."); return; }
+  if (!selectedZilaCode)           { setError("Please select a district."); return; }
+  if (selectedBlocks.length === 0) { setError("Please select at least one block."); return; }
+  if (!docFile)                    { setError("Please upload a document (PDF)."); return; }
+}
+   else {
     if (selectedBlocks.length === 0) { setError("Please select at least one block."); return; }
+  }
 
     setSaving(true);
     try {
@@ -424,7 +433,7 @@ const EditSupervisorModal = ({ isOpen, onClose, onUpdate, row }) => {
 
 {/* Document upload — add only */}
             {isAdd && <div>
-              <label style={labelStyle}>Document (PDF only)</label>
+              <label style={labelStyle}>Document (PDF only) <span style={{ color: "#ef4444" }}>*</span></label>
               <label
                 className="esm-file-label"
                 style={{
