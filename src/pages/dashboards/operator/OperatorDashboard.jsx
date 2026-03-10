@@ -97,7 +97,7 @@ const OperatorDashboard = () => {
             }}
           >
             <a
-              href="/static/assets/Operator Roles & Responsibilities.pdf"
+              href="/public/Operator Roles & Responsibilities.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="guidelineBtn"
@@ -126,7 +126,7 @@ const OperatorDashboard = () => {
             }}
           >
             <a
-              href="/static/assets/Operator_Demo.mp4"
+              href="/public/Operator_Demo.mp4"
               target="_blank"
               rel="noopener noreferrer"
               className="guidelineBtn"
