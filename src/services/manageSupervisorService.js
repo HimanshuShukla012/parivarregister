@@ -102,6 +102,21 @@ addBlockToSupervisor: async (supervisorId, blockNames) => {
    * GET /getSupervisor/
    * Returns all supervisors with their details.
    */
+  deleteSupervisor: async (loginID) => {
+    try {
+      const formData = new FormData();
+formData.append('loginID', loginID);
+const response = await api.post('/deleteSupervisor/', formData, {
+  withCredentials: true,
+  headers: { 'Content-Type': 'multipart/form-data' },
+});
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting supervisor:', error);
+      throw error;
+    }
+  },
+
   getSupervisors: async () => {
     try {
       const response = await api.get('/getSupervisor/');

@@ -68,10 +68,17 @@ const ManageSupervisorView = ({ zilaList = [] }) => {
   }, [filteredRows]);
 
   const handleDelete = (row) => setDeleteConfirm(row);
-  const confirmDelete = () => {
-    console.log("Delete confirmed:", deleteConfirm);
-    setDeleteConfirm(null);
-    alert("Delete Supervisor (TODO: wire API)");
+const confirmDelete = async () => {
+    try {
+      const loginID = pick(deleteConfirm, ["loginId", "loginID"], "");
+      await manageSupervisorService.deleteSupervisor(loginID);
+      setDeleteConfirm(null);
+      fetchSupervisors("");
+    } catch (e) {
+      console.error("Delete error:", e);
+      alert("Failed to delete supervisor. Please try again.");
+      setDeleteConfirm(null);
+    }
   };
 
   // Stats

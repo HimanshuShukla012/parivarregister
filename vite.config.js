@@ -1614,6 +1614,23 @@ export default defineConfig({
     });
   },
 },
+
+
+"/deleteSupervisor": {
+  target: "https://register.kdsgroup.co.in",
+  changeOrigin: true,
+  secure: false,
+  configure: (proxy) => {
+    proxy.on("proxyReq", (proxyReq, req) => {
+      if (req.headers.cookie) {
+        proxyReq.setHeader("Cookie", req.headers.cookie);
+      }
+    });
+  },
+},
+
+
+
     },
   },
 });

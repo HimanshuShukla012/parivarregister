@@ -866,6 +866,20 @@
   force = true
 
 
+
+[[redirects]]
+  from = "/deleteSupervisor/"
+  to = "https://register.kdsgroup.co.in/deleteSupervisor/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/deleteSupervisor/*"
+  to = "https://register.kdsgroup.co.in/deleteSupervisor/:splat"
+  status = 200
+  force = true
+
+
 # SPA fallback - must be the very last redirect
 [[redirects]]
   from = "/*"
