@@ -149,17 +149,30 @@ const ProjectMonitoringView = () => {
     );
   };
 
-  const handleBlockReportDownload = () => {
-    // if (!selectedZilaForBlock) {
-    //   alert("Please select a district");
-    //   return;
-    // }
-    handleDownloadReport(
-      `${import.meta.env.VITE_API_BASE_URL}/download_block_wise_report/`,
-    );
-  };
+  // WITH THIS:
+const downloadTableAsExcel = (data, filename) => {
+  if (!data || data.length === 0) return;
+  const headers = Object.keys(data[0]);
+  const rows = data.map((row) => Object.values(row));
+  const csvContent = [headers, ...rows]
+    .map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+  const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.setAttribute("download", filename + ".csv");
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
 
-  const handleDigiStatusDownload = () => {
+const handleBlockReportDownload = () => {
+  handleDownloadReport(
+    `${import.meta.env.VITE_API_BASE_URL}/download_block_wise_report/`,
+  );
+};
+
+const handleDigiStatusDownload = () => {
     if (!selectedZilaForDigi) {
       alert("Please select a district");
       return;
@@ -337,7 +350,8 @@ const ProjectMonitoringView = () => {
             </div>
             {downloadUrl && (
               <button
-                onClick={() => handleDownloadReport(downloadUrl)}
+                // WITH THIS:
+onClick={() => downloadTableAsExcel(filteredData, tableKey)}
                 style={{
                   background: "#3b82f6",
                   color: "white",
@@ -590,10 +604,14 @@ const ProjectMonitoringView = () => {
                 value: cards?.noOfVilScanPending ?? "?",
                 icon: <i className="fas fa-clock"></i>,
                 color: "#22C55E",
-                onClick: () =>
-                  handleDownloadReport(
-                    `${import.meta.env.VITE_API_BASE_URL}/downloadVilScanPendingTbl/`,
-                  ),
+                // WITH THIS:
+onClick: () => {
+  const tblEntry = Object.values(tables || {}).find((t) =>
+    t?.heading?.toLowerCase().includes("scan")
+  );
+  if (tblEntry?.data) downloadTableAsExcel(tblEntry.data, "VillagesScanPending");
+  else handleDownloadReport(`${import.meta.env.VITE_API_BASE_URL}/downloadVilScanPendingTbl/`);
+},
               },
               {
                 label: "No. of Villages Entry Not Started",
