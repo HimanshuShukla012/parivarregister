@@ -231,6 +231,19 @@ const SachivDashboard = () => {
     gaonCode,
     familyData,
   ) => {
+    // Filter to only include members of this specific family
+    if (familyData && familyData.length > 0) {
+      const firstMemberId = familyData[0].id;
+      const startIndex = gaonData.findIndex((row) => row.id === firstMemberId);
+      if (startIndex !== -1) {
+        let endIndex = gaonData.findIndex(
+          (row, idx) => idx > startIndex && String(row.serialNo) === "1"
+        );
+        familyData = endIndex === -1
+          ? gaonData.slice(startIndex)
+          : gaonData.slice(startIndex, endIndex);
+      }
+    }
     try {
       
       let url = `${import.meta.env.VITE_PDF_BASE_URL}/getPDFPage?pdfNo=${pdfNo}&gaonCode=${gaonCode}`;
